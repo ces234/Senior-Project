@@ -13,19 +13,28 @@ run the command: git clone https://github.com/ces234/Senior-Project.git
 Navigate to the project directory: cd Senior-Project
 
 2. Backend Setup (Django)
-Use a virtual environment for Python dependencies. Run the commands:
+Use a virtual environment for Python dependencies.
+If you already see a backend/env/ folder, delete it and run the following command to create a virtual environment compliant to your OS:
 
 python -m venv env
 
-Activate the virtual environment:
-On Windows:
-.\env\Scripts\Activate.ps1
-on macOS/Linux:
-source env/bin/activate
 
-Install Python Dependencies: run the following commands
+Activate the virtual environment:
+    On Windows:
+    .\env\Scripts\Activate.ps1
+
+    On macOS/Linux:
+    source env/bin/activate
+
+Install Python Dependencies: run the following commands (we don't have this yet so skip this step but should add it later)
 
 pip install -r backend/requirements.txt
+
+Within the activated virtual environment run:
+    pip install django
+    pip install djongo
+    pip install pytz
+
 
 Run Django Migrations: set up the database and apply Django migrations
 python backend/manage.py migrate
@@ -43,4 +52,4 @@ npm install
 Start the React Development Server
 npm start
 
-Backend should be running on port 8000 and frontend on port 3000. open http://localhost:3000/ in your browser. 
+Backend should be running on port 8000 and frontend on port 3000. Open http://127.0.0.1:8000/ and http://localhost:3000/ in your browser. 
