@@ -85,6 +85,8 @@ DATABASES = {
             'username': 'ces234',
             'password': 'myPassword',
             'authSource': 'admin',
+            'ssl': True,
+            'tlsAllowInvalidCertificates': True,  # Disable certificate verification
         }
     }
 }
