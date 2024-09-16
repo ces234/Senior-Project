@@ -40,11 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'userManagement',
-    'mealPlanning',
-    'recipeManagement',
-    'pantryManagement',
-    'dbPopulator',
+    'user_management',
+    'meal_planning',
+    'recipe_management',
+    'pantry_management',
+    'db_populator',
 ]
 
 MIDDLEWARE = [
