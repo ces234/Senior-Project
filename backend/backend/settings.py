@@ -39,6 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'userManagement',
+    'mealPlanning',
+    'recipeManagement',
+    'pantryManagement',
+    'dbPopulator',
 ]
 
 MIDDLEWARE = [
@@ -75,19 +81,16 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+import os
+
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'MealPlanningDB',
-        'ENFORCE_SCHEMA': False,
-        'CLIENT': {
-            'host': 'mongodb+srv://ces234:myPassword@cluster0.ozqun.mongodb.net/?retryWrites=true&w=majority',
-            'username': 'ces234',
-            'password': 'myPassword',
-            'authSource': 'admin',
-            'ssl': True,
-            'tlsAllowInvalidCertificates': True,  # Disable certificate verification
-        }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'meal_planning_database',
+        'USER': 'ces234',
+        'PASSWORD': 'ces234',
+        'HOST': 'localhost',
+        'PORT': '5433',  # Default PostgreSQL port
     }
 }
 
