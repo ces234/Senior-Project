@@ -7,6 +7,12 @@ class Ingredient(models.Model):
     def __str__(self):
         return self.name
 
+class Category(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+
+    def __str__(self):
+        return self.name
+
 class Recipe(models.Model):
     name = models.CharField(max_length=200, unique=True)
     prep_time = models.IntegerField()  # in minutes
@@ -14,6 +20,7 @@ class Recipe(models.Model):
     servings = models.IntegerField()
     instructions = models.TextField()
     ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredient')  # Many-to-Many through RecipeIngredient
+    categories = models.ManyToManyField(Category)  # Many-to-Many with Category
 
     def __str__(self):
         return self.name
@@ -21,10 +28,10 @@ class Recipe(models.Model):
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-    quantity = models.FloatField(null = True, blank = True)  # Quantity of the ingredient (e.g., 1.5)
-    unit = models.CharField(max_length=50, null = True, blank = True)  # Unit of measurement (e.g., grams, cups, tablespoons)
+    quantity = models.FloatField(null=True, blank=True)  # Quantity of the ingredient (e.g., 1.5)
+    unit = models.CharField(max_length=50, null=True, blank=True)  # Unit of measurement (e.g., grams, cups, tablespoons)
 
-    class Meta: 
+    class Meta:
         unique_together = ('recipe', 'ingredient')  # Ensure that a recipe can't have duplicate ingredients
 
     def __str__(self):

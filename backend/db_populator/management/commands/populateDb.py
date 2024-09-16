@@ -3,7 +3,7 @@ import django
 import requests
 from bs4 import BeautifulSoup
 from django.core.management.base import BaseCommand
-from recipe_management.models import Ingredient, Recipe, RecipeIngredient
+from recipe_management.models import Ingredient, Recipe, RecipeIngredient, Category
 from fractions import Fraction
 import re
 
@@ -15,7 +15,7 @@ class Command(BaseCommand):
     help = 'Populate the database with recipes'
 
     def handle(self, *args, **options):
-        def scrapeRecipe(recipeURL):
+        def scrapeRecipe(recipeURL, categoryTitle):
             response = requests.get(recipeURL)
             singleRecipeSoup = BeautifulSoup(response.text, 'html.parser')
 
@@ -58,7 +58,6 @@ class Command(BaseCommand):
                     '⅜': '3/8',
                     '⅝': '5/8',
                     '⅞': '7/8'
-                    # Add more replacements as needed
                 }
                 for special_char, replacement in replacements.items():
                     text = text.replace(special_char, replacement)
@@ -123,6 +122,10 @@ class Command(BaseCommand):
             cook_time = handle_numeric_value(details.get('Cook Time:', '0') or 0)
             servings = handle_numeric_value(details.get('Servings:', '0') or 0)
 
+            category, createdCat = Category.objects.get_or_create(
+                name=categoryTitle
+            )
+
             # Check if the recipe already exists
             recipe, created = Recipe.objects.get_or_create(
                 name=title,
@@ -130,13 +133,16 @@ class Command(BaseCommand):
                     'prep_time': prep_time,
                     'cook_time': cook_time, 
                     'servings': servings,
-                    'instructions': ' '.join(steps)
+                    'instructions': ' '.join(steps),
                 }
             )
 
             # print("prep time:", details.get('Prep Time:'))
             # print("cook time:", details.get('Cook Time:'))
             # print("servings:", details.get('Servings:'))
+
+            recipe.categories.add(category)
+
 
             if not created:
                 self.stdout.write(f"Recipe already exists: '{title}'")
@@ -181,7 +187,7 @@ class Command(BaseCommand):
                     if dataTag == "In the Kitchen":
                         continue
                     recipeUrl = recipeLink['href']
-                    scrapeRecipe(recipeUrl)  
+                    scrapeRecipe(recipeUrl, topicHtml)  
                     numRecipes += 1
                     self.stdout.write(f"Recipes: {numRecipes}")
 
