@@ -29,7 +29,7 @@ class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.FloatField(null=True, blank=True)  # Quantity of the ingredient (e.g., 1.5)
-    unit = models.CharField(max_length=50, null=True, blank=True)  # Unit of measurement (e.g., grams, cups, tablespoons)
+    unit = models.CharField(max_length=200, null=True, blank=True)  # Unit of measurement (e.g., grams, cups, tablespoons)
 
     class Meta:
         unique_together = ('recipe', 'ingredient')  # Ensure that a recipe can't have duplicate ingredients

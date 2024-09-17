@@ -53,3 +53,10 @@ Start the React Development Server
 npm start
 
 Backend should be running on port 8000 and frontend on port 3000. Open http://127.0.0.1:8000/ and http://localhost:3000/ in your browser. 
+
+
+IF THE DB POPULATION STOPS MIDWAY THROUGH: 
+if(topicHtml != "Tacos" and topicHtml != "Tailgating Recipes" and topicHtml != "Tamales" and topicHtml != "Tapas Recipes" and topicHtml != "Tater Tot Casserole" and topicHtml != "Tempeh Recipes" and .....)
+
+^^ADD THIS IF STATEMENT AT LINE 185 
+(replace with headings you haven't populated yet)

@@ -147,6 +147,8 @@ class Command(BaseCommand):
             if not created:
                 self.stdout.write(f"Recipe already exists: '{title}'")
                 return
+            
+            self.stdout.write(f"Recipe Created: '{title}'")
 
 
             for ingredient_data in ingredients:
