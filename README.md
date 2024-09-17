@@ -26,7 +26,7 @@ Activate the virtual environment:
     On macOS/Linux:
     source env/bin/activate
 
-Install Python Dependencies: run the following commands (we don't have this yet so skip this step but should add it later)
+Install Python Dependencies: run the following commands
 
 pip install -r backend/requirements.txt
 
@@ -53,6 +53,24 @@ Start the React Development Server
 npm start
 
 Backend should be running on port 8000 and frontend on port 3000. Open http://127.0.0.1:8000/ and http://localhost:3000/ in your browser. 
+
+## Database Setup
+
+1. Configure database port to either 5432 (default) or 5433 in settings.py
+
+2. Create a database called meal_planning_database and then create a user:
+
+        CREATE USER ces234 WITH PASSWORD 'ces234';
+        GRANT ALL PRIVILEGES ON DATABASE meal_planning_database TO ces234;
+
+3. Migrate the database by CDing into backend/ and running:
+        
+        python manage.py migrate
+
+4. Populate the database:
+
+        python manage.py populateDb
+        python manage.py populateDbUsers
 
 
 IF THE DB POPULATION STOPS MIDWAY THROUGH: 
