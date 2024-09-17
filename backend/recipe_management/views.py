@@ -1,5 +1,7 @@
 from django.http import JsonResponse
-from .models import Recipe
+from .models import Recipe, Ingredient
+from django.db.models import Q
+from django.shortcuts import render
 
 def get_random_recipes():
     total_recipes = Recipe.objects.count()
@@ -19,3 +21,25 @@ def random_recipes_view(request):
         'servings': recipe.servings,
     } for recipe in random_recipes]
     return JsonResponse(recipes_list, safe=False)
+
+def search_recipes(request):
+    query = request.GET.get('q')
+
+    if query:
+        recipes = Recipe.objects.filter(
+            Q(name__icontains=query) |
+            Q(ingredients__name__icontains=query)
+        ).distinct()
+    
+        recipeList = []
+        for recipe in recipes: 
+            recipeList.append ({
+                'name': recipe.name,
+                'prep_time': recipe.prep_time,
+                'cook_time': recipe.cook_time,
+                'servings': recipe.servings,
+            })
+
+        return JsonResponse({'recipes': recipeList})
+    
+    return JsonResponse({'recipes': []})
