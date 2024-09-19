@@ -1,7 +1,7 @@
 from django.http import JsonResponse
-from .models import Recipe, Ingredient
+from .models import Recipe, Category
 from django.db.models import Q
-from django.shortcuts import render
+
 
 def get_random_recipes():
     total_recipes = Recipe.objects.count()
@@ -23,23 +23,41 @@ def random_recipes_view(request):
     return JsonResponse(recipes_list, safe=False)
 
 def search_recipes(request):
-    query = request.GET.get('q')
+    query = request.GET.get('q', '')
+    categoryIds = request.GET.getlist('categories', [])
 
-    if query:
-        recipes = Recipe.objects.filter(
-            Q(name__icontains=query) |
-            Q(ingredients__name__icontains=query)
-        ).distinct()
+    recipes = Recipe.objects.all()
     
-        recipeList = []
-        for recipe in recipes: 
-            recipeList.append ({
+    if query:
+        # Search recipes by name or ingredients
+        recipes = Recipe.objects.filter(
+            Q(name__icontains=query) | 
+            Q(ingredients__name__icontains=query)
+        )
+
+        if categoryIds:
+            categories = Category.objects.filter(id__in=categoryIds)
+            recipes = recipes.filter(categories__in=categories)
+
+        recipes = recipes.distinct()
+        
+        # Serialize the recipe data
+        recipe_list = []
+        for recipe in recipes:
+            recipe_list.append({
                 'name': recipe.name,
                 'prep_time': recipe.prep_time,
                 'cook_time': recipe.cook_time,
                 'servings': recipe.servings,
             })
 
-        return JsonResponse({'recipes': recipeList})
+        return JsonResponse({'recipes': recipe_list})
     
+    # If no query, return empty result
     return JsonResponse({'recipes': []})
+
+
+def categories_view(request):
+    categories = Category.objects.all()
+    categories_list = [{'id': cat.id, 'name': cat.name} for cat in categories]
+    return JsonResponse(categories_list, safe = False)
