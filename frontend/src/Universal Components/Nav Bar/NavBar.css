@@ -1,0 +1,40 @@
+.navBar {
+    background-color: #93D4D9;
+    height: 100vh;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: 10px;
+    padding: 10px;
+}
+
+
+
+.navIcon {
+    font-size: 33px;
+
+}
+
+.navButton {
+    color: black;
+    font-size: 12px;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    border-radius: 10px;
+    padding: 10px;
+    transition: background-color 0.3s ease; /* Smooth transition for the background */
+
+}
+
+.navButton:hover {
+    background-color: #7CBBC0;
+    cursor: pointer;
+}
+
+
+.firstIconContainer{
+    margin-bottom: 30px;
+    
+}

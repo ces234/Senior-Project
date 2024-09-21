@@ -1,4 +1,11 @@
 body {
     background-color: #808E38;
     color: white;
+    font-family: "Gluten", cursive;
+
+}
+
+.App {
+    display: flex;
+    flex-direction: row;
 }
