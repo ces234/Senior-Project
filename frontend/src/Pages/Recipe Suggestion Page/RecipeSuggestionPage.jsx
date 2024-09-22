@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import "./RecipeSuggestionPage.css";
+import RecipeCard from './RecipeCard';
+import chicken from "../../Photos/chicken.webp"
 
 const RecipeSuggestionPage = () => {
     const [recipes, setRecipes] = useState([]);   // State for storing recipes
@@ -6,6 +9,7 @@ const RecipeSuggestionPage = () => {
     const [searchResults, setSearchResults] = useState([]); // State for search results
     const [categories, setCategories] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState([]);
+    const [openDropdowns, setOpenDropdowns] = useState({});
 
     // Fetch random recipes on component load
     useEffect(() => {
@@ -42,9 +46,129 @@ const RecipeSuggestionPage = () => {
         }
     }
 
+
+    const categoryLists = {
+        "breakfast": ["cereal", "pancakes", "waffles"],
+        "lunch": ["sandwich", "salad", "soup"],
+        "dinner": ["steak", "burger", "spaghetti"],
+        "dessert": ["cookies", "cupcakes", "pie"]
+    }
+
+    const parentCategories = Object.keys(categoryLists);
+
+    const toggleDropdown = (parentCategory) => {
+        setOpenDropdowns((prevState) => ({
+            ...prevState,
+            [parentCategory]: !prevState[parentCategory]  // Toggle open/close state
+        }));
+    };
+
     return (
-        <div>
-            <h1>Random Recipes</h1>
+        <div className="recipeSuggestionPageContainer">
+            <div className="suggestedRecipesContainer">
+                <RecipeCard
+                    image= {chicken}
+                    title="recipe1"
+                    cookTime="10 minutes"
+                    prepTime="12 minutes"
+                />
+                <RecipeCard
+                    image= {chicken}
+                    title="recipe2"
+                    cookTime="10 minutes"
+                    prepTime="12 minutes" />
+                <RecipeCard
+                    image={chicken}
+                    title="recipe3"
+                    cookTime="10 minutes"
+                    prepTime="12 minutes" />
+                <RecipeCard
+                    image={chicken}
+                    title="recipe1"
+                    cookTime="10 minutes"
+                    prepTime="12 minutes" />
+                <RecipeCard
+                    image={chicken}
+                    title="recipe4"
+                    cookTime="10 minutes"
+                    prepTime="12 minutes" />
+
+
+
+            </div>
+            <div className="recipeFilteringContainer">
+                <div className="innerFilterContainer">
+                    <h2 className="filterHeader">Filter By Category</h2>
+
+                    {Object.keys(categoryLists).map(parentCategory => (
+                        <div key={parentCategory} className="parentCategoryContainer">
+                            {/* Parent category clickable element */}
+                            <button
+                                onClick={() => toggleDropdown(parentCategory)}
+                                className="parentCategoryButton"
+                            >
+                                <span className="arrow">
+                                    {openDropdowns[parentCategory] ? "▼" : "►"}{" "}
+                                    {/* Down arrow when open, right arrow when closed */}
+                                </span>
+                                {parentCategory}
+                            </button>
+
+                            {/* Conditionally render child categories based on dropdown state */}
+                            {openDropdowns[parentCategory] && (
+                                <div className="childCategoryContainer">
+                                    {categoryLists[parentCategory].map(category => (
+                                        <div key={category} className="categoryContainer">
+                                            <label>
+                                                <input
+                                                    type="checkbox"
+                                                    value={category}
+                                                    onChange={handleCategoryChange}
+                                                />
+                                                {category}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* {parentCategories.map((category) => (
+                        <div key={category} className="categoryContainer">
+                            <button
+                                onClick={() => toggleDropdown(category)}
+                                className="categoryButton"
+                            >
+                                {category}
+                            </button>
+
+
+                            {openDropdowns[category] && (
+                                <div className="subcategoryDropdown">
+                                    {subCategories[category].map((subCategory) => (
+                                        <div key={subCategory} className="subcategoryOption">
+                                            <label>
+                                                <input
+                                                    type="checkbox"
+                                                    value={subCategory}
+                                                    onChange={() => {
+                                                        // Handle subcategory selection
+                                                    }}
+                                                />
+                                                {subCategory}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
+                            )} */}
+
+
+
+
+            {/* <h1>Random Recipes</h1>
             <ul>
                 {recipes.map((recipe, index) => (
                     <li key={index}>
@@ -53,8 +177,8 @@ const RecipeSuggestionPage = () => {
                 ))}
             </ul>
 
-            <h2>Search for Recipes</h2>
-            {/* Search form */}
+            <h2>Search for Recipes<s/h2>
+
             <form onSubmit={handleSearch}>
                 <input 
                     type="text" 
@@ -78,7 +202,7 @@ const RecipeSuggestionPage = () => {
                 <button type="submit">Search</button>
             </form>
 
-            {/* Display search results */}
+
             {searchResults.length > 0 && (
                 <div>
                     <h3>Search Results</h3>
@@ -90,7 +214,7 @@ const RecipeSuggestionPage = () => {
                         ))}
                     </ul>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };

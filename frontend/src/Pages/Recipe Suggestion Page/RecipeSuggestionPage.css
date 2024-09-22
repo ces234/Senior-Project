@@ -1,0 +1,114 @@
+.recipeSuggestionPageContainer {
+    display: flex;
+    flex-direction: row; 
+    width: 100%;
+}
+
+.suggestedRecipesContainer {
+    width: 75%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:16px;
+    padding: 20px;
+}
+
+.recipeFilteringContainer {
+    display: flex;
+    width: 25%;
+    background-color: #636E31;
+    border-radius: 22px;
+    justify-content: center;
+    align-items: center;
+}   
+
+.innerFilterContainer {
+    background-color: #515B2C;
+    width: 90%;
+    height: 95%;
+    border-radius: 22px;
+    padding: 10px;
+}
+
+.filterHeader {
+    font-size: 25px;    
+    text-align: center;
+}
+
+.parentCategoryButton{
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    box-shadow: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: white;
+}
+
+.arrow{
+    font-size: 12px;
+}
+
+.childCategoryContainer{
+    margin-left: 15px;
+    padding: 5px;
+}
+
+.parentCategoryContainer{
+    padding: 8px;
+    
+}
+
+
+.recipeCardContainer{
+    background-color: #515B2C;
+    width: 240px;
+    height: 290px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 20px;
+}
+
+.recipeCardContainer img {
+    height: 70%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.imageContainer {
+    position: relative;
+    overflow: hidden;
+}
+
+.recipeTitleContainer {
+    text-align: center;
+    font-size: 17px;
+    padding: 8px;
+}
+
+.recipeTimeContainer{
+    font-size: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
+}
+
+.cookTime {
+    padding: 6px;
+}
+
+.prepTime{
+    padding: 6px;
+}
+
+.recipeButtonContainer {
+    font-size: 25px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}

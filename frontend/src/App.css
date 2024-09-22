@@ -7,5 +7,15 @@ body {
 
 .App {
     display: flex;
+    flex-direction: column;
+}
+
+.pageContent {
+    display: flex;
     flex-direction: row;
+}
+
+button{
+    font-family: "Gluten", cursive;
+
 }
