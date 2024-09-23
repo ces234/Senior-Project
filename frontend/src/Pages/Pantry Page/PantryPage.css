@@ -1,0 +1,159 @@
+.pantryPageContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.pantryPageContent {
+    width: 75%;
+    padding: 20px;
+    justify-content: start;
+
+}
+
+.pantryHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pantrySideBar{
+    display: flex;
+    width: 25%;
+    /* padding: 20px; */
+    background-color: #505E2C;
+    border-radius: 22px;
+    justify-content: center;
+    align-items: center;
+}
+
+.pantryItems {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* Create 6 equal-width columns */
+    /* gap: 20px; Add space between grid items */
+    margin-top: 20px;
+}
+
+.pantryItemContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    /* margin-bottom: 15px; */
+    color: black;
+  }
+
+
+.ingredientIcon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .pantryItemIcon {
+    font-size: 2rem; /* Adjust size of the icon */
+    margin-bottom: 8px; /* Add space between icon and ingredient name */
+  }
+  
+
+  
+  .pantryItemDetails {
+    margin-top: 5px;
+  }
+
+  .pantryShelf {
+    grid-column: span 6; /* Make the shelf span across all 6 columns */
+    width: 100%;
+    height: 8px;
+    background-color: #926247; /* Shelf color */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); /* Shelf shadow */
+  }
+
+  .shelf {
+    grid-column: span 6;
+    border-top: 12px solid #926247; /* Color and style of the shelf */
+    /* margin: 20px 0; Spacing between the shelf and the rows */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); /* Adds a shadow for depth */
+
+  }
+
+  .addPantryItemButton {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: inherit; /* Inherit the text color from its parent */
+    font: inherit;  /* Inherit font styling */
+    text-align: inherit; /* Inherit text alignment */
+    cursor: pointer;
+    background-color: #505E2C;
+    border-radius: 25px;
+    padding: 20px 25px;
+    font-size: 20px;
+  }
+
+  .addItemContainer {
+    display: flex;
+    background-color: #76CFCE;
+    width: 90%;
+    height: 95%;
+    border-radius: 22px;
+    padding: 10px;
+    color:#363F26;
+    flex-direction: column;
+  }
+
+  .addItemHeader {
+    font-size: 20px;
+    margin: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .addItemHeader h1 {
+    margin-bottom: 0px;
+  }
+
+  .addItemContainer hr {
+    width: 80%; /* Control the length of the line */
+    border: 0; /* Remove default border */
+    height: 1px; /* Adjust the height of the line */
+    background-color: #fff; /* Set the color of the line */
+    margin: 10px 0; /* Adjust the spacing around the line */
+}
+
+.addItemInputs {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    gap: 20px;
+    color:#363F26;
+
+}
+
+.addItemInputs label {
+    font-size: 1rem;
+}
+
+.addItemInputs input,
+.addItemInputs select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1rem;
+    background-color: #D9D9D9;
+}
+
+.addItemInputs input[type="date"] {
+    padding-left: 10px; /* Adjust padding for date input */
+}
+
+.addItemInputs input::placeholder {
+    color: #aaa;
+    font-size: 0.9rem;
+}
