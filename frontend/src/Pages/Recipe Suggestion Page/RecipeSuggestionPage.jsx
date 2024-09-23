@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import "./RecipeSuggestionPage.css";
 import RecipeCard from './RecipeCard';
-import chicken from "../../Photos/chicken.webp"
+import chicken from "../../photos/chicken.webp";
 
 const RecipeSuggestionPage = () => {
     const [recipes, setRecipes] = useState([]);   // State for storing recipes
