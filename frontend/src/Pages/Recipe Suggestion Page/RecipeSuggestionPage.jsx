@@ -3,6 +3,7 @@ import "./RecipeSuggestionPage.css";
 import RecipeCard from './RecipeCard';
 import chicken from "../../photos/chicken.webp";
 
+
 const RecipeSuggestionPage = () => {
     const [recipes, setRecipes] = useState([]);   // State for storing recipes
     const [query, setQuery] = useState('');       // State for search query
@@ -66,32 +67,33 @@ const RecipeSuggestionPage = () => {
     return (
         <div className="recipeSuggestionPageContainer">
             <div className="suggestedRecipesContainer">
-                <RecipeCard
-                    image= {chicken}
-                    title="recipe1"
-                    cookTime="10 minutes"
-                    prepTime="12 minutes"
-                />
-                <RecipeCard
-                    image= {chicken}
-                    title="recipe2"
-                    cookTime="10 minutes"
-                    prepTime="12 minutes" />
-                <RecipeCard
-                    image={chicken}
-                    title="recipe3"
-                    cookTime="10 minutes"
-                    prepTime="12 minutes" />
-                <RecipeCard
-                    image={chicken}
-                    title="recipe1"
-                    cookTime="10 minutes"
-                    prepTime="12 minutes" />
-                <RecipeCard
-                    image={chicken}
-                    title="recipe4"
-                    cookTime="10 minutes"
-                    prepTime="12 minutes" />
+                <div className="SRCHeader">
+                    <div className = "SRCHeaderSearchBar">
+                        Search Bar
+                    </div>
+                    <div classNmae = "SRCHeaderPagination">
+                        Paginator
+                    </div>
+
+                </div>
+                <div className="SRCSuggested">
+                    {recipes.map((recipe, index) => (
+                        <RecipeCard
+                            image={chicken}
+                            title={recipe.name}
+                            cookTime={recipe.cook_time}
+                            prepTime={recipe.prep_time}
+                        ></RecipeCard>
+
+                    ))}
+                </div>
+
+                <div className="SRCFooter">
+                    Footer
+
+                </div>
+
+
 
 
 
