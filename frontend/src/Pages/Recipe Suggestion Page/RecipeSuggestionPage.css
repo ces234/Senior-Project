@@ -6,11 +6,49 @@
 
 .suggestedRecipesContainer {
     width: 75%;
+
+}
+
+.SRCHeader{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px;
+}
+
+.SRCHeaderSearchBar{
+    flex: 1;
+    display: flex;
+    padding-left: 50px;
+
+
+
+}
+
+.SRCHeaderPagination{
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 100px;
+
+}
+
+.SRCSuggested{
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap:16px;
     padding: 20px;
 }
+
+
+.SRCFooter{
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+
+
 
 .recipeFilteringContainer {
     display: flex;
