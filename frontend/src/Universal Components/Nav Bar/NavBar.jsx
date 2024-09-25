@@ -7,7 +7,18 @@ import {
   faCircleUser,
 } from "@fortawesome/free-solid-svg-icons"; // Import the book open icon
 
+import { useAuth } from "../../AuthContext";
+import { useNavigate } from "react-router-dom";
+
 const NavBar = () => {
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout(); 
+        navigate('/login');
+    }
+
   const NavButton = ({ icon, text }) => {
     return (
       <div className="navButton">
@@ -27,6 +38,8 @@ const NavBar = () => {
         <NavButton icon={faCalendar} text="Meal Plan" />
         <NavButton icon={faBookOpen} text="Recipes" />
         <NavButton icon={faCarrot} text="Pantry" />
+        <button onClick={handleLogout}>Logout</button> {/* Logout button */}
+
       </div>
     </div>
   );

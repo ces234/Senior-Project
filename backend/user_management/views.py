@@ -1,20 +1,43 @@
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.decorators import login_required
-from .models import Household
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from user_management.models import Household  # Adjust based on your actual model locations
 from recipe_management.models import Recipe
 
-@api_view(['POST'])
-@login_required
-def add_to_recently_added(request, recipe_id):
-    # Get the user's household
-    household = get_object_or_404(Household, members=request.user)
 
-    # Get the recipe they want to add
-    recipe = get_object_or_404(Recipe, id=recipe_id)
+# userManagement/views.py
+from rest_framework import generics
+from .models import User, Household
+from .serializers import UserSerializer, HouseholdSerializer
 
-    # Add the recipe to the recently added list
-    household.add_recently_added_recipe(recipe)
+class UserListView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
-    return Response({"success": "Recipe added to recently added list"}, status=200)
+class HouseholdListView(generics.ListAPIView):
+    queryset = Household.objects.all()
+    serializer_class = HouseholdSerializer
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
+from rest_framework.permissions import AllowAny
+from .serializers import UserSerializer  # Make sure to create a serializer for your User model
+
+class LoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            token, created = Token.objects.get_or_create(user=user)
+            user_data = UserSerializer(user).data  # Serialize user data
+            return Response({'token': token.key, 'user': user_data}, status=status.HTTP_200_OK)
+        
+        return Response({'error': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)

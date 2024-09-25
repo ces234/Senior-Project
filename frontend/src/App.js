@@ -1,43 +1,36 @@
-import './App.css';
-import React, { useState } from 'react'; // Add useState import
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'; // Add Navigate import
-import RecipeSuggestionPage from './Pages/Recipe Suggestion Page/RecipeSuggestionPage';
-import NavBar from './Universal Components/Nav Bar/NavBar';
-import Header from './Universal Components/Header/Header';
-import PantryPage from './Pages/Pantry Page/PantryPage';
-import LoginPage from './Pages/Login Page/LoginPage';
+import "./App.css";
+import React from "react"; 
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"; 
+import RecipeSuggestionPage from "./Pages/Recipe Suggestion Page/RecipeSuggestionPage";
+import NavBar from "./Universal Components/Nav Bar/NavBar";
+import Header from "./Universal Components/Header/Header";
+import PantryPage from "./Pages/Pantry Page/PantryPage";
+import LoginPage from "./Pages/Login Page/LoginPage";
+import { AuthProvider, useAuth } from "./AuthContext"; // Ensure correct path
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(() => {
-    // Check if there's a valid access token in localStorage when the app loads
-    return !!localStorage.getItem("access_token");
-  });
-
-  const handleLogin = () => {
-    setLoggedIn(true);
-  }
-
-  const handleLogout = () => {
-    localStorage.removeItem("access_token");  // Clear the token on logout
-    localStorage.removeItem("refresh_token");
-    setLoggedIn(false);
-  }
-
   return (
-    <div className="App">
-      <Router>
-        <Header />
-        <div className="pageContent">
-          <NavBar onLogout={handleLogout} />
-          <Routes>
-            <Route path="/" element={loggedIn ? <RecipeSuggestionPage /> : <Navigate to="/login" />} />
-            <Route path="/pantry" element={loggedIn ? <PantryPage /> : <Navigate to="/login" />} />
-            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-          </Routes>
-        </div>
-      </Router>
-    </div>
+    <AuthProvider>
+      <div className="App">
+        <Router>
+          <Header />
+          <div className="pageContent">
+            <NavBar />
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/" element={<PrivateRoute component={RecipeSuggestionPage} />} /> {/* Protect RecipeSuggestionPage */}
+              <Route path="/pantry" element={<PrivateRoute component={PantryPage} />} /> {/* Protect PantryPage */}
+            </Routes>
+          </div>
+        </Router>
+      </div>
+    </AuthProvider>
   );
+}
+
+function PrivateRoute({ component: Component }) {
+  const { user } = useAuth(); // Get the user from auth context
+  return user ? <Component /> : <Navigate to="/login" replace />; // Render the component if authenticated, otherwise redirect
 }
 
 export default App;

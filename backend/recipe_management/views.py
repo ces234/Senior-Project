@@ -15,6 +15,7 @@ def get_random_recipes():
 def random_recipes_view(request):
     random_recipes = get_random_recipes()
     recipes_list = [{
+        'id': recipe.id,
         'name': recipe.name,
         'prep_time': recipe.prep_time,
         'cook_time': recipe.cook_time,

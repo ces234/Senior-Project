@@ -1,7 +1,13 @@
+# userManagement/urls.py
 from django.urls import path
-from . import views  # Import views from the current app
+from .views import UserListView, HouseholdListView
+from .views import LoginView
+
 
 urlpatterns = [
-    path('household/add_to_recent/<int:recipe_id>/', views.add_to_recently_added, name='add_to_recently_added'),
+    path('users/', UserListView.as_view(), name='user-list'),
+    path('households/', HouseholdListView.as_view(), name='household-list'),
+    path('login/', LoginView.as_view(), name='login'),
+
 
 ]
