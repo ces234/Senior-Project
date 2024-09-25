@@ -29,6 +29,12 @@ class Household(models.Model):
     admin = models.OneToOneField(User, on_delete=models.SET_NULL, related_name='household', null=True)
     members = models.ManyToManyField(User, related_name='households')
     saved_recipes = models.ManyToManyField('recipe_management.Recipe', related_name='saved_by_households')  # Many-to-Many to track saved recipes
+    recently_added = models.ManyToManyField('recipe_management.Recipe', related_name = "receadntly_added_by_households")
+
+    def addRecentlyAddedRecipe(self, recipe):
+        if recipe not in self.recently_added.all():
+            self.recently_added.add(recipe)
+            
 
     def __str__(self):
         return f"Household of {self.admin.username if self.admin else 'Unknown Admin'}"
