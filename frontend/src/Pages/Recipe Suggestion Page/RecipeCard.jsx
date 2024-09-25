@@ -5,7 +5,7 @@ import { faStar} from "@fortawesome/free-regular-svg-icons";
 import { faCirclePlus} from "@fortawesome/free-solid-svg-icons";
 
 
-const RecipeCard = ({ image, title, cookTime, prepTime }) => {
+const RecipeCard = ({ image, title, cookTime, prepTime, recipeId }) => {
     return <div className="recipeCardContainer">
         <img src={image} alt="recipe image" />
         <div className="recipeTitleContainer">{title}</div>
