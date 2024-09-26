@@ -6,11 +6,143 @@
 
 .suggestedRecipesContainer {
     width: 75%;
+
+}
+
+.SRCHeader{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px;
+}
+
+.SRCHeaderSearchBar{
+    flex: 1;
+    display: flex;
+
+
+}
+
+.SRCHeaderPagination{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 75px;
+
+}
+
+
+.paginationBubble {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background-color: #e0e0e0;
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin: 0 5px;  /* Add horizontal spacing */
+}
+
+.paginationBubble:hover {
+    background-color: #d0d0d0;
+    transform: scale(1.1);
+}
+
+.paginationBubble.active {
+    background-color: #00000021;
+    color: white;
+}
+
+
+
+
+.rightOnceButton {
+    color: white;
+    background: none;          
+    border: none;              
+    cursor: pointer;          
+    padding: 5px;                
+    margin-left: 10px;                
+    display: inline-flex;      
+    justify-content: center;  
+    align-items: center;    
+    font-size: 22px;  
+    width: 12px;               
+    height: 12px;             
+    border-radius: 50%;       
+}
+
+.rightMultipleButton {
+    color: white;
+    background: none;          
+    border: none;              
+    cursor: pointer;          
+    padding: 5px;                
+    margin-left: 10px;                
+    display: inline-flex;      
+    justify-content: center;  
+    align-items: center;   
+    font-size: 23px;  
+    width: 12px;               
+    height: 12px;             
+    border-radius: 50%;       
+}
+
+.leftOnceButton {
+    color: white;
+    background: none;          
+    border: none;              
+    cursor: pointer;          
+    padding: 5px;                
+    margin-right: 10px;                
+    display: inline-flex;      
+    justify-content: center;  
+    align-items: center;    
+    font-size: 22px;  
+    width: 12px;               
+    height: 12px;             
+    border-radius: 50%;       
+}
+
+.leftMultipleButton {
+    color: white;
+    background: none;          
+    border: none;              
+    cursor: pointer;          
+    padding: 5px;                
+    margin-right: 10px;                
+    display: inline-flex;      
+    justify-content: center;  
+    align-items: center;   
+    font-size: 23px;  
+    width: 12px;               
+    height: 12px;             
+    border-radius: 50%;       
+}
+
+
+.SRCSuggested{
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap:16px;
     padding: 20px;
 }
+
+
+.SRCFooter{
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+
+
 
 .recipeFilteringContainer {
     display: flex;
