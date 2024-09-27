@@ -70,7 +70,7 @@ Backend should be running on port 8000 and frontend on port 3000. Open http://12
 4. Populate the database:
 
         python manage.py populateDb
-        python manage.py populateDbUsers
+        python manage.py populateDbSampleData
 
 
 IF THE DB POPULATION STOPS MIDWAY THROUGH: 
