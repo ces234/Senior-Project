@@ -5,59 +5,54 @@ import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import React, { useState } from "react";
 
 const RecipeCard = ({ image, title, cookTime, prepTime, recipeId }) => {
-    console.log("recipe ID:", recipeId);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
 
-  // Function to add the recipe to recently added
-  const addToRecentlyAdded = async () => {
-    const token = localStorage.getItem('access_token');  // Assuming you're using JWT tokens
-    const user = localStorage.getItem("user");
-    console.log("sdfd", user);
+  const [error, setError] = useState(null); // State for error messages
+  const [success, setSuccess] = useState(null); // State for success messages
 
+  const addToRecentlyAdded = async (recipeId) => {
     try {
-      const response = await fetch(`http://localhost:8000/household/add_to_recent/${recipeId}/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,  // Include token for authentication
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setSuccess(data.success);
-      } else {
-        setError('Failed to add recipe to recently added list');
+        const token = localStorage.getItem('token'); // Adjust according to where you store your token
+        const response = await fetch('http://localhost:8000/user/add-recently-added-recipe/', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`, // Use 'Token' followed by the token value
+            },
+            body: JSON.stringify({ recipe_id: recipeId }),
+        });
+      if (!response.ok) {
+        throw new Error('Failed to add recipe to recently added');
       }
+
+      const data = await response.json();
+      setSuccess(data.message); // Update success state
+      setError(null); // Clear error state
     } catch (error) {
-      setError('Error adding recipe to recently added list');
+      console.error("Error adding recipe: ", error);
+      setError(error.message); // Update error state
+      setSuccess(null); // Clear success state
     }
-  };
+  }
 
   return (
     <div className="recipeCardContainer">
-      <img src={image} alt="recipe image" />
+      <img src={image} alt="recipe" />
       <div className="recipeTitleContainer">{title}</div>
       <div className="recipeTimeContainer">
-        <div className="cookTime">
-          Cook Time: {cookTime}
-        </div>
-        <div className="prepTime">
-          Prep Time: {prepTime}
-        </div>
+        <div className="cookTime">Cook Time: {cookTime}</div>
+        <div className="prepTime">Prep Time: {prepTime}</div>
       </div>
       <div className="recipeButtonContainer">
         <FontAwesomeIcon icon={faStar} />
         <FontAwesomeIcon
           icon={faCirclePlus}
-          onClick={addToRecentlyAdded} // Attach the click handler here
-          style={{ cursor: 'pointer' }} // Add pointer style to indicate it's clickable
+          onClick={() => addToRecentlyAdded(recipeId)} // Pass a function reference
+          style={{ cursor: "pointer" }} // Add pointer style to indicate it's clickable
         />
       </div>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {success && <p style={{ color: "green" }}>{success}</p>}
     </div>
   );
 };

@@ -1,7 +1,11 @@
 from django.http import JsonResponse
+from django.shortcuts import render
 from django.views.decorators.http import require_POST
 from user_management.models import Household  # Adjust based on your actual model locations
 from recipe_management.models import Recipe
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
 
 
 # userManagement/views.py
@@ -41,3 +45,39 @@ class LoginView(APIView):
             return Response({'token': token.key, 'user': user_data}, status=status.HTTP_200_OK)
         
         return Response({'error': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(["GET"])
+def recently_added_recipes(request):
+    if request.user.is_authenticated:
+        try:
+            household = request.user.household
+            recipes = household.recently_added.all()
+            # Serialize the recipes here (make sure to have a serializer)
+            serialized_recipes = [{
+                'id': recipe.id,
+                'name': recipe.name,
+                'prep_time': recipe.prep_time,
+                'cook_time': recipe.cook_time,
+                'servings': recipe.servings,
+            } for recipe in recipes]  # Adjust according to your Recipe model
+            return JsonResponse(serialized_recipes, safe = False)
+        except Household.DoesNotExist:
+            return Response([])
+    return Response([])
+
+
+@permission_classes([IsAuthenticated])  # Ensure user is authenticated
+@api_view(["POST"])
+def add_recently_added_recipe(request):
+    recipe_id = request.data.get('recipe_id')
+    try:
+        household = request.user.household
+        recipe = Recipe.objects.get(id=recipe_id)
+        household.addRecentlyAddedRecipe(recipe)
+        return Response({'message': 'Recipe added to recently added successfully.'}, status=201)
+    except Recipe.DoesNotExist:
+        return Response({'error': 'Recipe not found.'}, status=404)
+    except Household.DoesNotExist:
+        return Response({'error': 'Household not found.'}, status=404)
+
+    

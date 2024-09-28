@@ -1,34 +1,33 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
-// Create a context for authentication
 const AuthContext = createContext();
 
-// Custom hook to use the AuthContext
 export const useAuth = () => {
-  return useContext(AuthContext);
+    return useContext(AuthContext);
 };
 
-// Provider component
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    // Retrieve user data from local storage
-    const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser) : null; // Initialize state with stored user
-  });
+    const [user, setUser] = useState(null);
+    const [token, setToken] = useState(null); // Optional: if you're using token-based auth
 
-  const login = (userData) => {
-    setUser(userData); // Save user data in state
-    localStorage.setItem('user', JSON.stringify(userData)); // Save user data in local storage
-  };
+    const login = (userData) => {
+        setUser(userData);
+        // If you receive a token, store it
+        if (userData.token) {
+            setToken(userData.token);
+            localStorage.setItem('token', userData.token); // Store token in localStorage
+        }
+    };
 
-  const logout = () => {
-    setUser(null); // Clear user data
-    localStorage.removeItem('user'); // Remove user data from local storage
-  };
+    const logout = () => {
+        setUser(null);
+        setToken(null);
+        localStorage.removeItem('token'); // Remove token on logout
+    };
 
-  return (
-    <AuthContext.Provider value={{ user, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+    return (
+        <AuthContext.Provider value={{ user, token, login, logout }}>
+            {children}
+        </AuthContext.Provider>
+    );
 };

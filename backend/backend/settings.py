@@ -144,19 +144,40 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',  # React's origin
-]
+
+# settings.py
 
 REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
-    ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',  # Optional, depending on your use case
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
     ),
 }
 
 
+
 AUTH_USER_MODEL = 'user_management.User'  # Adjust based on your app's name
+
+# Remove this since CORS_ALLOW_ALL_ORIGINS is already True
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',  # React's origin
+# ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Optionally, you can specify certain headers. If you need to allow custom headers:
+CORS_ALLOW_HEADERS = [
+    'Authorization',
+    'Content-Type',
+    'X-CSRFToken',  # If you're using CSRF
+    'Accept',
+    'Origin',
+    'X-Requested-With',
+    # Add more headers if necessary
+]
+
+# You already have CORS_ALLOW_METHODS set correctly
+CORS_ALLOW_METHODS = ['*']

@@ -34,6 +34,7 @@ class Household(models.Model):
     def addRecentlyAddedRecipe(self, recipe):
         if recipe not in self.recently_added.all():
             self.recently_added.add(recipe)
+            self.save()
             
 
     def __str__(self):

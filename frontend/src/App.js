@@ -6,6 +6,7 @@ import NavBar from "./Universal Components/Nav Bar/NavBar";
 import Header from "./Universal Components/Header/Header";
 import PantryPage from "./Pages/Pantry Page/PantryPage";
 import LoginPage from "./Pages/Login Page/LoginPage";
+import MealPlanPage from "./Pages/Meal Plan Page/MealPlanPage";
 import { AuthProvider, useAuth } from "./AuthContext"; // Ensure correct path
 
 function App() {
@@ -17,9 +18,10 @@ function App() {
           <div className="pageContent">
             <NavBar />
             <Routes>
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/" element={<PrivateRoute component={RecipeSuggestionPage} />} /> {/* Protect RecipeSuggestionPage */}
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/recipes" element={<PrivateRoute component={RecipeSuggestionPage} />} /> {/* Protect RecipeSuggestionPage */}
               <Route path="/pantry" element={<PrivateRoute component={PantryPage} />} /> {/* Protect PantryPage */}
+              <Route path = "/meal-plan" element = {<PrivateRoute component={MealPlanPage} />} />
             </Routes>
           </div>
         </Router>
@@ -30,7 +32,7 @@ function App() {
 
 function PrivateRoute({ component: Component }) {
   const { user } = useAuth(); // Get the user from auth context
-  return user ? <Component /> : <Navigate to="/login" replace />; // Render the component if authenticated, otherwise redirect
+  return user ? <Component /> : <Navigate to="/" replace />; // Render the component if authenticated, otherwise redirect
 }
 
 export default App;
