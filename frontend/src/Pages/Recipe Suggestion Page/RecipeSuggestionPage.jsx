@@ -3,13 +3,22 @@ import "./RecipeSuggestionPage.css";
 import RecipeCard from "./RecipeCard";
 import chicken from "../../photos/chicken.webp";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAnglesRight, faChevronRight, faAnglesLeft, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+
+
+
 const RecipeSuggestionPage = () => {
-  const [recipes, setRecipes] = useState([]); // State for storing recipes
-  const [query, setQuery] = useState(""); // State for search query
-  const [searchResults, setSearchResults] = useState([]); // State for search results
-  const [categories, setCategories] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [openDropdowns, setOpenDropdowns] = useState({});
+    const [recipes, setRecipes] = useState([]);   // State for storing recipes
+    const [query, setQuery] = useState('');       // State for search query
+    const [searchResults, setSearchResults] = useState([]); // State for search results
+    const [categories, setCategories] = useState([]);
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [openDropdowns, setOpenDropdowns] = useState({});
+
+    const totalPages = 10; // TODO update to total number/number based on search result or filter
+
+
 
   // Fetch random recipes on component load
   useEffect(() => {
@@ -62,37 +71,146 @@ const RecipeSuggestionPage = () => {
 
   const parentCategories = Object.keys(categoryLists);
 
-  const toggleDropdown = (parentCategory) => {
-    setOpenDropdowns((prevState) => ({
-      ...prevState,
-      [parentCategory]: !prevState[parentCategory], // Toggle open/close state
-    }));
-  };
+    const toggleDropdown = (parentCategory) => {
+        setOpenDropdowns((prevState) => ({
+            ...prevState,
+            [parentCategory]: !prevState[parentCategory]  // Toggle open/close state
+        }));
+    };
 
-  return (
-    <div className="recipeSuggestionPageContainer">
-      <div className="suggestedRecipesContainer">
-        <div className="SRCHeader">
-          <div className="SRCHeaderSearchBar">Search Bar</div>
-          <div classNmae="SRCHeaderPagination">Paginator</div>
-        </div>
-        <div className="SRCSuggested">
-          {recipes.map((recipe, index) => (
-            <RecipeCard
-              recipeId={recipe.id}
-              image={chicken}
-              title={recipe.name}
-              cookTime={recipe.cook_time}
-              prepTime={recipe.prep_time}
-            ></RecipeCard>
-          ))}
-        </div>
 
-        <div className="SRCFooter">Footer</div>
-      </div>
-      <div className="recipeFilteringContainer">
-        <div className="innerFilterContainer">
-          <h2 className="filterHeader">Filter By Category</h2>
+
+    // Paginator things
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        // Fetch recipes for that page
+        const url = `http://localhost:8000/recipes?page=${pageNumber}`;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => setRecipes(data))
+            .catch(error => console.error('Error fetching recipes:', error));
+    };
+
+
+
+
+
+    // Logic for displaying 5 page bubbles
+    const getPaginationRange = () => {
+        const totalPages = 20;  // Replace with dynamic total pages from API
+        const maxPageDisplay = 5;  // Max bubbles to display
+    
+        let startPage = Math.max(1, currentPage - Math.floor(maxPageDisplay / 2));
+        let endPage = Math.min(totalPages, currentPage + Math.floor(maxPageDisplay / 2));
+    
+        // Handle the case when you are at the beginning (no left bubbles)
+        if (currentPage <= Math.floor(maxPageDisplay / 2)) {
+            endPage = Math.min(totalPages, maxPageDisplay);
+            startPage = 1;  // Always start from page 1 when near the beginning
+        }
+    
+        // Handle the case when you are at the end (no right bubbles)
+        if (currentPage > totalPages - Math.floor(maxPageDisplay / 2)) {
+            startPage = Math.max(1, totalPages - maxPageDisplay + 1);
+            endPage = totalPages;
+        }
+    
+        const pageRange = [];
+        for (let i = startPage; i <= endPage; i++) {
+            pageRange.push(i);
+        }
+        return pageRange;
+    };
+    
+        
+
+
+
+
+    return (
+        <div className="recipeSuggestionPageContainer">
+            <div className="suggestedRecipesContainer">
+                <div className="SRCHeader">
+                    <div className="SRCHeaderSearchBar">
+                        <form className="SRCHeaderSearchBar" onSubmit={handleSearch}>
+                            <input
+                                type="text"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                placeholder="Search recipes or ingredients..."
+                            />
+                            <button type="submit">Search</button>
+                        </form>
+
+                    </div>
+                    <div className="SRCHeaderPagination">
+
+                        {/* Pagination Controls */}
+                        <button className="leftMultipleButton" onClick={() => handlePageChange(currentPage - 5)} disabled={currentPage <= 5}>
+                            <FontAwesomeIcon icon={faAnglesLeft} />
+                        </button>
+                        <button className="leftOnceButton" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                            <FontAwesomeIcon icon={faChevronLeft} />
+                        </button>
+
+                        {/* Render Page Bubbles */}
+                        {getPaginationRange().map(page => (
+                            <button
+                                key={page}
+                                className={`paginationBubble ${page === currentPage ? 'active' : ''}`}
+                                onClick={() => handlePageChange(page)}
+                            >
+                                {page}
+                            </button>
+                        ))}
+
+                        <button className="rightOnceButton" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+                            <FontAwesomeIcon icon={faChevronRight} />
+                        </button>
+                        <button className="rightMultipleButton" onClick={() => handlePageChange(currentPage + 5)} disabled={currentPage > totalPages - 5}>
+                            <FontAwesomeIcon icon={faAnglesRight} />
+                        </button>
+
+
+                    </div>
+
+                </div>
+                <div className="SRCSuggested">
+                    {recipes.map((recipe, index) => (
+                        <RecipeCard
+                            image={chicken}
+                            title={recipe.name}
+                            cookTime={recipe.cook_time}
+                            prepTime={recipe.prep_time}
+                        ></RecipeCard>
+
+                    ))}
+                </div>
+
+                <div className="SRCFooter">
+                    Footer
+
+
+                    <button className="leftMultipleButton" onClick={() => handlePageChange(currentPage - 5)} disabled={currentPage === 1 || 2 || 3 || 4 || 5}><FontAwesomeIcon icon={faAnglesLeft} /></button>
+                        <button className="leftOnceButton" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}><FontAwesomeIcon icon={faChevronLeft} /></button>
+                        <span>Page {currentPage}</span>
+                        <button className="rightOnceButton" onClick={() => handlePageChange(currentPage + 1)}><FontAwesomeIcon icon={faChevronRight} /></button>
+                        <button className="rightMultipleButton" onClick={() => handlePageChange(currentPage + 5)}><FontAwesomeIcon icon={faAnglesRight} /></button>
+
+
+
+                </div>
+
+
+
+
+
+            </div>
+            <div className="recipeFilteringContainer">
+                <div className="innerFilterContainer">
+                    <h2 className="filterHeader">Filter By Category</h2>
 
           {Object.keys(categoryLists).map((parentCategory) => (
             <div key={parentCategory} className="parentCategoryContainer">
