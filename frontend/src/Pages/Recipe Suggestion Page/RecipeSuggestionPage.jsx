@@ -274,322 +274,322 @@ const RecipeSuggestionPage = () => {
                 ]
             }
         }
-    
-
-};
-
-const parentCategories = Object.keys(categoryLists);
 
 
+    };
+
+    const parentCategories = Object.keys(categoryLists);
 
 
 
-const toggleDropdown = (parentCategory) => {
-    setOpenDropdowns((prevState) => ({
-        ...prevState,
-        [parentCategory]: !prevState[parentCategory]  // Toggle open/close state
-    }));
-};
 
 
-// Handle parent category click to select/deselect all child categories
-const handleParentCategoryChange = (parentCategory) => {
-    const isChecked = !selectedCategories.includes(parentCategory);
-    const subcategories = Object.keys(categoryLists[parentCategory].subcategories);
+    const toggleDropdown = (parentCategory) => {
+        setOpenDropdowns((prevState) => ({
+            ...prevState,
+            [parentCategory]: !prevState[parentCategory]  // Toggle open/close state
+        }));
+    };
 
-    if (isChecked) {
-        // If the parent category is checked, add it and all its subcategories and items
-        const allItems = subcategories.reduce((acc, subcategory) => {
-            return [...acc, subcategory, ...categoryLists[parentCategory].subcategories[subcategory]];
-        }, []);
-        setSelectedCategories((prev) => [...new Set([...prev, parentCategory, ...allItems])]);
-    } else {
-        // If the parent category is unchecked, remove it, its subcategories, and their items
-        const allItems = subcategories.reduce((acc, subcategory) => {
-            return [...acc, subcategory, ...categoryLists[parentCategory].subcategories[subcategory]];
-        }, []);
-        setSelectedCategories((prev) =>
-            prev.filter(cat => cat !== parentCategory && !allItems.includes(cat))
+
+    // Handle parent category click to select/deselect all child categories
+    const handleParentCategoryChange = (parentCategory) => {
+        const isChecked = !selectedCategories.includes(parentCategory);
+        const subcategories = Object.keys(categoryLists[parentCategory].subcategories);
+
+        if (isChecked) {
+            // If the parent category is checked, add it and all its subcategories and items
+            const allItems = subcategories.reduce((acc, subcategory) => {
+                return [...acc, subcategory, ...categoryLists[parentCategory].subcategories[subcategory]];
+            }, []);
+            setSelectedCategories((prev) => [...new Set([...prev, parentCategory, ...allItems])]);
+        } else {
+            // If the parent category is unchecked, remove it, its subcategories, and their items
+            const allItems = subcategories.reduce((acc, subcategory) => {
+                return [...acc, subcategory, ...categoryLists[parentCategory].subcategories[subcategory]];
+            }, []);
+            setSelectedCategories((prev) =>
+                prev.filter(cat => cat !== parentCategory && !allItems.includes(cat))
+            );
+        }
+    };
+
+    const handleSubcategoryChange = (subcategory) => {
+        const parentCategory = Object.keys(categoryLists).find(parent =>
+            Object.keys(categoryLists[parent].subcategories).includes(subcategory)
         );
-    }
-};
 
-const handleSubcategoryChange = (subcategory) => {
-    const parentCategory = Object.keys(categoryLists).find(parent =>
-        Object.keys(categoryLists[parent].subcategories).includes(subcategory)
+        const isChecked = !selectedCategories.includes(subcategory);
+        const items = categoryLists[parentCategory].subcategories[subcategory];
+
+        if (isChecked) {
+            // If the subcategory is checked, add it and all its items
+            setSelectedCategories((prev) => [
+                ...new Set([...prev, subcategory, ...items])
+            ]);
+        } else {
+            // If the subcategory is unchecked, remove it and all its items
+            setSelectedCategories((prev) =>
+                prev.filter(cat => cat !== subcategory && !items.includes(cat))
+            );
+        }
+    };
+
+
+
+    // Paginator things
+
+
+    // Fetch recipes when page changes
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        fetchRecipes(pageNumber);
+    };
+
+    // Function to toggle subcategory dropdowns
+    const toggleSubDropdown = (parentCategory) => {
+        setOpenSubDropdowns((prevState) => ({
+            ...prevState,
+            [parentCategory]: !prevState[parentCategory]
+        }));
+    };
+
+
+
+
+
+    // Logic for displaying 5 page bubbles
+    // Pagination logic
+    const getPaginationRange = () => {
+        const maxPageDisplay = 5; // Maximum number of pagination bubbles to display
+
+        let startPage = Math.max(1, currentPage - Math.floor(maxPageDisplay / 2));
+        let endPage = Math.min(totalPages, currentPage + Math.floor(maxPageDisplay / 2));
+
+        // Adjust start and end page when at the beginning of the pagination
+        if (currentPage <= Math.floor(maxPageDisplay / 2)) {
+            endPage = Math.min(totalPages, maxPageDisplay);
+            startPage = 1;
+        }
+
+        // Adjust start and end page when at the end of the pagination
+        if (currentPage > totalPages - Math.floor(maxPageDisplay / 2)) {
+            startPage = Math.max(1, totalPages - maxPageDisplay + 1);
+            endPage = totalPages;
+        }
+
+        const pageRange = [];
+        for (let i = startPage; i <= endPage; i++) {
+            pageRange.push(i);
+        }
+
+        return pageRange;
+    };
+
+
+
+
+
+
+
+
+    return (
+        <div className="recipeSuggestionPageContainer">
+            <div className="suggestedRecipesContainer">
+                <div className="SRCHeader">
+                    <div className="SRCHeaderSearchBar">
+                        <form className="SRCHeaderSearchBar" onSubmit={handleSearch}>
+                            <input
+                                type="text"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                placeholder="Search recipes or ingredients..."
+                            />
+                            {/* <button type="submit" onClick={handleSearch}>
+                                    Search
+                              </button> */}
+                        </form>
+                    </div>
+                    {/* Pagination */}
+                    <div className="SRCHeaderPagination">
+                        <button
+                            className="leftMultipleButton"
+                            onClick={() => handlePageChange(Math.max(currentPage - 5, 1))}
+                            disabled={currentPage <= 5}
+                        >
+                            <FontAwesomeIcon icon={faAnglesLeft} />
+                        </button>
+                        <button
+                            className="leftOnceButton"
+                            onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
+                            disabled={currentPage === 1}
+                        >
+                            <FontAwesomeIcon icon={faChevronLeft} />
+                        </button>
+                        {getPaginationRange().map((page) => (
+                            <button
+                                key={page}
+                                className={`paginationBubble ${page === currentPage ? 'active' : ''}`}
+                                onClick={() => handlePageChange(page)}
+                            >
+                                {page}
+                            </button>
+                        ))}
+                        <button
+                            className="rightOnceButton"
+                            onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                        >
+                            <FontAwesomeIcon icon={faChevronRight} />
+                        </button>
+                        <button
+                            className="rightMultipleButton"
+                            onClick={() => handlePageChange(Math.min(currentPage + 5, totalPages))}
+                            disabled={currentPage > totalPages - 5}
+                        >
+                            <FontAwesomeIcon icon={faAnglesRight} />
+                        </button>
+                    </div>
+                </div>
+                <div className="SRCSuggested">
+                    {searchResults.length > 0 ? (
+                        // Display search results if they exist
+                        searchResults.map((recipe, index) => (
+                            <RecipeCard
+                                key={index}
+                                image={chicken}
+                                title={recipe.name}
+                                cookTime={recipe.cook_time}
+                                prepTime={recipe.prep_time}
+                            />
+                        ))
+                    ) : (
+                        // Otherwise, display random recipes
+                        recipes.map((recipe, index) => (
+                            <RecipeCard
+                                key={index}
+                                image={chicken}
+                                title={recipe.name}
+                                cookTime={recipe.cook_time}
+                                prepTime={recipe.prep_time}
+                            />
+                        ))
+                    )}
+                </div>
+                <div className="SRCFooter">
+                    <button
+                        className="leftMultipleButton"
+                        onClick={() => handlePageChange(Math.max(currentPage - 5, 1))}
+                        disabled={currentPage <= 5}
+                    >
+                        <FontAwesomeIcon icon={faAnglesLeft} />
+                    </button>
+                    <button
+                        className="leftOnceButton"
+                        onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
+                        disabled={currentPage === 1}
+                    >
+                        <FontAwesomeIcon icon={faChevronLeft} />
+                    </button>
+                    {getPaginationRange().map((page) => (
+                        <button
+                            key={page}
+                            className={`paginationBubble ${page === currentPage ? 'active' : ''}`}
+                            onClick={() => handlePageChange(page)}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                    <button
+                        className="rightOnceButton"
+                        onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                    >
+                        <FontAwesomeIcon icon={faChevronRight} />
+                    </button>
+                    <button
+                        className="rightMultipleButton"
+                        onClick={() => handlePageChange(Math.min(currentPage + 5, totalPages))}
+                        disabled={currentPage > totalPages - 5}
+                    >
+                        <FontAwesomeIcon icon={faAnglesRight} />
+                    </button>
+                </div>
+            </div>
+            <div className="recipeFilteringContainer">
+                <div className="innerFilterContainer">
+                    <h2 className="filterHeader">Filter By Category</h2>
+                    {parentCategories.map((parentCategory) => (
+                        <div key={parentCategory} className="parentCategoryContainer">
+                            <div className="parentCategoryContent">
+                                <button
+                                    className="parentCategoryButton"
+                                    onClick={() => toggleDropdown(parentCategory)}
+                                >
+                                    <span className="arrow">{openDropdowns[parentCategory] ? '▼' : '►'}</span>
+                                    <span className="parentCategoryLabel">{parentCategory}</span>
+                                </button>
+                                <input
+                                    type="checkbox"
+                                    className="parentCheckbox"
+                                    checked={selectedCategories.includes(parentCategory) ||
+                                        Object.keys(categoryLists[parentCategory].subcategories).every(subCat =>
+                                            selectedCategories.includes(subCat)
+                                        )}
+                                    onChange={(e) => {
+                                        e.stopPropagation();
+                                        handleParentCategoryChange(parentCategory);
+                                    }}
+                                />
+
+                            </div>
+                            {openDropdowns[parentCategory] && (
+                                <div className="childCategoryContainer">
+                                    {Object.keys(categoryLists[parentCategory].subcategories).map((subcategory) => (
+                                        <div key={subcategory} className="subCategoryContainer">
+                                            <label className="subcategoryLabel">
+                                                <button onClick={() => toggleSubDropdown(subcategory)} className="subCategoryButton">
+                                                    <span className="arrow">{openSubDropdowns[subcategory] ? "▼" : "► "}</span>
+                                                    {subcategory}
+                                                </button>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedCategories.includes(subcategory) ||
+                                                        categoryLists[parentCategory].subcategories[subcategory].every(item => selectedCategories.includes(item))}
+                                                    onChange={() => handleSubcategoryChange(subcategory)}
+                                                />
+                                            </label>
+                                            {openSubDropdowns[subcategory] && (
+                                                <div className="subcategoryList">
+                                                    {categoryLists[parentCategory].subcategories[subcategory].map((item) => (
+                                                        <div key={item} className="childCategoryContainer">
+                                                            <label className="categoryLabel">
+                                                                {item}
+                                                                <input
+                                                                    type="checkbox"
+                                                                    value={item}
+                                                                    checked={selectedCategories.includes(item)}
+                                                                    onChange={handleCategoryChange}
+                                                                />
+                                                            </label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+
+                </div>
+            </div>
+        </div>
     );
 
-    const isChecked = !selectedCategories.includes(subcategory);
-    const items = categoryLists[parentCategory].subcategories[subcategory];
 
-    if (isChecked) {
-        // If the subcategory is checked, add it and all its items
-        setSelectedCategories((prev) => [
-            ...new Set([...prev, subcategory, ...items])
-        ]);
-    } else {
-        // If the subcategory is unchecked, remove it and all its items
-        setSelectedCategories((prev) =>
-            prev.filter(cat => cat !== subcategory && !items.includes(cat))
-        );
-    }
-};
-
-
-
-// Paginator things
-
-
-// Fetch recipes when page changes
-const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    fetchRecipes(pageNumber);
-};
-
-// Function to toggle subcategory dropdowns
-const toggleSubDropdown = (parentCategory) => {
-    setOpenSubDropdowns((prevState) => ({
-        ...prevState,
-        [parentCategory]: !prevState[parentCategory]
-    }));
-};
-
-
-
-
-
-// Logic for displaying 5 page bubbles
-// Pagination logic
-const getPaginationRange = () => {
-    const maxPageDisplay = 5; // Maximum number of pagination bubbles to display
-
-    let startPage = Math.max(1, currentPage - Math.floor(maxPageDisplay / 2));
-    let endPage = Math.min(totalPages, currentPage + Math.floor(maxPageDisplay / 2));
-
-    // Adjust start and end page when at the beginning of the pagination
-    if (currentPage <= Math.floor(maxPageDisplay / 2)) {
-        endPage = Math.min(totalPages, maxPageDisplay);
-        startPage = 1;
-    }
-
-    // Adjust start and end page when at the end of the pagination
-    if (currentPage > totalPages - Math.floor(maxPageDisplay / 2)) {
-        startPage = Math.max(1, totalPages - maxPageDisplay + 1);
-        endPage = totalPages;
-    }
-
-    const pageRange = [];
-    for (let i = startPage; i <= endPage; i++) {
-        pageRange.push(i);
-    }
-
-    return pageRange;
-};
-
-
-
-
-
-
-
-
-return (
-    <div className="recipeSuggestionPageContainer">
-        <div className="suggestedRecipesContainer">
-            <div className="SRCHeader">
-                <div className="SRCHeaderSearchBar">
-                    <form className="SRCHeaderSearchBar" onSubmit={handleSearch}>
-                        <input
-                            type="text"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            placeholder="Search recipes or ingredients..."
-                        />
-                        <button type="submit" onClick={handleSearch}>
-                            Search
-                        </button>
-                    </form>
-                </div>
-                {/* Pagination */}
-                <div className="SRCHeaderPagination">
-                    <button
-                        className="leftMultipleButton"
-                        onClick={() => handlePageChange(Math.max(currentPage - 5, 1))}
-                        disabled={currentPage <= 5}
-                    >
-                        <FontAwesomeIcon icon={faAnglesLeft} />
-                    </button>
-                    <button
-                        className="leftOnceButton"
-                        onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
-                        disabled={currentPage === 1}
-                    >
-                        <FontAwesomeIcon icon={faChevronLeft} />
-                    </button>
-                    {getPaginationRange().map((page) => (
-                        <button
-                            key={page}
-                            className={`paginationBubble ${page === currentPage ? 'active' : ''}`}
-                            onClick={() => handlePageChange(page)}
-                        >
-                            {page}
-                        </button>
-                    ))}
-                    <button
-                        className="rightOnceButton"
-                        onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
-                        disabled={currentPage === totalPages}
-                    >
-                        <FontAwesomeIcon icon={faChevronRight} />
-                    </button>
-                    <button
-                        className="rightMultipleButton"
-                        onClick={() => handlePageChange(Math.min(currentPage + 5, totalPages))}
-                        disabled={currentPage > totalPages - 5}
-                    >
-                        <FontAwesomeIcon icon={faAnglesRight} />
-                    </button>
-                </div>
-            </div>
-            <div className="SRCSuggested">
-                {searchResults.length > 0 ? (
-                    // Display search results if they exist
-                    searchResults.map((recipe, index) => (
-                        <RecipeCard
-                            key={index}
-                            image={chicken}
-                            title={recipe.name}
-                            cookTime={recipe.cook_time}
-                            prepTime={recipe.prep_time}
-                        />
-                    ))
-                ) : (
-                    // Otherwise, display random recipes
-                    recipes.map((recipe, index) => (
-                        <RecipeCard
-                            key={index}
-                            image={chicken}
-                            title={recipe.name}
-                            cookTime={recipe.cook_time}
-                            prepTime={recipe.prep_time}
-                        />
-                    ))
-                )}
-            </div>
-            <div className="SRCFooter">
-            <button
-                        className="leftMultipleButton"
-                        onClick={() => handlePageChange(Math.max(currentPage - 5, 1))}
-                        disabled={currentPage <= 5}
-                    >
-                        <FontAwesomeIcon icon={faAnglesLeft} />
-                    </button>
-                    <button
-                        className="leftOnceButton"
-                        onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
-                        disabled={currentPage === 1}
-                    >
-                        <FontAwesomeIcon icon={faChevronLeft} />
-                    </button>
-                    {getPaginationRange().map((page) => (
-                        <button
-                            key={page}
-                            className={`paginationBubble ${page === currentPage ? 'active' : ''}`}
-                            onClick={() => handlePageChange(page)}
-                        >
-                            {page}
-                        </button>
-                    ))}
-                    <button
-                        className="rightOnceButton"
-                        onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
-                        disabled={currentPage === totalPages}
-                    >
-                        <FontAwesomeIcon icon={faChevronRight} />
-                    </button>
-                    <button
-                        className="rightMultipleButton"
-                        onClick={() => handlePageChange(Math.min(currentPage + 5, totalPages))}
-                        disabled={currentPage > totalPages - 5}
-                    >
-                        <FontAwesomeIcon icon={faAnglesRight} />
-                    </button>
-            </div>
-        </div>
-        <div className="recipeFilteringContainer">
-            <div className="innerFilterContainer">
-                <h2 className="filterHeader">Filter By Category</h2>
-                {parentCategories.map((parentCategory) => (
-                    <div key={parentCategory} className="parentCategoryContainer">
-                        <div className="parentCategoryContent">
-                            <button
-                                className="parentCategoryButton"
-                                onClick={() => toggleDropdown(parentCategory)}
-                            >
-                                <span className="arrow">{openDropdowns[parentCategory] ? '▼' : '►'}</span>
-                                <span className="parentCategoryLabel">{parentCategory}</span>
-                            </button>
-                            <input
-                                type="checkbox"
-                                className="parentCheckbox"
-                                checked={selectedCategories.includes(parentCategory) ||
-                                    Object.keys(categoryLists[parentCategory].subcategories).every(subCat =>
-                                        selectedCategories.includes(subCat)
-                                    )}
-                                onChange={(e) => {
-                                    e.stopPropagation();
-                                    handleParentCategoryChange(parentCategory);
-                                }}
-                            />
-
-                        </div>
-                        {openDropdowns[parentCategory] && (
-                            <div className="childCategoryContainer">
-                                {Object.keys(categoryLists[parentCategory].subcategories).map((subcategory) => (
-                                    <div key={subcategory} className="subCategoryContainer">
-                                        <label className="subcategoryLabel">
-                                            <button onClick={() => toggleSubDropdown(subcategory)} className="subCategoryButton">
-                                                <span className="arrow">{openSubDropdowns[subcategory] ? "▼" : "► "}</span>
-                                                {subcategory}
-                                            </button>
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedCategories.includes(subcategory) ||
-                                                    categoryLists[parentCategory].subcategories[subcategory].every(item => selectedCategories.includes(item))}
-                                                onChange={() => handleSubcategoryChange(subcategory)}
-                                            />
-                                        </label>
-                                        {openSubDropdowns[subcategory] && (
-                                            <div className="subcategoryList">
-                                                {categoryLists[parentCategory].subcategories[subcategory].map((item) => (
-                                                    <div key={item} className="childCategoryContainer">
-                                                        <label className="categoryLabel">
-                                                            {item}
-                                                            <input
-                                                                type="checkbox"
-                                                                value={item}
-                                                                checked={selectedCategories.includes(item)}
-                                                                onChange={handleCategoryChange}
-                                                            />
-                                                        </label>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                ))}
-
-            </div>
-        </div>
-    </div>
-);
-
-
-{/* {parentCategories.map((category) => (
+    {/* {parentCategories.map((category) => (
                         <div key={category} className="categoryContainer">
                             <button
                                 onClick={() => toggleDropdown(category)}
@@ -621,7 +621,7 @@ return (
 
 
 
-{/* <h1>Random Recipes</h1>
+    {/* <h1>Random Recipes</h1>
             <ul>
                 {recipes.map((recipe, index) => (
                     <li key={index}>

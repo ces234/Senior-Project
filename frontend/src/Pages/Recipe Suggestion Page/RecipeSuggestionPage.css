@@ -18,7 +18,36 @@
 .SRCHeaderSearchBar {
     flex: 1;
     display: flex;
+    background-color: #515B2C; /* Match innerFilterContainer color */
+    border-radius: 10px; /* Rounded edges */
+    padding: 0; /* Remove padding for a tighter fit */
+    width: 66%; /* Set width to about 2/3 of the container */
+    height: 40px; /* Adjust height as needed */
+    align-items: center;
 }
+
+.SRCHeaderSearchBar input {
+    flex: 1; /* Make input fill available space */
+    border: none; /* Remove input border */
+    background-color: transparent; /* Match input background */
+    color: white; /* Change text color to white */
+    padding: 5px; /* Keep padding for usability */
+    border-radius: 10px; /* Match the border radius of the search bar */
+    width: 66%; /* Ensure input fills the search bar */
+    height: 66%; /* Make the input fill the height of the search bar */
+    font-family: inherit; /* Inherit font family from parent */
+    font-size: inherit; /* Inherit font size from parent */
+    font-weight: inherit; /* Inherit font weight from parent */
+}
+
+.SRCHeaderSearchBar input::placeholder {
+    color: white; /* Make placeholder text white */
+}
+
+
+
+
+
 
 .SRCHeaderPagination {
     flex: 1;
