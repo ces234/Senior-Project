@@ -8,106 +8,87 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../../AuthContext";
 import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 
 const NavBar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleLogout = () => {
     logout();
-    navigate("/"); // Redirect to the home page after logout
+    navigate("/");
   };
 
   const handleMealPlanClick = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      // Calculate start and end dates for the current week
       const today = new Date();
-      const firstDayOfWeek = new Date(
-        today.setDate(today.getDate() - today.getDay() + 1)
-      ); // Monday
-      const lastDayOfWeek = new Date(
-        today.setDate(today.getDate() - today.getDay() + 7)
-      ); // Sunday
+      const firstDayOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 1); // Monday
+      console.log("FIRST DAY: ", firstDayOfWeek);
+      const lastDayOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 7); // Sunday
 
-      const startDate = firstDayOfWeek.toISOString().split("T")[0]; // Format to YYYY-MM-DD
-      const endDate = lastDayOfWeek.toISOString().split("T")[0]; // Format to YYYY-MM-DD
+      const start_date = firstDayOfWeek.toISOString().split("T")[0]; // Format to YYYY-MM-DD
+      const end_date = lastDayOfWeek.toISOString().split("T")[0]; // Format to YYYY-MM-DD
 
-      // Create meal plan if it doesn't exist
       const token = localStorage.getItem("token");
-      const response = await fetch(
-        "http://localhost:8000/meal-plan/create-meal-plan/",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Token ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ startDate, endDate }),
-        }
-      );
-
-      if (!response.ok) {
-        if (response.status === 400) {
-          const errorData = await response.json();
-          if (
-            errorData.error !==
-            "A meal plan with the same start and end dates already exists."
-          ) {
-            throw new Error("Failed to create meal plan");
-          }
-        }
+      if (!token) {
+        setError("User not authenticated.");
+        return;
       }
 
-      navigate("/meal-plan");
+      const response = await fetch("http://localhost:8000/meal-plan/create-meal-plan/", {
+        method: "POST",
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          start_date,
+          end_date,
+          user: user.id // Assuming user object has an id
+        }),
+      });
+
+      let mealPlanData = {};
+      if (response.ok) {
+        mealPlanData = await response.json();
+      } else if (response.status === 400) {
+        const errorData = await response.json();
+        setError(errorData.error || "Failed to create meal plan");
+      }
+
+      navigate("/meal-plan", { state: { mealPlan: mealPlanData } });
     } catch (error) {
       console.error("Error handling meal plan: ", error);
-      alert("Failed to navigate to meal plan page. Please try again.");
+      setError("Failed to navigate to meal plan page. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const NavButton = ({ icon, text, onClick }) => {
-    return (
-      <div className="navButton" onClick={onClick}>
-        {" "}
-        {/* Trigger onClick instead of direct path navigation */}
-        <FontAwesomeIcon className="navIcon" icon={icon} />
-        <h3>{text}</h3>
-      </div>
-    );
-  };
+  const NavButton = ({ icon, text, onClick }) => (
+    <div className="navButton" onClick={onClick}>
+      <FontAwesomeIcon className="navIcon" icon={icon} />
+      <h3>{text}</h3>
+    </div>
+  );
 
   return (
     <div className="navBar">
-      {/* Calendar icon */}
       <div className="firstIconContainer">
-        <NavButton
-          icon={faCircleUser}
-          text="Profile"
-          onClick={() => navigate("/profile")}
-        />{" "}
-        {/* Add a path for the Profile page */}
+        <NavButton icon={faCircleUser} text="Profile" onClick={() => navigate("/profile")} />
       </div>
       <div className="otherIcons">
-        <NavButton
-          icon={faCalendar}
-          text="Meal Plan"
-          onClick={handleMealPlanClick}
-        />{" "}
-        {/* Handle meal plan click */}
-        <NavButton
-          icon={faBookOpen}
-          text="Recipes"
-          onClick={() => navigate("/recipes")}
-        />{" "}
-        {/* Path for Recipes */}
-        <NavButton
-          icon={faCarrot}
-          text="Pantry"
-          onClick={() => navigate("/pantry")}
-        />{" "}
-        {/* Path for Pantry */}
-        <button onClick={handleLogout}>Logout</button> {/* Logout button */}
+        <NavButton icon={faCalendar} text="Meal Plan" onClick={handleMealPlanClick} />
+        <NavButton icon={faBookOpen} text="Recipes" onClick={() => navigate("/recipes")} />
+        <NavButton icon={faCarrot} text="Pantry" onClick={() => navigate("/pantry")} />
+        <button onClick={handleLogout}>Logout</button>
       </div>
+      {loading && <div className="loading">Loading...</div>}
+      {error && <div className="error">{error}</div>}
     </div>
   );
 };

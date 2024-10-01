@@ -1,7 +1,10 @@
+import React, { useState } from "react";
 import "./MealPlanPage.css";
-import React, { useEffect, useState } from "react";
+import RecipeCard from "../Recipe Suggestion Page/RecipeCard";
+import chicken from "../../photos/chicken.webp";
 
-const Calendar = ({ onRecipeDrop }) => {
+
+const Calendar = ({ onRecipeDrop, currentRecipes }) => {
   const daysOfWeek = [
     "Monday",
     "Tuesday",
@@ -23,6 +26,13 @@ const Calendar = ({ onRecipeDrop }) => {
     e.preventDefault();
   };
 
+
+  const getRecipeForSlot = (day, mealType) => {
+    return currentRecipes.find(
+      (recipe) => recipe.day === day && recipe.meal_type === mealType
+    );
+  };
+
   return (
     <div className="calendarContainer">
       <div className="mealGrid">
@@ -32,8 +42,6 @@ const Calendar = ({ onRecipeDrop }) => {
             {day}
           </div>
         ))}
-
-        {/* Render the meal types as rows */}
         {meals.map((meal, mealIndex) => (
           <React.Fragment key={mealIndex}>
             <div className="mealRowHeader">{meal}</div>
@@ -41,10 +49,21 @@ const Calendar = ({ onRecipeDrop }) => {
               <div
                 key={`${mealIndex}-${dayIndex}`}
                 className="mealSlot"
-                onDrop={(e) => handleDrop(e, day, meal)} // Handle the drop event
-                onDragOver={handleDragOver} // Handle drag over to allow dropping
+                onDrop={(e) => handleDrop(e, day, meal)}
+                onDragOver={handleDragOver}
               >
-                {/* You can add content here, like selected recipes or empty slots */}
+                {(() => {
+                  const recipeData = getRecipeForSlot(day, meal);
+                  return recipeData ? (
+                    <RecipeCard 
+                      image = {chicken}
+                      title = {recipeData.recipe.name}
+                      cookTime = {recipeData.recipe.cook_time}
+                      prepTime = {recipeData.recipe.prep_time} />
+                  ) : (
+                    "Add a meal!"
+                  );
+                })()}
               </div>
             ))}
           </React.Fragment>

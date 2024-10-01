@@ -1,23 +1,39 @@
 import React, { useEffect, useState } from "react";
-
 import "./MealPlanPage.css";
 import Calendar from "./Calendar";
 import RecentlyAddedRecipes from "./RecentlyAddedRecipes";
+import { useLocation } from "react-router-dom";
+import DateDisplay from "./DateDispaly";
+import { useAuth } from "../../AuthContext";
 
 const MealPlanPage = () => {
-  const [recipes, setRecipes] = useState([]); // To store recently added recipes
-  const [mealPlans, setMealPlans] = useState([]); // To store meal plans
+  const [recipes, setRecipes] = useState([]);
+  const [mealPlans, setMealPlans] = useState([]);
   const [newMealPlan, setNewMealPlan] = useState({
     startDate: "",
     endDate: "",
     selectedRecipes: [],
   });
+  const [error, setError] = useState(""); // Add state for error handling
+  const [loading, setLoading] = useState(false); // Add state for loading indication
+  const [currentPlan, setCurrentPlan] = useState(null);
+  const location = useLocation();
+  const { user, logout } = useAuth();
+  const [currentRecipes, setCurrentRecipes] = useState([]);
 
   useEffect(() => {
-    // Fetch recently added recipes
+    console.log("Location state:", location.state);
+    if (location.state?.mealPlan) {
+      setCurrentPlan(location.state.mealPlan);
+    } else {
+      setCurrentPlan({ start_date: "N/A", end_date: "N/A" });
+    }
+  }, [location.state]);
+
+  useEffect(() => {
     const fetchRecentlyAddedRecipes = async () => {
+      const token = localStorage.getItem("token");
       try {
-        const token = localStorage.getItem("token");
         const response = await fetch(
           "http://localhost:8000/user/recently-added-recipes/",
           {
@@ -28,10 +44,7 @@ const MealPlanPage = () => {
           }
         );
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch recently added recipes");
-        }
-
+        if (!response.ok) throw new Error("Failed to fetch recipes");
         const fetchedRecipes = await response.json();
         setRecipes(fetchedRecipes);
       } catch (error) {
@@ -40,12 +53,9 @@ const MealPlanPage = () => {
       }
     };
 
-    fetchRecentlyAddedRecipes();
-
-    // Fetch meal plans on mount
     const fetchMealPlans = async () => {
+      const token = localStorage.getItem("token");
       try {
-        const token = localStorage.getItem("token");
         const response = await fetch(
           "http://localhost:8000/meal-plan/view-meal-plans/",
           {
@@ -56,10 +66,7 @@ const MealPlanPage = () => {
           }
         );
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch meal plans");
-        }
-
+        if (!response.ok) throw new Error("Failed to fetch meal plans");
         const fetchedMealPlans = await response.json();
         setMealPlans(fetchedMealPlans);
       } catch (error) {
@@ -68,13 +75,51 @@ const MealPlanPage = () => {
       }
     };
 
+
+
+   
+    fetchRecentlyAddedRecipes();
     fetchMealPlans();
-  }, []); // Fetch data once on mount
 
 
+  }, []);
 
+  
 
-  // Handle form input changes
+  useEffect(() => {
+    if (currentPlan) {
+      fetchMealPlanRecipes();
+    }
+  }, [currentPlan]);
+  
+  // Move this function outside of useEffect so it can be reused
+  const fetchMealPlanRecipes = async () => {
+    if (!currentPlan || currentPlan.start_date === "N/A" || currentPlan.end_date === "N/A") {
+      console.log("Invalid current plan. Skipping recipe fetch.");
+      return;
+    }
+  
+    const token = localStorage.getItem("token");
+    try {
+      const url = `http://localhost:8000/meal-plan/get-meal-plan-recipes?start_date=${currentPlan.start_date}&end_date=${currentPlan.end_date}`;
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+  
+      if (!response.ok) throw new Error("Failed to fetch meal plan recipes");
+  
+      const fetchedMealPlanRecipes = await response.json();
+      setCurrentRecipes(fetchedMealPlanRecipes);
+    } catch (error) {
+      console.log("Error fetching meal plan recipes:", error);
+    }
+  };
+  
+  
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewMealPlan((prevState) => ({
@@ -83,11 +128,10 @@ const MealPlanPage = () => {
     }));
   };
 
-  // Handle form submission to create a new meal plan
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
     try {
-      const token = localStorage.getItem("token");
       const response = await fetch(
         "http://localhost:8000/meal-plan/create-meal-plan/",
         {
@@ -100,10 +144,7 @@ const MealPlanPage = () => {
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to create meal plan");
-      }
-
+      if (!response.ok) throw new Error("Failed to create meal plan");
       const newMealPlanResponse = await response.json();
       setMealPlans((prevPlans) => [...prevPlans, newMealPlanResponse]);
       alert("Meal plan created successfully!");
@@ -114,10 +155,8 @@ const MealPlanPage = () => {
     }
   };
 
-  // Render meal plan for each day, showing breakfast, lunch, and dinner
   const renderMealPlanForDay = (day, meals, mealPlanId) => {
     const mealTypes = ["breakfast", "lunch", "dinner"];
-
     return mealTypes.map((mealType) => {
       const meal = meals.find((m) => m.meal_type === mealType);
       return (
@@ -136,10 +175,14 @@ const MealPlanPage = () => {
             <>
               <span>No meal selected</span>
               <button
-                onClick={() => {
-                  const recipeId = newMealPlan.selectedRecipes[0]; // Assuming you want to add the first selected recipe
-                  handleAddRecipe(mealPlanId, recipeId, day, mealType);
-                }}
+                onClick={() =>
+                  handleAddRecipe(
+                    mealPlanId,
+                    newMealPlan.selectedRecipes[0],
+                    day,
+                    mealType
+                  )
+                }
               >
                 Add
               </button>
@@ -161,111 +204,175 @@ const MealPlanPage = () => {
             Authorization: `Token ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ recipe_id: 1, day, meal_type: mealType }),
+          body: JSON.stringify({
+            recipe_id: recipeId,
+            day,
+            meal_type: mealType,
+          }),
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to add recipe");
-      }
-
-      const data = await response.json();
+      if (!response.ok) throw new Error("Failed to add recipe");
       alert("Recipe added successfully!");
-      // Optionally refresh the meal plans or update the state
+
+      fetchMealPlanRecipes(); // This will update the `currentRecipes
+
     } catch (error) {
       console.error("Error adding recipe:", error);
       alert("Failed to add recipe. Please try again.");
     }
   };
 
-  const onRecipeDrop = (recipeId, day, mealType) => {
-    console.log(`Dropped recipeId ${recipeId} on ${day} for ${mealType}`);
-  }
+  const onRecipeDrop = async (recipeId, day, mealType) => {
+    try {
+      const token = localStorage.getItem("token");
+      console.log(
+        "attempting to add recipe ",
+        recipeId,
+        "to day ",
+        day,
+        "for mealType ",
+        mealType
+      );
 
-  
+      const response = await fetch(
+        `http://localhost:8000/meal-plan/add-recipe/${currentPlan.id}/`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Token ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            recipe_id: recipeId,
+            day,
+            meal_type: mealType,
+          }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to add recipe");
+      console.log("recipe added successfully");
+      fetchMealPlanRecipes();
+    } catch (error) {
+      console.error("Errror adding recipe: ", error);
+    }
+  };
+
+  const handleNext = async () => {
+    try {
+      const currentStart = new Date(currentPlan.start_date);
+      const currentEnd = new Date(currentPlan.end_date);
+
+      // Calculate the next week's start and end dates
+      const nextStart = new Date(currentStart);
+      nextStart.setDate(currentStart.getDate() + 7); // Add 7 days for next start date
+
+      const nextEnd = new Date(currentEnd);
+      nextEnd.setDate(currentEnd.getDate() + 7); // Add 7 days for next end date
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("User not authenticated.");
+        return;
+      }
+
+      const response = await fetch(
+        "http://localhost:8000/meal-plan/create-meal-plan/",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Token ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            start_date: nextStart.toISOString().split("T")[0], // Format the date to YYYY-MM-DD
+            end_date: nextEnd.toISOString().split("T")[0],
+            user: user, // Assuming user object has an id
+          }),
+        }
+      );
+
+      let mealPlanData = {};
+      if (response.ok) {
+        mealPlanData = await response.json();
+        setCurrentPlan(mealPlanData);
+      } else if (response.status === 400) {
+        const errorData = await response.json();
+        setError(errorData.error || "Failed to create meal plan");
+      }
+    } catch (error) {
+      console.error("Error handling meal plan: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePrevious = async () => {
+    try {
+      const currentStart = new Date(currentPlan.start_date);
+      const currentEnd = new Date(currentPlan.end_date);
+
+      // Calculate the previous week's start and end dates
+      const previousStart = new Date(currentStart);
+      previousStart.setDate(currentStart.getDate() - 7); // Subtract 7 days for previous start date
+
+      const previousEnd = new Date(currentEnd);
+      previousEnd.setDate(currentEnd.getDate() - 7); // Subtract 7 days for previous end date
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("User not authenticated.");
+        return;
+      }
+
+      const response = await fetch(
+        "http://localhost:8000/meal-plan/create-meal-plan/",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Token ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            start_date: previousStart.toISOString().split("T")[0], // Format the date to YYYY-MM-DD
+            end_date: previousEnd.toISOString().split("T")[0],
+            user: user, // Assuming user object has an id
+          }),
+        }
+      );
+
+      let mealPlanData = {};
+      if (response.ok) {
+        mealPlanData = await response.json();
+        setCurrentPlan(mealPlanData);
+      } else if (response.status === 400) {
+        const errorData = await response.json();
+        setError(errorData.error || "Failed to create meal plan");
+      }
+    } catch (error) {
+      console.error("Error handling meal plan: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="mealPlanPageContainer">
       <div className="header">
         <h1>Meal Plan</h1>
+        <DateDisplay
+          currentPlan={currentPlan}
+          handleNext={handleNext}
+          handlePrevious={handlePrevious}
+        />
       </div>
       <div className="mealPlanPageContent">
-        <Calendar onRecipeDrop={onRecipeDrop}/>
-        <RecentlyAddedRecipes 
-        recipes = {recipes}/> 
+        <Calendar onRecipeDrop={onRecipeDrop} currentRecipes = {currentRecipes}/>
+        <RecentlyAddedRecipes recipes={recipes} />
       </div>
     </div>
   );
-
-  // return (
-  //     <div>
-  //         <h2>Meal Plan Page</h2>
-  //         <h3>Recently Added Recipes</h3>
-  //         {recipes.length > 0 ? (
-  //             recipes.map((recipe) => (
-  //                 <div key={recipe.id} onClick={() => handleRecipeSelection(recipe.id)}>
-  //                     <RecipeCard
-  //                         recipeId={recipe.id}
-  //                         image={chicken}
-  //                         title={recipe.name}
-  //                         cookTime={recipe.cook_time}
-  //                         prepTime={recipe.prep_time}
-  //                     />
-  //                     {newMealPlan.selectedRecipes.includes(recipe.id) && <span>Selected</span>}
-  //                 </div>
-  //             ))
-  //         ) : (
-  //             <p>No recently added recipes available.</p>
-  //         )}
-
-  //         <h3>Create New Meal Plan</h3>
-  //         <form onSubmit={handleSubmit}>
-  //             <label>
-  //                 Start Date:
-  //                 <input
-  //                     type="date"
-  //                     name="startDate"
-  //                     value={newMealPlan.startDate}
-  //                     onChange={handleInputChange}
-  //                     required
-  //                 />
-  //             </label>
-  //             <br />
-  //             <label>
-  //                 End Date:
-  //                 <input
-  //                     type="date"
-  //                     name="endDate"
-  //                     value={newMealPlan.endDate}
-  //                     onChange={handleInputChange}
-  //                     required
-  //                 />
-  //             </label>
-  //             <br />
-  //             <button type="submit">Create Meal Plan</button>
-  //         </form>
-
-  //         <h3>Existing Meal Plans</h3>
-  //         {mealPlans.length > 0 ? (
-  //             mealPlans.map((plan) => {
-  //                 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  //                 return (
-  //                     <div key={plan.id}>
-  //                         <h4>Meal Plan from {plan.start_date} to {plan.end_date}</h4>
-  //                         {daysOfWeek.map((day) => (
-  //                             <div key={day}>
-  //                                 <h5>{day}</h5>
-  //                                 {renderMealPlanForDay(day, plan.mealplanrecipe_set.filter(m => m.day === day))}
-  //                             </div>
-  //                         ))}
-  //                     </div>
-  //                 );
-  //             })
-  //         ) : (
-  //             <p>No meal plans available.</p>
-  //         )}
-  //     </div>
-  // );
 };
 
 export default MealPlanPage;

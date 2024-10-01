@@ -3,9 +3,11 @@ import RecipeCard from "../Recipe Suggestion Page/RecipeCard";
 import chicken from "../../photos/chicken.webp";
 
 const RecentlyAddedRecipes = ({ recipes, onRecipeDrop }) => {
-  const handleDragStart = ({ e, recipeId }) => {
+  const handleDragStart = (e, recipeId) => {
     e.dataTransfer.setData("recipeId", recipeId);
   };
+
+  console.log(recipes);
 
   return (
     <div className="mealPlanRight">
@@ -14,7 +16,7 @@ const RecentlyAddedRecipes = ({ recipes, onRecipeDrop }) => {
         {recipes.length > 0 ? (
           recipes.map((recipe) => (
             <RecipeCard
-            key = {recipe.id}
+              key={recipe.id}
               recipeId={recipe.id}
               image={chicken}
               title={recipe.name}

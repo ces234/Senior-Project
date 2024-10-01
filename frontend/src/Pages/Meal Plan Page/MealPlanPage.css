@@ -10,6 +10,15 @@
     width: 100%;
 }
 
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px;
+    margin-right: 30px;
+}
+
 .calendarContainer{
     width: 85%;
     flex: 1;
@@ -116,3 +125,29 @@
     background: #555; /* Color when hovered */
   }
   
+
+
+  .mealSlot .recipeCardContainer {
+    width: 140px;
+    height: 160px;
+    margin-bottom: 10px; /* Space between cards */
+    display: flex; /* Use flex for card layout */
+    flex-direction: column; /* Stack contents vertically */
+    align-items: center; /* Center contents */
+    justify-content: flex-start; /* Align content to the top */
+
+  }
+
+.mealSlot .recipeTitleContainer {
+    font-size: 13px;
+    padding: 5px;
+}
+
+
+.mealSlot .recipeTimeContainer{
+    display: none;
+}
+
+.mealSlot .recipeButtonContainer {
+    display: none;
+}

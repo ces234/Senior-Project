@@ -4,7 +4,7 @@ import { faStar } from "@fortawesome/free-regular-svg-icons";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import React, { useState } from "react";
 
-const RecipeCard = ({ image, title, cookTime, prepTime, recipeId }) => {
+const RecipeCard = ({ image, title, cookTime, prepTime, recipeId, onDragStart }) => {
 
   const [error, setError] = useState(null); // State for error messages
   const [success, setSuccess] = useState(null); // State for success messages
@@ -35,7 +35,7 @@ const RecipeCard = ({ image, title, cookTime, prepTime, recipeId }) => {
   }
 
   return (
-    <div className="recipeCardContainer">
+    <div className="recipeCardContainer" draggable onDragStart = {onDragStart}>
       <img src={image} alt="recipe" />
       <div className="recipeTitleContainer">{title}</div>
       <div className="recipeTimeContainer">
