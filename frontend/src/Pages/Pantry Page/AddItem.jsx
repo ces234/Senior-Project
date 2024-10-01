@@ -6,7 +6,7 @@ const AddItem = () => {
     const [name, setName] = useState("");
     const [quantity, setQuantity] = useState("");
     const [unit, setUnit] = useState("");
-    // const [expiration, setExpiration] = useState("");
+    const [expiration, setExpiration] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -15,10 +15,10 @@ const AddItem = () => {
             name,
             quantity,
             unit,
-            // expiration
+            expiration
         };
 
-        const token = localStorage.getItem("token"); // Update this line as needed
+        const token = localStorage.getItem("token");
 
         try {
             const response = await axios.post(
@@ -90,8 +90,8 @@ const AddItem = () => {
                         type="date"
                         id="expiration"
                         name="expiration"
-                        // value={expiration}
-                        // onChange={(e) => setExpiration(e.target.value)}
+                        value={expiration}
+                        onChange={(e) => setExpiration(e.target.value)}
                     />
                     
                     <button type="submit" className="submitPantryItemButton">Add Item</button>

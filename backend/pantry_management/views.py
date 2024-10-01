@@ -14,7 +14,7 @@ def add_pantry_item(request):
     
     try:
         # Fetch the user's household
-        household = Household.objects.get(admin=user)  # Assuming the user is a member of the household
+        household = Household.objects.get(admin=user)  # TODO: need to handle if user is not admin of household
         pantry = Pantry.objects.get(household=household)  # Get the pantry associated with the household
 
         # Get the ingredient name from the request data
@@ -25,10 +25,11 @@ def add_pantry_item(request):
 
         # Prepare the data for the PantryIngredient
         ingredient_data = {
-            'pantry': pantry.id,  # Set pantry ID from the fetched pantry
-            'ingredient': ingredient.id,  # Use the ID of the ingredient
+            'pantry': pantry.id,  
+            'ingredient': ingredient.id,
             'quantity': request.data.get('quantity'),
             'unit': request.data.get('unit'),
+            #TODO: need to edit PantryIngredient table to have expiration_date
         }
 
         # Serialize and save the pantry ingredient
