@@ -6,32 +6,56 @@
 
 .suggestedRecipesContainer {
     width: 75%;
-
 }
 
-.SRCHeader{
+.SRCHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 30px;
 }
 
-.SRCHeaderSearchBar{
+.SRCHeaderSearchBar {
     flex: 1;
     display: flex;
-
-
-}
-
-.SRCHeaderPagination{
-    flex: 1;
-    display: flex;
-    justify-content: center;
+    background-color: #515B2C; /* Match innerFilterContainer color */
+    border-radius: 10px; /* Rounded edges */
+    padding: 0; /* Remove padding for a tighter fit */
+    width: 66%; /* Set width to about 2/3 of the container */
+    height: 40px; /* Adjust height as needed */
     align-items: center;
-    margin-left: 75px;
-
 }
 
+.SRCHeaderSearchBar input {
+    flex: 1; /* Make input fill available space */
+    border: none; /* Remove input border */
+    background-color: transparent; /* Match input background */
+    color: white; /* Change text color to white */
+    padding: 5px; /* Keep padding for usability */
+    border-radius: 10px; /* Match the border radius of the search bar */
+    width: 66%; /* Ensure input fills the search bar */
+    height: 66%; /* Make the input fill the height of the search bar */
+    font-family: inherit; /* Inherit font family from parent */
+    font-size: inherit; /* Inherit font size from parent */
+    font-weight: inherit; /* Inherit font weight from parent */
+}
+
+.SRCHeaderSearchBar input::placeholder {
+    color: white; /* Make placeholder text white */
+}
+
+
+
+
+
+
+.SRCHeaderPagination {
+    flex: 1;
+    display: flex;
+    justify-content: center; /* Center items */
+    align-items: center; /* Center items vertically */
+    margin-left: 75px;
+}
 
 .paginationBubble {
     width: 28px;
@@ -59,90 +83,38 @@
     color: white;
 }
 
-
-
-
-.rightOnceButton {
-    color: white;
-    background: none;          
-    border: none;              
-    cursor: pointer;          
-    padding: 5px;                
-    margin-left: 10px;                
-    display: inline-flex;      
-    justify-content: center;  
-    align-items: center;    
-    font-size: 22px;  
-    width: 12px;               
-    height: 12px;             
-    border-radius: 50%;       
-}
-
-.rightMultipleButton {
-    color: white;
-    background: none;          
-    border: none;              
-    cursor: pointer;          
-    padding: 5px;                
-    margin-left: 10px;                
-    display: inline-flex;      
-    justify-content: center;  
-    align-items: center;   
-    font-size: 23px;  
-    width: 12px;               
-    height: 12px;             
-    border-radius: 50%;       
-}
-
-.leftOnceButton {
-    color: white;
-    background: none;          
-    border: none;              
-    cursor: pointer;          
-    padding: 5px;                
-    margin-right: 10px;                
-    display: inline-flex;      
-    justify-content: center;  
-    align-items: center;    
-    font-size: 22px;  
-    width: 12px;               
-    height: 12px;             
-    border-radius: 50%;       
-}
-
+.rightOnceButton,
+.rightMultipleButton,
+.leftOnceButton,
 .leftMultipleButton {
     color: white;
     background: none;          
     border: none;              
     cursor: pointer;          
     padding: 5px;                
-    margin-right: 10px;                
+    margin: 0 10px; /* Consistent margin */
     display: inline-flex;      
     justify-content: center;  
-    align-items: center;   
-    font-size: 23px;  
+    align-items: center;    
+    font-size: 22px;  
     width: 12px;               
     height: 12px;             
     border-radius: 50%;       
 }
 
-
-.SRCSuggested{
+.SRCSuggested {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap:16px;
+    gap: 16px;
     padding: 20px;
 }
 
-
-.SRCFooter{
+.SRCFooter {
+    display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
 }
-
-
-
 
 .recipeFilteringContainer {
     display: flex;
@@ -166,34 +138,95 @@
     text-align: center;
 }
 
-.parentCategoryButton{
-    background: none;
+.dropdownButton{
+    background-color: transparent;
     border: none;
+}
+
+
+.parentCategoryButton {
+    background: none !important;
+    background-color: transparent !important;
+    border: none;
+    cursor: pointer;
     padding: 0;
-    margin: 0;
+    margin-right: 5px;
     outline: none;
     box-shadow: none;
+    font-size: 12px;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+}
+
+
+
+.subCategoryButton {
+    background: none !important;
+    background-color: transparent !important;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-right: 5px;
+    outline: none;
+    box-shadow: none;
+    font-size: 18px;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    }
+
+
+
+.parentCategoryLabel {
+    display: flex;
+    align-items: center;
     cursor: pointer;
     font-size: 20px;
     color: white;
+    margin-bottom: 5px;
+    margin-left: 5px;
 }
 
-.arrow{
-    font-size: 12px;
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    color: white;
+    margin-left: 5px; /* Optional for better spacing */
 }
 
-.childCategoryContainer{
-    margin-left: 15px;
-    padding: 5px;
+.arrow {
+    font-size: 10px; /* Adjust size as needed */
+    margin-right: 5px; /* Adjust spacing between arrow and text */
 }
+
+
 
 .parentCategoryContainer{
-    padding: 8px;
-    
+    display: flex;
+    flex-direction: column; /* Stack parent categories vertically */
+    margin-bottom: 10px; /* Space between categories */    
 }
 
+.subCategoryContainer {
+    background-color: transparent !important; /* Fully transparent */
+    border: none;
+    padding: 5px;
+    margin-left: 8px;
+}
 
-.recipeCardContainer{
+.childCategoryContainer {
+    background-color: transparent !important; /* Fully transparent */
+    border: none;
+    padding: 1px;
+    margin-left: 24px;
+    font-size: 14px;;
+
+}
+
+.recipeCardContainer {
     background-color: #515B2C;
     width: 240px;
     height: 290px;
@@ -207,13 +240,6 @@
     width: 100%;
     object-fit: cover;
     border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-}
-
-.imageContainer {
-    position: relative;
-    overflow: hidden;
 }
 
 .recipeTitleContainer {
@@ -222,19 +248,15 @@
     padding: 8px;
 }
 
-.recipeTimeContainer{
+.recipeTimeContainer {
     font-size: 10px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-
 }
 
-.cookTime {
-    padding: 6px;
-}
-
-.prepTime{
+.cookTime,
+.prepTime {
     padding: 6px;
 }
 
