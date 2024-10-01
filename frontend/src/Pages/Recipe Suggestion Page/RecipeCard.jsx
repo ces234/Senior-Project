@@ -6,12 +6,16 @@ import React, { useState } from "react";
 
 const RecipeCard = ({ image, title, cookTime, prepTime, recipeId, onDragStart }) => {
 
+  console.log("SLDKFJSDLKFJ", recipeId);
+
   const [error, setError] = useState(null); // State for error messages
   const [success, setSuccess] = useState(null); // State for success messages
 
   const addToRecentlyAdded = async (recipeId) => {
     try {
         const token = localStorage.getItem('token'); // Adjust according to where you store your token
+        console.log("TOKEN: ", token);
+        console.log("RECIPE ID: ", recipeId);
         const response = await fetch('http://localhost:8000/user/add-recently-added-recipe/', {
             method: "POST",
             headers: {

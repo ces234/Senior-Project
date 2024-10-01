@@ -50,7 +50,7 @@ class LoginView(APIView):
 def recently_added_recipes(request):
     if request.user.is_authenticated:
         try:
-            household = request.user.household
+            household = request.user.households.first()
             recipes = household.recently_added.all()
             # Serialize the recipes here (make sure to have a serializer)
             serialized_recipes = [{
@@ -66,18 +66,20 @@ def recently_added_recipes(request):
     return Response([])
 
 
-@permission_classes([IsAuthenticated])  # Ensure user is authenticated
 @api_view(["POST"])
 def add_recently_added_recipe(request):
     recipe_id = request.data.get('recipe_id')
     try:
-        household = request.user.household
+        user = request.user
+        household = request.user.households.first()
         recipe = Recipe.objects.get(id=recipe_id)
         household.addRecentlyAddedRecipe(recipe)
         return Response({'message': 'Recipe added to recently added successfully.'}, status=201)
     except Recipe.DoesNotExist:
-        return Response({'error': 'Recipe not found.'}, status=404)
+        return Response({'error': 'Recipe not found.'}, status=403)
+    except User.DoesNotExist:
+        return Response({'error:' 'User not found'}, status = 404)
     except Household.DoesNotExist:
-        return Response({'error': 'Household not found.'}, status=404)
+        return Response({'error': 'Household not found.'}, status=402)
 
     

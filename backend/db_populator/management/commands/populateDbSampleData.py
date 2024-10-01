@@ -73,62 +73,62 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS('Users created successfully!'))
 
-        # Get sample recipes
-        recipe1 = Recipe.objects.get(id=92)
-        print(recipe1)
-        recipe2 = Recipe.objects.get(id=14084)
-        print(recipe2)
+        # # Get sample recipes
+        # recipe1 = Recipe.objects.get(id=92)
+        # print(recipe1)
+        # recipe2 = Recipe.objects.get(id=14084)
+        # print(recipe2)
 
         # Create a household and associate users and recipes
         household1, created = Household.objects.get_or_create(admin=user2)  # Admin is janedoe
         if created:
             household1.members.add(user1, user3)  # Add johndoe and alice as members
-            household1.saved_recipes.add(recipe1, recipe2)
+            # household1.saved_recipes.add(recipe1, recipe2)
 
         household2, created = Household.objects.get_or_create(admin=user4)  # Admin is bob
         if created:
             household2.members.add(user3)  # Add alice as member
-            household2.saved_recipes.add(recipe2)
+            # household2.saved_recipes.add(recipe2)
 
         self.stdout.write(self.style.SUCCESS('Households and saved recipes created successfully!'))
 
-        # Create pantries
-        pantry1, created1 = Pantry.objects.get_or_create(household=household1)
-        pantry2, created2 = Pantry.objects.get_or_create(household=household2)
+        # # Create pantries
+        # pantry1, created1 = Pantry.objects.get_or_create(household=household1)
+        # pantry2, created2 = Pantry.objects.get_or_create(household=household2)
 
-        # Get some ingredients for the pantries
-        soy_sauce=Ingredient.objects.get(id=48)
-        unit1="tsp"
+        # # Get some ingredients for the pantries
+        # soy_sauce=Ingredient.objects.get(id=48)
+        # unit1="tsp"
 
-        # Populate the PantryIngredient table for pantry1
-        PantryIngredient.objects.create(
-            quantity=2,
-            unit='tbsp',
-            ingredient=Ingredient.objects.get(id=48),  # soy sauce
-            pantry=pantry1
-        )
+        # # Populate the PantryIngredient table for pantry1
+        # PantryIngredient.objects.create(
+        #     quantity=2,
+        #     unit='tbsp',
+        #     ingredient=Ingredient.objects.get(id=48),  # soy sauce
+        #     pantry=pantry1
+        # )
 
-        PantryIngredient.objects.create(
-            quantity=2,
-            unit='cups',
-            ingredient=Ingredient.objects.get(id=326),  # almond flour
-            pantry=pantry1
-        )
+        # PantryIngredient.objects.create(
+        #     quantity=2,
+        #     unit='cups',
+        #     ingredient=Ingredient.objects.get(id=326),  # almond flour
+        #     pantry=pantry1
+        # )
 
-        # Populate the PantryIngredient table for pantry2
-        PantryIngredient.objects.create(
-            quantity=5,
-            unit=None,
-            ingredient=Ingredient.objects.get(id=354),  # banana
-            pantry=pantry2
-        )
+        # # Populate the PantryIngredient table for pantry2
+        # PantryIngredient.objects.create(
+        #     quantity=5,
+        #     unit=None,
+        #     ingredient=Ingredient.objects.get(id=354),  # banana
+        #     pantry=pantry2
+        # )
 
-        PantryIngredient.objects.create(
-            quantity=1.5,
-            unit='cups',
-            ingredient=Ingredient.objects.get(id=468),  # whole milk
-            pantry=pantry2
-        )
+        # PantryIngredient.objects.create(
+        #     quantity=1.5,
+        #     unit='cups',
+        #     ingredient=Ingredient.objects.get(id=468),  # whole milk
+        #     pantry=pantry2
+        # )
 
         self.stdout.write(self.style.SUCCESS('Pantry and PantryIngredients created successfully!'))
 

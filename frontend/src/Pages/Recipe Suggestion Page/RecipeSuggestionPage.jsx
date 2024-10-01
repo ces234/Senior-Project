@@ -461,6 +461,7 @@ const RecipeSuggestionPage = () => {
                                 title={recipe.name}
                                 cookTime={recipe.cook_time}
                                 prepTime={recipe.prep_time}
+                                recipeId = {recipe.id}
                             />
                         ))
                     ) : (
@@ -472,6 +473,8 @@ const RecipeSuggestionPage = () => {
                                 title={recipe.name}
                                 cookTime={recipe.cook_time}
                                 prepTime={recipe.prep_time}
+                                recipeId = {recipe.id}
+
                             />
                         ))
                     )}
