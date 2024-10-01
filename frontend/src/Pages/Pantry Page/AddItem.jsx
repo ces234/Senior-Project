@@ -18,20 +18,22 @@ const AddItem = () => {
             // expiration
         };
 
-        try {
-            // Send POST request to the backend API
-            const response = await axios.post('/api/add_pantry_item/', data);
+        const token = localStorage.getItem("token"); // Update this line as needed
 
-            if (response.status === 201) {
-                alert("Pantry item added successfully!");
-                // Optionally, clear the form fields
-                setName("");
-                setQuantity("");
-                setUnit("");
-                // setExpiration("");
-            }
+        try {
+            const response = await axios.post(
+                'http://localhost:8000/pantry/add_pantry_item/',
+                data,
+                {
+                    headers: {
+                        'Authorization': `Token ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            console.log(response.data); // Handle successful response
         } catch (error) {
-            console.error("Error adding pantry item:", error);
+            console.error('Error adding pantry item:', error.response.data);
         }
     };
 

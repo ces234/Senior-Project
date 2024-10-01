@@ -1,34 +1,49 @@
-from rest_framework import status
+# pantry_management/views.py
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 from .models import Pantry, PantryIngredient
-from recipe_management.models import Ingredient
-from .serializers import PantryIngredientSerializer
+from user_management.models import Household
+from recipe_management.models import Ingredient  # Import your Ingredient model
+from .serializers import PantryIngredientSerializer  # Ensure you have a serializer for PantryIngredient
 
 @api_view(['POST'])
 def add_pantry_item(request):
-    # Ensure that the user has a household
-    if not request.user.is_authenticated or not hasattr(request.user, 'household'):
-        return Response({'error': 'User does not have an associated household.'}, status=status.HTTP_400_BAD_REQUEST)
-
+    # Get the user from the request
+    user = request.user
+    
     try:
-        # Fetch the pantry by household
-        pantry = Pantry.objects.get(household=request.user.household)
+        # Fetch the user's household
+        household = Household.objects.get(admin=user)  # Assuming the user is a member of the household
+        pantry = Pantry.objects.get(household=household)  # Get the pantry associated with the household
 
-        # Add pantry info to the incoming data
-        data = request.data
-        data['pantry'] = pantry.id  # Add pantry ID to the data for the serializer
+        # Get the ingredient name from the request data
+        ingredient_name = request.data.get('name')
 
-        # Use the serializer for validation and creation
-        serializer = PantryIngredientSerializer(data=data)
-        
+        # Retrieve the ingredient by name (assuming the name is unique)
+        ingredient = Ingredient.objects.get(name=ingredient_name)
+
+        # Prepare the data for the PantryIngredient
+        ingredient_data = {
+            'pantry': pantry.id,  # Set pantry ID from the fetched pantry
+            'ingredient': ingredient.id,  # Use the ID of the ingredient
+            'quantity': request.data.get('quantity'),
+            'unit': request.data.get('unit'),
+        }
+
+        # Serialize and save the pantry ingredient
+        serializer = PantryIngredientSerializer(data=ingredient_data)
         if serializer.is_valid():
-            serializer.save()  # This will create the PantryIngredient instance
-            return Response({'message': 'Pantry item added successfully!'}, status=status.HTTP_201_CREATED)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+    except Household.DoesNotExist:
+        return Response({'error': 'Household not found'}, status=status.HTTP_404_NOT_FOUND)
     except Pantry.DoesNotExist:
-        return Response({'error': 'Pantry does not exist for this household.'}, status=status.HTTP_404_NOT_FOUND)
-    except Exception as e:
-        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Pantry not found'}, status=status.HTTP_404_NOT_FOUND)
+    except Ingredient.DoesNotExist:
+        return Response({'error': 'Ingredient not found'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:  # Catch all for any unexpected errors
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
