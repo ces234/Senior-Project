@@ -1,12 +1,20 @@
-import React, { useState } from "react"; // Import useState
+import React, { useState, useEffect } from "react"; // Import useState
 import "./PantryPage.css";
 import axios from "axios"; // Import Axios
 
-const AddItem = ({ fetchPantryItems }) => {
+const EditItem = ({ pantryItem, fetchPantryItems }) => {
     const [name, setName] = useState("");
     const [quantity, setQuantity] = useState("");
     const [unit, setUnit] = useState("");
     const [expiration, setExpiration] = useState("");
+
+    useEffect(() => {
+        if (pantryItem) {
+            setName(pantryItem.ingredient_name);
+            setQuantity(pantryItem.quantity);
+            setUnit(pantryItem.unit);
+        }
+    }, [pantryItem]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,28 +28,48 @@ const AddItem = ({ fetchPantryItems }) => {
 
         const token = localStorage.getItem("token");
 
+        // try {
+        //     const response = await axios.post(
+        //         'http://localhost:8000/pantry/add_pantry_item/',
+        //         data,
+        //         {
+        //             headers: {
+        //                 'Authorization': `Token ${token}`,
+        //                 'Content-Type': 'application/json'
+        //             }
+        //         }
+        //     );
+        //     console.log(response.data); // Handle successful response
+        // } catch (error) {
+        //     console.error('Error adding pantry item:', error.response.data);
+        // }
+    };
+
+    // Delete a pantry item
+    const deleteItem = async (item_id) => {
+        console.log('Deleting item with ID:', item_id);
+        const token = localStorage.getItem("token"); // Get the token from local storage
+    
         try {
-            const response = await axios.post(
-                'http://localhost:8000/pantry/add_pantry_item/',
-                data,
-                {
-                    headers: {
-                        'Authorization': `Token ${token}`,
-                        'Content-Type': 'application/json'
-                    }
+            const response = await axios.delete(`http://localhost:8000/pantry/delete_pantry_item/${item_id}/`, {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                    'Content-Type': 'application/json'
                 }
-            );
-            console.log(response.data); // Handle successful response
+            });
+    
+            // Handle successful response
+            console.log('Item deleted successfully:', response.data);
             fetchPantryItems();
         } catch (error) {
-            console.error('Error adding pantry item:', error.response.data);
+            console.error('Error deleting item:', error.response ? error.response.data : error.message);
         }
     };
 
     return (
         <div className="addItemContainer">
             <div className="addItemHeader">
-                <h1>Add Item</h1>
+                <h1>Edit Item</h1>
                 <hr />
             </div>
             <form onSubmit={handleSubmit}>
@@ -65,7 +93,6 @@ const AddItem = ({ fetchPantryItems }) => {
                         name="quantity"
                         value={quantity}
                         onChange={(e) => setQuantity(e.target.value)}
-                        placeholder="Quantity"
                     />
 
                     <label htmlFor="unit">Unit:</label>
@@ -95,11 +122,12 @@ const AddItem = ({ fetchPantryItems }) => {
                         onChange={(e) => setExpiration(e.target.value)}
                     />
                     
-                    <button type="submit" className="submitPantryItemButton">Add Item</button>
+                    <button type="submit" className="submitPantryItemButton">Edit Item</button>
+                    <button className="deletePantryItemButton" onClick={() => deleteItem(pantryItem.ingredient_id)}>Delete Item</button>
                 </div>
             </form>
         </div>
     );
 };
 
-export default AddItem;
+export default EditItem;
