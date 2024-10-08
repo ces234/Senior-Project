@@ -22,28 +22,56 @@ const EditItem = ({ pantryItem, fetchPantryItems }) => {
         const data = {
             name,
             quantity,
-            unit,
-            expiration
+            unit        
         };
 
         const token = localStorage.getItem("token");
 
-        // try {
-        //     const response = await axios.post(
-        //         'http://localhost:8000/pantry/add_pantry_item/',
-        //         data,
-        //         {
-        //             headers: {
-        //                 'Authorization': `Token ${token}`,
-        //                 'Content-Type': 'application/json'
-        //             }
-        //         }
-        //     );
-        //     console.log(response.data); // Handle successful response
-        // } catch (error) {
-        //     console.error('Error adding pantry item:', error.response.data);
-        // }
+        try {
+            const response = await axios.put(
+                `http://localhost:8000/pantry/edit_pantry_item/${pantryItem.ingredient_id}/`, // Ensure you have this endpoint in your backend
+                data,
+                {
+                    headers: {
+                        'Authorization': `Token ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            console.log('Item updated successfully:', response.data); // Handle successful response
+            fetchPantryItems(); // Fetch the updated pantry items
+        } catch (error) {
+            console.error('Error updating pantry item:', error.response ? error.response.data : error.message);
+        }
     };
+
+    // Edit a pantry item
+    const editItem = async(item_id) => {
+        const data = {
+            name,
+            quantity,
+            unit        
+        };
+
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await axios.put(
+                `http://localhost:8000/pantry/edit_pantry_item/${item_id}/`, // Ensure you have this endpoint in your backend
+                data,
+                {
+                    headers: {
+                        'Authorization': `Token ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            console.log('Item updated successfully:', response.data); // Handle successful response
+            fetchPantryItems(); // Fetch the updated pantry items
+        } catch (error) {
+            console.error('Error updating pantry item:', error.response ? error.response.data : error.message);
+        }
+    }
 
     // Delete a pantry item
     const deleteItem = async (item_id) => {
@@ -122,7 +150,7 @@ const EditItem = ({ pantryItem, fetchPantryItems }) => {
                         onChange={(e) => setExpiration(e.target.value)}
                     />
                     
-                    <button type="submit" className="submitPantryItemButton">Edit Item</button>
+                    <button className="submitPantryItemButton" onClick={() => editItem(pantryItem.ingredient_id)}>Edit Item</button>
                     <button className="deletePantryItemButton" onClick={() => deleteItem(pantryItem.ingredient_id)}>Delete Item</button>
                 </div>
             </form>

@@ -63,30 +63,6 @@ const PantryPage = () => {
   const [showAddItem, setShowAddItem] = useState(false); // State to manage visibility of AddItem component
   const [selectedPantryItem, setSelectedPantryItem] = useState(null);
 
-  // const pantryItems = [
-  //   { ingredient: "butter", quantity: "1", unit: "cup" },
-  //   { ingredient: "apple", quantity: "3", unit: "none" },
-  //   { ingredient: "sugar", quantity: "3", unit: "cup" },
-  //   { ingredient: "cinnamon", quantity: "none", unit: "none" },
-  //   { ingredient: "flour", quantity: "2", unit: "cup" },
-  //   { ingredient: "milk", quantity: "1", unit: "cup" },
-  //   { ingredient: "salt", quantity: "1", unit: "tbsp" },
-  //   { ingredient: "pepper", quantity: "1", unit: "tsp" },
-  //   { ingredient: "pepper", quantity: "1", unit: "tsp" },
-  //   { ingredient: "pepper", quantity: "1", unit: "tsp" },
-  //   { ingredient: "pepper", quantity: "1", unit: "tsp" },
-  //   { ingredient: "pepper", quantity: "1", unit: "tsp" },
-  //   { ingredient: "pepper", quantity: "1", unit: "tsp" },
-  //   { ingredient: "pepper", quantity: "1", unit: "tsp" },
-  //   { ingredient: "pepper", quantity: "1", unit: "tsp" },
-  //   { ingredient: "pepper", quantity: "1", unit: "tsp" },
-  //   { ingredient: "pepper", quantity: "1", unit: "tsp" },
-  //   { ingredient: "pepper", quantity: "1", unit: "tsp" },
-  //   { ingredient: "pepper", quantity: "1", unit: "tsp" },
-  //   { ingredient: "pepper", quantity: "1", unit: "tsp" },
-  //   { ingredient: "pepper", quantity: "1", unit: "tsp" },
-  // ];
-
   const fetchPantryItems = async () => {
     const token = localStorage.getItem('token'); // Get the user's token
     try {
@@ -96,6 +72,7 @@ const PantryPage = () => {
           'Content-Type': 'application/json'
         }
       });
+      console.log(response.data)
       setPantryItems(response.data); // Set the pantry items from the response
     } catch (error) {
       console.error('Error fetching pantry items:', error.response.data);
