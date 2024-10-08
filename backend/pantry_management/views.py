@@ -103,7 +103,7 @@ def edit_pantry_item(request, item_id):
         pantry = Pantry.objects.get(household=household)  # Get the pantry associated with the household
 
         # Retrieve the PantryIngredient instance to update
-        pantry_item = PantryIngredient.objects.get(ingredient=item_id)
+        pantry_item = PantryIngredient.objects.get(ingredient=item_id, pantry=pantry.id)
 
         print(pantry_item)
 
