@@ -73,7 +73,6 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS('Users created successfully!'))
 
-        # # Get sample recipes
         # Get sample recipes
         recipe1 = Recipe.objects.get(id=92)
         print(recipe1)
