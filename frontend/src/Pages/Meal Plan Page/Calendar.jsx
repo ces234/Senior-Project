@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./MealPlanPage.css";
 import RecipeCard from "../Recipe Suggestion Page/RecipeCard";
 import chicken from "../../photos/chicken.webp";
-
+import { Link } from 'react-router-dom';
 
 const Calendar = ({ onRecipeDrop, currentRecipes }) => {
   const daysOfWeek = [
@@ -25,7 +25,6 @@ const Calendar = ({ onRecipeDrop, currentRecipes }) => {
   const handleDragOver = (e) => {
     e.preventDefault();
   };
-
 
   const getRecipeForSlot = (day, mealType) => {
     return currentRecipes.find(
@@ -55,11 +54,18 @@ const Calendar = ({ onRecipeDrop, currentRecipes }) => {
                 {(() => {
                   const recipeData = getRecipeForSlot(day, meal);
                   return recipeData ? (
-                    <RecipeCard 
-                      image = {chicken}
-                      title = {recipeData.recipe.name}
-                      cookTime = {recipeData.recipe.cook_time}
-                      prepTime = {recipeData.recipe.prep_time} />
+                    <Link
+                      to={`/recipe/${recipeData.recipe.id}`}
+                      className="recipeLink"
+                    >
+                      <RecipeCard
+                        image={chicken}
+                        title={recipeData.recipe.name}
+                        cookTime={recipeData.recipe.cook_time}
+                        prepTime={recipeData.recipe.prep_time}
+                        recipeId={recipeData.recipe.id}
+                      />
+                    </Link>
                   ) : (
                     "Add a meal!"
                   );
