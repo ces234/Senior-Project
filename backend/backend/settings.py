@@ -96,7 +96,7 @@ DATABASES = {
         'USER': 'ces234',
         'PASSWORD': 'ces234',
         'HOST': 'localhost',
-        'PORT': '5433',  # Default PostgreSQL port
+        'PORT': '5432',  # Default PostgreSQL port
     }
 }
 
