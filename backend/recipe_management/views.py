@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from .models import Recipe, Category
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404
 
 
 
@@ -82,3 +83,25 @@ def categories_view(request):
     categories = Category.objects.all()
     categories_list = [{'id': cat.id, 'name': cat.name} for cat in categories]
     return JsonResponse(categories_list, safe = False)
+
+def get_recipe_by_id(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id = recipe_id)
+
+    recipe_data = {
+        'name': recipe.name,
+        'prep_time': recipe.prep_time,
+        'cook_time': recipe.cook_time,
+        'servings': recipe.servings,
+        'instructions': recipe.instructions,
+        'ingredients': [
+            {
+                'name': ri.ingredient.name,
+                'quantity': ri.quantity,
+                'unit': ri.unit
+            } for ri in recipe.recipeingredient_set.all()
+        ],
+        'categories': [category.name for category in recipe.categories.all()]
+    }
+
+    # Return the recipe data as a JSON response
+    return JsonResponse(recipe_data)

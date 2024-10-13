@@ -26,9 +26,17 @@ const NavBar = () => {
     setError(null);
     try {
       const today = new Date();
-      const firstDayOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 1); // Monday
+      const firstDayOfWeek = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate() - today.getDay() + 1
+      ); // Monday
       console.log("FIRST DAY: ", firstDayOfWeek);
-      const lastDayOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 7); // Sunday
+      const lastDayOfWeek = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate() - today.getDay() + 7
+      ); // Sunday
 
       const start_date = firstDayOfWeek.toISOString().split("T")[0]; // Format to YYYY-MM-DD
       const end_date = lastDayOfWeek.toISOString().split("T")[0]; // Format to YYYY-MM-DD
@@ -39,18 +47,21 @@ const NavBar = () => {
         return;
       }
 
-      const response = await fetch("http://localhost:8000/meal-plan/create-meal-plan/", {
-        method: "POST",
-        headers: {
-          Authorization: `Token ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          start_date,
-          end_date,
-          user: user.id // Assuming user object has an id
-        }),
-      });
+      const response = await fetch(
+        "http://localhost:8000/meal-plan/create-meal-plan/",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Token ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            start_date,
+            end_date,
+            user: user.id, // Assuming user object has an id
+          }),
+        }
+      );
 
       let mealPlanData = {};
       if (response.ok) {
@@ -79,12 +90,33 @@ const NavBar = () => {
   return (
     <div className="navBar">
       <div className="firstIconContainer">
-        <NavButton icon={faCircleUser} text="Profile" onClick={() => navigate("/profile")} />
+        <NavButton
+          icon={faCircleUser}
+          text="Profile"
+          onClick={() => navigate("/profile")}
+        />
       </div>
       <div className="otherIcons">
-        <NavButton icon={faCalendar} text="Meal Plan" onClick={handleMealPlanClick} />
-        <NavButton icon={faBookOpen} text="Recipes" onClick={() => navigate("/recipes")} />
-        <NavButton icon={faCarrot} text="Pantry" onClick={() => navigate("/pantry")} />
+        <NavButton
+          icon={faCalendar}
+          text="Meal Plan"
+          onClick={handleMealPlanClick}
+        />
+        <NavButton
+          icon={faBookOpen}
+          text="Recipes"
+          onClick={() => navigate("/recipes")}
+        />
+        <NavButton
+          icon={faCarrot}
+          text="Pantry"
+          onClick={() => navigate("/pantry")}
+        />
+        <NavButton
+          icon={faCarrot}
+          text="Grocery List"
+          onClick={() => navigate("/grocery-list")}
+        />
         <button onClick={handleLogout}>Logout</button>
       </div>
       {loading && <div className="loading">Loading...</div>}

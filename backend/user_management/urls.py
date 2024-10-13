@@ -5,7 +5,7 @@ from .views import LoginView
 from .views import recently_added_recipes
 from .views import add_recently_added_recipe
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-
+from .views import signup
 
 
 
@@ -17,4 +17,5 @@ urlpatterns = [
     path('add-recently-added-recipe/', add_recently_added_recipe, name='add_recently_added_recipe'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  # JWT token view
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # JWT token refresh view
+    path('signup/', signup, name = "signup"),
 ]

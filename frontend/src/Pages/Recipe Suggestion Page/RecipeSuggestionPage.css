@@ -266,3 +266,10 @@
     flex-direction: row;
     justify-content: space-around;
 }
+
+
+.SRCSuggested .recipeLink {
+    text-decoration: none; /* Remove underlines */
+    color: inherit; /* Inherit color from parent */
+  }
+  

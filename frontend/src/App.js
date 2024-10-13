@@ -7,6 +7,10 @@ import Header from "./Universal Components/Header/Header";
 import PantryPage from "./Pages/Pantry Page/PantryPage";
 import LoginPage from "./Pages/Login Page/LoginPage";
 import MealPlanPage from "./Pages/Meal Plan Page/MealPlanPage";
+import RecipePage from "./Pages/Recipe Page/RecipePage";
+import LandingPage from "./Pages/Landing Page/LandingPage";
+import SignupPage from "./Pages/Signup Page/SignupPage";
+import GroceryListPage from "./Pages/Grocery List Page/GroceryListPage";
 import { AuthProvider, useAuth } from "./AuthContext"; // Ensure correct path
 
 function App() {
@@ -18,10 +22,14 @@ function App() {
           <div className="pageContent">
             <NavBar />
             <Routes>
-              <Route path="/" element={<LoginPage />} />
+              <Route path = "/" element = {<LandingPage />} /> 
+              <Route path="/login" element={<LoginPage />} />
+              <Route path = "/signup" element = {<SignupPage />}/>
               <Route path="/recipes" element={<PrivateRoute component={RecipeSuggestionPage} />} /> {/* Protect RecipeSuggestionPage */}
               <Route path="/pantry" element={<PrivateRoute component={PantryPage} />} /> {/* Protect PantryPage */}
               <Route path = "/meal-plan" element = {<PrivateRoute component={MealPlanPage} />} />
+              <Route path = "/recipe/:id" element = {<PrivateRoute component= {RecipePage} />} />
+              <Route path = "/grocery-list" element = {<PrivateRoute component={GroceryListPage} />} />
             </Routes>
           </div>
         </Router>

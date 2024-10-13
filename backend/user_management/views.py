@@ -5,6 +5,10 @@ from user_management.models import Household  # Adjust based on your actual mode
 from recipe_management.models import Recipe
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from .serializers import UserRegistrationSerializer
+from django.contrib.auth.hashers import make_password
+
+
 
 
 
@@ -83,3 +87,35 @@ def add_recently_added_recipe(request):
         return Response({'error': 'Household not found.'}, status=402)
 
     
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def signup(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    household_option = request.data.get('householdOption')
+
+    # Basic validations (you can add more here)
+    if not all([username, password, household_option]):
+        return Response({'error': 'All fields are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        # Create a new user
+        user = User.objects.create(
+            username=username,
+            password=make_password(password)  # Hash the password before saving
+        )
+
+        # Check if the user opted to create a new household
+        if household_option == 'new':
+            # Create a new household and associate it with the user
+            household = Household.objects.create(admin=user)
+            user.households.add(household)  # Assuming a many-to-many relationship
+        # Optionally, handle joining an existing household here
+
+        # Serialize and return the created user
+        user_data = UserSerializer(user).data
+        return Response({'message': 'User created successfully', 'user': user_data}, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
