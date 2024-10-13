@@ -155,44 +155,6 @@ const MealPlanPage = () => {
     }
   };
 
-  const renderMealPlanForDay = (day, meals, mealPlanId) => {
-    const mealTypes = ["breakfast", "lunch", "dinner"];
-    return mealTypes.map((mealType) => {
-      const meal = meals.find((m) => m.meal_type === mealType);
-      return (
-        <div key={mealType}>
-          <strong>
-            {mealType.charAt(0).toUpperCase() + mealType.slice(1)}:{" "}
-          </strong>
-          {meal ? (
-            <>
-              {meal.recipe_name}
-              <button onClick={() => alert(`Edit ${mealType} for ${day}`)}>
-                Edit
-              </button>
-            </>
-          ) : (
-            <>
-              <span>No meal selected</span>
-              <button
-                onClick={() =>
-                  handleAddRecipe(
-                    mealPlanId,
-                    newMealPlan.selectedRecipes[0],
-                    day,
-                    mealType
-                  )
-                }
-              >
-                Add
-              </button>
-            </>
-          )}
-        </div>
-      );
-    });
-  };
-
   const handleAddRecipe = async (mealPlanId, recipeId, day, mealType) => {
     try {
       const token = localStorage.getItem("token");
