@@ -777,11 +777,7 @@ const RecipeSuggestionPage = () => {
           {searchResults.length > 0
             ? // Display search results if they exist
               searchResults.map((recipe, index) => (
-                <Link
-                  key={index}
-                  to={`/recipe/${recipe.id}`}
-                  className="recipeLink"
-                >
+
                   <RecipeCard
                     key={index}
                     image={chicken}
@@ -790,15 +786,9 @@ const RecipeSuggestionPage = () => {
                     prepTime={recipe.prep_time}
                     recipeId={recipe.id}
                   />
-                </Link>
               ))
             : // Otherwise, display random recipes
               recipes.map((recipe, index) => (
-                <Link
-                  key={index}
-                  to={`/recipe/${recipe.id}`}
-                  className="recipeLink"
-                >
                   <RecipeCard
                     key={index}
                     image={chicken}
@@ -807,7 +797,6 @@ const RecipeSuggestionPage = () => {
                     prepTime={recipe.prep_time}
                     recipeId={recipe.id}
                   />
-                </Link>
               ))}
         </div>
         <div className="SRCFooter">

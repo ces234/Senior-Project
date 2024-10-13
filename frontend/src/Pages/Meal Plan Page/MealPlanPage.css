@@ -151,3 +151,23 @@
 .mealSlot .recipeButtonContainer {
     display: none;
 }
+
+.mealSlot .recipeCardContainer img {
+    width: 100%; /* Ensure the image takes the full width */
+    height: auto; /* Maintain aspect ratio */
+    max-height: 120px; /* Restrict the image height to leave space for the title */
+    object-fit: cover; /* Ensure the image scales nicely without distortion */
+
+}
+
+.recentlyAddedRecipesContainer .recipeCardContainer img {
+    width: 100%; /* Ensure the image takes the full width */
+    height: auto; /* Maintain aspect ratio */
+    max-height: 120px; /* Restrict the image height to leave space for the title */
+    object-fit: cover; /* Ensure the image scales nicely without distortion */
+}
+
+.recentlyAddedRecipesContainer .recipeLink, .mealSlot .recipeLink {
+    text-decoration: none; /* Remove underlines */
+    color: inherit; /* Inherit color from parent */
+}
