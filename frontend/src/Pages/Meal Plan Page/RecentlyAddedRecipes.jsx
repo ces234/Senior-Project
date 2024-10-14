@@ -7,7 +7,6 @@ const RecentlyAddedRecipes = ({ recipes, onRecipeDrop }) => {
     e.dataTransfer.setData("recipeId", recipeId);
   };
 
-  console.log(recipes);
 
   return (
     <div className="mealPlanRight">

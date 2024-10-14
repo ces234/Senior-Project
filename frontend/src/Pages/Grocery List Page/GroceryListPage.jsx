@@ -24,7 +24,6 @@ const GroceryListPage = () => {
 
       if (!response.ok) throw new Error("Failed to fetch grocery list");
       const fetchedList = await response.json();
-      console.log("list:", fetchedList);
       setGroceryList(fetchedList);
     } catch (error) {
       console.error("Error fetching grocery list: ", error);

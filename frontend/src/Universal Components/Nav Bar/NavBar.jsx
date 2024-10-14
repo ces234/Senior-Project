@@ -31,7 +31,6 @@ const NavBar = () => {
         today.getMonth(),
         today.getDate() - today.getDay() + 1
       ); // Monday
-      console.log("FIRST DAY: ", firstDayOfWeek);
       const lastDayOfWeek = new Date(
         today.getFullYear(),
         today.getMonth(),

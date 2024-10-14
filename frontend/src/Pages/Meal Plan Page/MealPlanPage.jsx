@@ -20,9 +20,10 @@ const MealPlanPage = () => {
   const location = useLocation();
   const { user, logout } = useAuth();
   const [currentRecipes, setCurrentRecipes] = useState([]);
+  const token = localStorage.getItem("token");
+
 
   useEffect(() => {
-    console.log("Location state:", location.state);
     if (location.state?.mealPlan) {
       setCurrentPlan(location.state.mealPlan);
     } else {
@@ -54,7 +55,6 @@ const MealPlanPage = () => {
     };
 
     const fetchMealPlans = async () => {
-      const token = localStorage.getItem("token");
       try {
         const response = await fetch(
           "http://localhost:8000/meal-plan/view-meal-plans/",
@@ -99,7 +99,6 @@ const MealPlanPage = () => {
       return;
     }
   
-    const token = localStorage.getItem("token");
     try {
       const url = `http://localhost:8000/meal-plan/get-meal-plan-recipes?start_date=${currentPlan.start_date}&end_date=${currentPlan.end_date}`;
       const response = await fetch(url, {
@@ -118,84 +117,12 @@ const MealPlanPage = () => {
     }
   };
   
-  
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewMealPlan((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem("token");
-    try {
-      const response = await fetch(
-        "http://localhost:8000/meal-plan/create-meal-plan/",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Token ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newMealPlan),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to create meal plan");
-      const newMealPlanResponse = await response.json();
-      setMealPlans((prevPlans) => [...prevPlans, newMealPlanResponse]);
-      alert("Meal plan created successfully!");
-      setNewMealPlan({ startDate: "", endDate: "", selectedRecipes: [] });
-    } catch (error) {
-      console.error("Error creating meal plan: ", error);
-      alert("Failed to create meal plan. Please try again.");
-    }
-  };
-
-  const handleAddRecipe = async (mealPlanId, recipeId, day, mealType) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(
-        `http://localhost:8000/meal-plan/add-recipe/${mealPlanId}/`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Token ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            recipe_id: recipeId,
-            day,
-            meal_type: mealType,
-          }),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to add recipe");
-      alert("Recipe added successfully!");
-
-      fetchMealPlanRecipes(); // This will update the `currentRecipes
-
-    } catch (error) {
-      console.error("Error adding recipe:", error);
-      alert("Failed to add recipe. Please try again.");
-    }
-  };
 
   const onRecipeDrop = async (recipeId, day, mealType) => {
     try {
       const token = localStorage.getItem("token");
-      console.log(
-        "attempting to add recipe ",
-        recipeId,
-        "to day ",
-        day,
-        "for mealType ",
-        mealType
-      );
+
 
       const response = await fetch(
         `http://localhost:8000/meal-plan/add-recipe/${currentPlan.id}/`,
@@ -319,6 +246,30 @@ const MealPlanPage = () => {
     }
   };
 
+  const updateGroceries = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:8000/meal-plan/generate-grocery-list/`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Token ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            meal_plan_id: currentPlan.id,
+          }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to generate grocyer list.");
+      
+    } catch (error) {
+      console.error("Errror adding grocery list: ", error);
+    }
+  };
+
   return (
     <div className="mealPlanPageContainer">
       <div className="header">
@@ -333,6 +284,7 @@ const MealPlanPage = () => {
         <Calendar onRecipeDrop={onRecipeDrop} currentRecipes = {currentRecipes}/>
         <RecentlyAddedRecipes recipes={recipes} />
       </div>
+      <button className = "updateGroceriesButton" onClick = {updateGroceries}>Update Grocery List</button>
     </div>
   );
 };

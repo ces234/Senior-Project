@@ -124,3 +124,30 @@ def get_meal_plan_recipes(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def generate_grocery_list(request):
+    try:
+        # Retrieve the meal plan ID from the POST request body
+        meal_plan_id = request.data.get('meal_plan_id')
+
+        if not meal_plan_id:
+            return Response({"error": "Meal plan ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Fetch the meal plan based on the ID
+        meal_plan = MealPlan.objects.get(id=meal_plan_id)
+
+        
+        # Generate the grocery list
+        grocery_list = meal_plan.generate_grocery_list()
+
+        # Prepare the response with the ingredients
+        ingredients = [ingredient.name for ingredient in grocery_list.ingredients.all()]
+
+        return Response({"grocery_list": ingredients}, status=status.HTTP_201_CREATED)
+
+    except MealPlan.DoesNotExist:
+        return Response({"error": "Meal plan does not exist."}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
