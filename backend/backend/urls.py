@@ -30,5 +30,6 @@ urlpatterns = [
     path('user/', include('user_management.urls')),  # Ensure your API paths are included
     path('meal-plan/', include('meal_planning.urls')),  # Ensure your API paths are included
     path('pantry/', include('pantry_management.urls')),  # Include your app's URLs
+    path('grocery/', include('grocery_management.urls'))
 ]
 
