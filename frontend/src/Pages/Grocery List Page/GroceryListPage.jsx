@@ -74,12 +74,37 @@ const GroceryListPage = () => {
         }
       );
 
-      if (!response.ok) throw new Error("Failed to add ingredient to grocery list.");
+      if (!response.ok)
+        throw new Error("Failed to add ingredient to grocery list.");
 
       // Refetch the grocery list after adding the ingredient
       fetchGroceryList(); // Refresh the list
     } catch (error) {
       console.error("Error adding ingredient to grocery list: ", error);
+    }
+  };
+
+  const removeIngredient = async (ingredientId) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch(
+        "http://localhost:8000/grocery/remove-ingredient/",
+        {
+          method: "POST",  // Could be DELETE if you choose to use it
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${token}`,
+          },
+          body: JSON.stringify({ ingredient_id: ingredientId }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to remove ingredient.");
+      
+      // Refetch the grocery list after removing the ingredient
+      fetchGroceryList(); // Refresh the list
+    } catch (error) {
+      console.error("Error removing ingredient: ", error);
     }
   };
 
@@ -115,7 +140,12 @@ const GroceryListPage = () => {
           <div>
             <ul>
               {groceryList.ingredients.map((ingredient) => (
-                <li key={ingredient.id}>{ingredient.name}</li>
+                <li key={ingredient.id}>
+                  {ingredient.name}
+                  <button onClick={() => removeIngredient(ingredient.id)}>
+                  Remove
+                </button>
+                </li>
               ))}
             </ul>
           </div>

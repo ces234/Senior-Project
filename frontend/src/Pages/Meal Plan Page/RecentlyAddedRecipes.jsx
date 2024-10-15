@@ -2,10 +2,8 @@ import "./MealPlanPage.css";
 import RecipeCard from "../Recipe Suggestion Page/RecipeCard";
 import chicken from "../../photos/chicken.webp";
 
-const RecentlyAddedRecipes = ({ recipes, onRecipeDrop }) => {
-  const handleDragStart = (e, recipeId) => {
-    e.dataTransfer.setData("recipeId", recipeId);
-  };
+const RecentlyAddedRecipes = ({ recipes, onRecipeDrop, onDragStart }) => {
+ 
 
 
   return (
@@ -22,7 +20,7 @@ const RecentlyAddedRecipes = ({ recipes, onRecipeDrop }) => {
               cookTime={recipe.cook_time}
               prepTime={recipe.prep_time}
               draggable
-              onDragStart={(e) => handleDragStart(e, recipe.id)}
+              onDragStart={onDragStart}
             />
           ))
         ) : (

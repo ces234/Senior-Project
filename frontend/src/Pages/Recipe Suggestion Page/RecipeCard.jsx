@@ -1,10 +1,9 @@
 import "./RecipeSuggestionPage.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-regular-svg-icons";
-import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { faCirclePlus, faTrash } from "@fortawesome/free-solid-svg-icons"; // Import the trash icon
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
-
+import { Link } from "react-router-dom";
 
 const RecipeCard = ({
   image,
@@ -13,8 +12,11 @@ const RecipeCard = ({
   prepTime,
   recipeId,
   onDragStart,
+  onDelete, // Add onDelete prop
+  mealPlanId,
+  meal,
+  day,
 }) => {
-
   const [error, setError] = useState(null); // State for error messages
   const [success, setSuccess] = useState(null); // State for success messages
 
@@ -48,8 +50,23 @@ const RecipeCard = ({
     }
   };
 
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    e.stopPropagation(); // Prevent the click event from bubbling up to the card
+    if (onDelete) {
+      await onDelete(mealPlanId,recipeId, meal, day); // Call the onDelete function passed from the parent component
+    }
+  };
+
   return (
     <div className="recipeCardContainer" draggable onDragStart={onDragStart}>
+            <FontAwesomeIcon
+        icon={faTrash} // Trash icon for deleting
+        onClick={handleDelete} // Call handleDelete on click
+        style={{ cursor: "pointer", color: "red" }} // Style for the delete icon
+      />
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {success && <p style={{ color: "green" }}>{success}</p>}
       <Link to={`/recipe/${recipeId}`} className="recipeLink">
         <img src={image} alt="recipe" />
 
@@ -68,8 +85,7 @@ const RecipeCard = ({
         />
       </div>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
+
     </div>
   );
 };

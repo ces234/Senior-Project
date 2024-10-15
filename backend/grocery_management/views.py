@@ -48,3 +48,21 @@ def add_ingredient_to_grocery_list(request):
     grocery_list.add_ingredient(ingredient)
 
     return Response({"message": "Ingredient added successfull!"}, status = status.HTTP_201_CREATED)
+
+@api_view(['POST'])  # You could also use DELETE method if needed
+def remove_ingredient_from_grocery_list(request):
+    household = request.user.households.first()
+
+    if not household:
+        return Response({"error": "No household found for this user."})
+    
+    grocery_list = GroceryList.objects.filter(household=household).first()
+    if not grocery_list:
+        return Response({"error": "No grocery list found for this household."})
+    
+    ingredient_id = request.data.get('ingredient_id')
+    ingredient = get_object_or_404(Ingredient, id=ingredient_id)
+
+    grocery_list.remove_ingredient(ingredient)
+
+    return Response({"message": "Ingredient removed successfully!"}, status=status.HTTP_200_OK)

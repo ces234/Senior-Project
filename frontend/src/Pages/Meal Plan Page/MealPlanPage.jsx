@@ -22,6 +22,10 @@ const MealPlanPage = () => {
   const [currentRecipes, setCurrentRecipes] = useState([]);
   const token = localStorage.getItem("token");
 
+  const handleDragStart = (e, recipeId) => {
+    e.dataTransfer.setData("recipeId", recipeId);
+  };
+
 
   useEffect(() => {
     if (location.state?.mealPlan) {
@@ -123,6 +127,9 @@ const MealPlanPage = () => {
     try {
       const token = localStorage.getItem("token");
 
+      console.log("recipe id: ", recipeId);
+      console.log("day: ", day);
+      console.log("meal_ type: ", mealType);
 
       const response = await fetch(
         `http://localhost:8000/meal-plan/add-recipe/${currentPlan.id}/`,
@@ -270,22 +277,64 @@ const MealPlanPage = () => {
     }
   };
 
+  const removeRecipeFromMealPlan = async (mealPlanId, recipeId, meal, day) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:8000/meal-plan/${mealPlanId}/remove-recipe/${recipeId}/`, {
+        method: 'DELETE',
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+        body: JSON.stringify({ 
+          "meal_type":meal, 
+          "day": day }), // Send meal and day in the body
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to remove recipe from meal plan");
+      }
+  
+      const data = await response.json();
+      fetchMealPlanRecipes(); // Call the function to refresh the recipes
+
+    } catch (error) {
+      console.error("Error removing recipe: ", error);
+    }
+  };
+  
+  
+
   return (
     <div className="mealPlanPageContainer">
-      <div className="header">
-        <h1>Meal Plan</h1>
-        <DateDisplay
-          currentPlan={currentPlan}
-          handleNext={handleNext}
-          handlePrevious={handlePrevious}
-        />
-      </div>
-      <div className="mealPlanPageContent">
-        <Calendar onRecipeDrop={onRecipeDrop} currentRecipes = {currentRecipes}/>
-        <RecentlyAddedRecipes recipes={recipes} />
-      </div>
-      <button className = "updateGroceriesButton" onClick = {updateGroceries}>Update Grocery List</button>
-    </div>
+  <div className="header">
+    <h1>Meal Plan</h1>
+    <DateDisplay
+      currentPlan={currentPlan}
+      handleNext={handleNext}
+      handlePrevious={handlePrevious}
+    />
+  </div>
+  <div className="mealPlanPageContent">
+    {/* Only render Calendar if currentPlan and currentPlan.id exist */}
+    {currentPlan && currentPlan.id ? (
+      <Calendar
+        onRecipeDrop={onRecipeDrop}
+        currentRecipes={currentRecipes}
+        onDragStart={handleDragStart}
+        handleRemoveRecipe={removeRecipeFromMealPlan}
+        mealPlanId={currentPlan.id}
+      />
+    ) : (
+      <p>Loading meal plan...</p>
+    )}
+    <RecentlyAddedRecipes recipes={recipes} onDragStart={handleDragStart} />
+  </div>
+  <button className="updateGroceriesButton" onClick={updateGroceries}>
+    Update Grocery List
+  </button>
+</div>
+
   );
 };
 
