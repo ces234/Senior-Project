@@ -12,7 +12,6 @@ const RecipePage = () => {
           `http://localhost:8000/recipes/recipe/${id}/`
         );
         const data = await response.json();
-        console.log("recipe data: ", data);
         setRecipe(data);
       } catch (error) {
         console.error("Error fetching recipe:", error);
@@ -26,12 +25,11 @@ const RecipePage = () => {
     return <div>Loading...</div>;
   }
 
-
   return (
-    <div className="recipe-container" >
-       <h1>{recipe.name}</h1>
+    <div className="recipe-container">
+      <h1>{recipe.name}</h1>
 
-      <div >
+      <div>
         <p>
           <strong>Prep Time:</strong> {recipe.prep_time} minutes
         </p>
@@ -44,9 +42,18 @@ const RecipePage = () => {
       </div>
 
       <div>
+        <h2>Ingredients</h2>
+        <ul>
+          {recipe.ingredients.map((ingredient, index) => (
+            <li key={index}>{ingredient.name}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
         <h2>Instructions</h2>
         <p>{recipe.instructions}</p>
-      </div> 
+      </div>
     </div>
   );
 };

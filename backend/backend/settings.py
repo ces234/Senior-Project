@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'recipe_management',
     'pantry_management',
     'db_populator',
+    'grocery_management',
 ]
 
 MIDDLEWARE = [

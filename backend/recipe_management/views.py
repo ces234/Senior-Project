@@ -1,8 +1,14 @@
 from django.http import JsonResponse
-from .models import Recipe, Category
+from .models import Recipe, Category, Ingredient
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view, permission_classes
+from .serializers import IngredientSerializer
 
 
 
@@ -105,3 +111,28 @@ def get_recipe_by_id(request, recipe_id):
 
     # Return the recipe data as a JSON response
     return JsonResponse(recipe_data)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])  # Allow access without requiring authentication
+def get_all_ingredients(request):
+    try:
+        ingredients = Ingredient.objects.all()
+
+        ingredient_data = [{'id': ingredient.id, 'name': ingredient.name} for ingredient in ingredients]
+
+        return Response(ingredient_data, status=status.HTTP_200_OK)
+    
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+@api_view(['GET'])
+@permission_classes([AllowAny])  # Allow access without requiring authentication
+def search_ingredient(request): 
+    query = request.query_params.get('q', None)
+    if query: 
+        ingredients = Ingredient.objects.filter(Q(name__icontains=query))
+        serializer = IngredientSerializer(ingredients, many = True)
+        return Response(serializer.data)
+    else:
+        return Response({"message": "No query provided"}, status = 400)

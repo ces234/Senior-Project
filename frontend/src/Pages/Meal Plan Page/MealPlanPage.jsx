@@ -20,9 +20,14 @@ const MealPlanPage = () => {
   const location = useLocation();
   const { user, logout } = useAuth();
   const [currentRecipes, setCurrentRecipes] = useState([]);
+  const token = localStorage.getItem("token");
+
+  const handleDragStart = (e, recipeId) => {
+    e.dataTransfer.setData("recipeId", recipeId);
+  };
+
 
   useEffect(() => {
-    console.log("Location state:", location.state);
     if (location.state?.mealPlan) {
       setCurrentPlan(location.state.mealPlan);
     } else {
@@ -54,7 +59,6 @@ const MealPlanPage = () => {
     };
 
     const fetchMealPlans = async () => {
-      const token = localStorage.getItem("token");
       try {
         const response = await fetch(
           "http://localhost:8000/meal-plan/view-meal-plans/",
@@ -99,7 +103,6 @@ const MealPlanPage = () => {
       return;
     }
   
-    const token = localStorage.getItem("token");
     try {
       const url = `http://localhost:8000/meal-plan/get-meal-plan-recipes?start_date=${currentPlan.start_date}&end_date=${currentPlan.end_date}`;
       const response = await fetch(url, {
@@ -118,84 +121,15 @@ const MealPlanPage = () => {
     }
   };
   
-  
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewMealPlan((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem("token");
-    try {
-      const response = await fetch(
-        "http://localhost:8000/meal-plan/create-meal-plan/",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Token ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newMealPlan),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to create meal plan");
-      const newMealPlanResponse = await response.json();
-      setMealPlans((prevPlans) => [...prevPlans, newMealPlanResponse]);
-      alert("Meal plan created successfully!");
-      setNewMealPlan({ startDate: "", endDate: "", selectedRecipes: [] });
-    } catch (error) {
-      console.error("Error creating meal plan: ", error);
-      alert("Failed to create meal plan. Please try again.");
-    }
-  };
-
-  const handleAddRecipe = async (mealPlanId, recipeId, day, mealType) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(
-        `http://localhost:8000/meal-plan/add-recipe/${mealPlanId}/`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Token ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            recipe_id: recipeId,
-            day,
-            meal_type: mealType,
-          }),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to add recipe");
-      alert("Recipe added successfully!");
-
-      fetchMealPlanRecipes(); // This will update the `currentRecipes
-
-    } catch (error) {
-      console.error("Error adding recipe:", error);
-      alert("Failed to add recipe. Please try again.");
-    }
-  };
 
   const onRecipeDrop = async (recipeId, day, mealType) => {
     try {
       const token = localStorage.getItem("token");
-      console.log(
-        "attempting to add recipe ",
-        recipeId,
-        "to day ",
-        day,
-        "for mealType ",
-        mealType
-      );
+
+      console.log("recipe id: ", recipeId);
+      console.log("day: ", day);
+      console.log("meal_ type: ", mealType);
 
       const response = await fetch(
         `http://localhost:8000/meal-plan/add-recipe/${currentPlan.id}/`,
@@ -319,21 +253,88 @@ const MealPlanPage = () => {
     }
   };
 
+  const updateGroceries = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:8000/meal-plan/generate-grocery-list/`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Token ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            meal_plan_id: currentPlan.id,
+          }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to generate grocyer list.");
+      
+    } catch (error) {
+      console.error("Errror adding grocery list: ", error);
+    }
+  };
+
+  const removeRecipeFromMealPlan = async (mealPlanId, recipeId, meal, day) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:8000/meal-plan/${mealPlanId}/remove-recipe/${recipeId}/`, {
+        method: 'DELETE',
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+        body: JSON.stringify({ 
+          "meal_type":meal, 
+          "day": day }), // Send meal and day in the body
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to remove recipe from meal plan");
+      }
+  
+      const data = await response.json();
+      fetchMealPlanRecipes(); // Call the function to refresh the recipes
+
+    } catch (error) {
+      console.error("Error removing recipe: ", error);
+    }
+  };
+  
+  
+
   return (
     <div className="mealPlanPageContainer">
-      <div className="header">
-        <h1>Meal Plan</h1>
-        <DateDisplay
-          currentPlan={currentPlan}
-          handleNext={handleNext}
-          handlePrevious={handlePrevious}
-        />
-      </div>
-      <div className="mealPlanPageContent">
-        <Calendar onRecipeDrop={onRecipeDrop} currentRecipes = {currentRecipes}/>
-        <RecentlyAddedRecipes recipes={recipes} />
-      </div>
-    </div>
+  <div className="header">
+    <h1>Meal Plan</h1>
+    <DateDisplay
+      currentPlan={currentPlan}
+      handleNext={handleNext}
+      handlePrevious={handlePrevious}
+    />
+  </div>
+  <div className="mealPlanPageContent">
+    {/* Only render Calendar if currentPlan and currentPlan.id exist */}
+    {currentPlan && currentPlan.id ? (
+      <Calendar
+        onRecipeDrop={onRecipeDrop}
+        currentRecipes={currentRecipes}
+        onDragStart={handleDragStart}
+        handleRemoveRecipe={removeRecipeFromMealPlan}
+        mealPlanId={currentPlan.id}
+      />
+    ) : (
+      <p>Loading meal plan...</p>
+    )}
+    <RecentlyAddedRecipes recipes={recipes} onDragStart={handleDragStart} />
+  </div>
+  <button className="updateGroceriesButton" onClick={updateGroceries}>
+    Update Grocery List
+  </button>
+</div>
+
   );
 };
 
