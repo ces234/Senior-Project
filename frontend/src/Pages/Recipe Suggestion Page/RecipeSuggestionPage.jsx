@@ -708,6 +708,8 @@ const RecipeSuggestionPage = () => {
     return pageRange;
   };
 
+  console.log("search results: ", searchResults);
+
   return (
     <div className="recipeSuggestionPageContainer">
       <div className="suggestedRecipesContainer">
@@ -938,86 +940,7 @@ const RecipeSuggestionPage = () => {
     </div>
   );
 
-  {
-    /* {parentCategories.map((category) => (
-                        <div key={category} className="categoryContainer">
-                            <button
-                                onClick={() => toggleDropdown(category)}
-                                className="categoryButton"
-                            >
-                                {category}
-                            </button>
-
-
-                            {openDropdowns[category] && (
-                                <div className="subcategoryDropdown">
-                                    {subCategories[category].map((subCategory) => (
-                                        <div key={subCategory} className="subcategoryOption">
-                                            <label>
-                                                <input
-                                                    type="checkbox"
-                                                    value={subCategory}
-                                                    onChange={() => {
-                                                        // Handle subcategory selection
-                                                    }}
-                                                />
-                                                {subCategory}
-                                            </label>
-                                        </div>
-                                    ))}
-                                </div>
-                            )} */
-  }
-
-  {
-    /* <h1>Random Recipes</h1>
-            <ul>
-                {recipes.map((recipe, index) => (
-                    <li key={index}>
-                        {recipe.name} - Prep: {recipe.prep_time} mins, Cook: {recipe.cook_time} mins, Servings: {recipe.servings}
-                    </li>
-                ))}
-            </ul>
-
-            <h2>Search for Recipes<s/h2>
-
-            <form onSubmit={handleSearch}>
-                <input 
-                    type="text" 
-                    value={query} 
-                    onChange={(e) => setQuery(e.target.value)} 
-                    placeholder="Search by recipe or ingredient" 
-                />
-                <div>
-                    <h3>Filter by Categories</h3>
-                    {categories.map(category => (
-                        <label key = {category.id}>
-                            <input 
-                                type="checkbox"
-                                value = {category.id}
-                                onChange = {handleCategoryChange} 
-                            />
-                            {category.name}
-                        </label>
-                    ))}
-                </div>
-                <button type="submit">Search</button>
-            </form>
-
-
-            {searchResults.length > 0 && (
-                <div>
-                    <h3>Search Results</h3>
-                    <ul>
-                        {searchResults.map((recipe, index) => (
-                            <li key={index}>
-                                {recipe.name} - Prep: {recipe.prep_time} mins, Cook: {recipe.cook_time} mins, Servings: {recipe.servings}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )} */
-  }
+ 
 };
 
 export default RecipeSuggestionPage;
