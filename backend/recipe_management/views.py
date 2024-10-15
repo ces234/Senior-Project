@@ -71,6 +71,7 @@ def search_recipes(request):
     
     # Serialize the recipe data
     recipe_list = [{
+        'id': recipe.id,
         'name': recipe.name,
         'prep_time': recipe.prep_time,
         'cook_time': recipe.cook_time,
@@ -136,3 +137,14 @@ def search_ingredient(request):
         return Response(serializer.data)
     else:
         return Response({"message": "No query provided"}, status = 400)
+    
+
+def get_recipe_categories(recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)  # Fetch the recipe or return a 404 if not found
+    return recipe.categories.all()  # Return all categories related to this recipe
+
+
+def recipe_categories_view(request, recipe_id):
+    categories = get_recipe_categories(recipe_id)
+    categories_list = [category.name for category in categories]  # Extract category names
+    return JsonResponse({'categories': categories_list})

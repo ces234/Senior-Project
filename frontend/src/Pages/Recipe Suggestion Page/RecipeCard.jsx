@@ -2,8 +2,10 @@ import "./RecipeSuggestionPage.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-regular-svg-icons";
 import { faCirclePlus, faTrash } from "@fortawesome/free-solid-svg-icons"; // Import the trash icon
-import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react"; // Import useEffect
+import RecipeCardImage from "./RecipeCardImage";
+
 
 const RecipeCard = ({
   image,
@@ -19,6 +21,9 @@ const RecipeCard = ({
 }) => {
   const [error, setError] = useState(null); // State for error messages
   const [success, setSuccess] = useState(null); // State for success messages
+  const [categories, setCategories] = useState([]); // State for categories
+
+  console.log("recipe id: ", recipeId);
 
   // Fix: Add event parameter (e) to the function and properly handle stopPropagation
   const addToRecentlyAdded = async (e, recipeId) => {
@@ -58,6 +63,29 @@ const RecipeCard = ({
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/recipes/${recipeId}/categories/`); // Adjust URL as needed
+      if (!response.ok) {
+        throw new Error("Failed to fetch categories");
+      }
+
+      const data = await response.json();
+      setCategories(data.categories); // Assume your response has a 'categories' field
+    } catch (error) {
+      console.error("Error fetching categories: ", error);
+      setError(error.message); // Update error state
+    }
+  };
+
+    // Use useEffect to fetch categories when the component mounts or recipeId changes
+    useEffect(() => {
+      fetchCategories();
+    }, [recipeId]); // Dependency array ensures fetch is called when recipeId changes
+
+    console.log(categories);
+    
+
   return (
     <div className="recipeCardContainer" draggable onDragStart={onDragStart}>
             <FontAwesomeIcon
@@ -68,7 +96,7 @@ const RecipeCard = ({
       {error && <p style={{ color: "red" }}>{error}</p>}
       {success && <p style={{ color: "green" }}>{success}</p>}
       <Link to={`/recipe/${recipeId}`} className="recipeLink">
-        <img src={image} alt="recipe" />
+        <RecipeCardImage categories = {categories}/>
 
         <div className="recipeTitleContainer">{title}</div>
         <div className="recipeTimeContainer">
