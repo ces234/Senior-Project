@@ -79,3 +79,6 @@ if(topicHtml != "Tacos" and topicHtml != "Tailgating Recipes" and topicHtml != "
 
 ^^ADD THIS IF STATEMENT AT LINE 185 
 (replace with headings you've already populated)
+
+CLEANING THE INGREDIENT DATA:
+run python manage.py cleanIngredients

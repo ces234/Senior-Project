@@ -1,20 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import "./MealPlanPage.css";
 import RecipeCard from "../Recipe Suggestion Page/RecipeCard";
 import chicken from "../../photos/chicken.webp";
 import { Link } from 'react-router-dom';
 
-const Calendar = ({ onRecipeDrop, currentRecipes }) => {
+const Calendar = ({ onRecipeDrop, currentRecipes, onDragStart, handleRemoveRecipe, mealPlanId}) => {
   const daysOfWeek = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
+    "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
   ];
   const meals = ["Breakfast", "Lunch", "Dinner"];
+
+  console.log("meal plan id: ", mealPlanId);
 
   const handleDrop = (e, day, mealType) => {
     e.preventDefault();
@@ -54,20 +50,23 @@ const Calendar = ({ onRecipeDrop, currentRecipes }) => {
                 {(() => {
                   const recipeData = getRecipeForSlot(day, meal);
                   return recipeData ? (
-                    <Link
-                      to={`/recipe/${recipeData.recipe.id}`}
-                      className="recipeLink"
-                    >
+                    <Link to={`/recipe/${recipeData.recipe.id}`} className="recipeLink">
                       <RecipeCard
                         image={chicken}
                         title={recipeData.recipe.name}
                         cookTime={recipeData.recipe.cook_time}
                         prepTime={recipeData.recipe.prep_time}
                         recipeId={recipeData.recipe.id}
-                      />
+                        mealPlanId={mealPlanId} // Passing the mealPlanId prop
+                        draggable
+                        onDragStart={(e) => onDragStart(e, recipeData.recipe.id)} // Ensure the correct ID is passed
+                        onDelete={handleRemoveRecipe}
+                        meal = {meal}
+                        day = {day}
+                        />
                     </Link>
                   ) : (
-                    "Add a meal!"
+                    <div className="addMealPrompt">Add a meal!</div> // Consider making this clickable
                   );
                 })()}
               </div>

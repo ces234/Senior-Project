@@ -1,6 +1,7 @@
 from django.db import models
 from user_management.models import User, Household
-from recipe_management.models import Recipe
+from recipe_management.models import Recipe, RecipeIngredient
+from grocery_management.models import GroceryList
 
 class MealPlan(models.Model):
     admin = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # The admin user who created the plan
@@ -11,6 +12,24 @@ class MealPlan(models.Model):
 
     def __str__(self):
         return f"Meal Plan from {self.start_date} to {self.end_date} for {self.household.admin.username if self.household.admin else 'Unknown Household'}"
+    
+    def generate_grocery_list(self):
+        grocery_list, created = GroceryList.objects.get_or_create(household = self.household)
+
+        unique_ingredients = set()
+
+        meal_plan_recipes = MealPlanRecipe.objects.filter(meal_plan=self).select_related('recipe')
+        for meal_plan_recipe in meal_plan_recipes:
+            recipe = meal_plan_recipe.recipe
+            recipe_ingredients = RecipeIngredient.objects.filter(recipe=recipe)
+
+            for recipe_ingredient in recipe_ingredients:
+                unique_ingredients.add(recipe_ingredient.ingredient)
+
+        for ingredient in unique_ingredients:
+            grocery_list.add_ingredient(ingredient)
+
+        return grocery_list
     
     @classmethod 
     def get_or_create_meal_plan(cls, start_date, end_date, household, admin=None):
