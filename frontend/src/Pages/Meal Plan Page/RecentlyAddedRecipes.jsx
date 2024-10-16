@@ -3,9 +3,6 @@ import RecipeCard from "../Recipe Suggestion Page/RecipeCard";
 import chicken from "../../photos/chicken.webp";
 
 const RecentlyAddedRecipes = ({ recipes, onRecipeDrop, onDragStart }) => {
- 
-
-
   return (
     <div className="mealPlanRight">
       <h3>Recently Added Recipes</h3>
@@ -20,7 +17,7 @@ const RecentlyAddedRecipes = ({ recipes, onRecipeDrop, onDragStart }) => {
               cookTime={recipe.cook_time}
               prepTime={recipe.prep_time}
               draggable
-              onDragStart={onDragStart}
+              onDragStart={(e) => onDragStart(e, recipe.id)} // Ensure the correct ID is passed
             />
           ))
         ) : (
