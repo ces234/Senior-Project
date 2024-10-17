@@ -103,7 +103,7 @@ const NavBar = () => {
         />
         <NavButton
           icon={faBookOpen}
-          text="Recipes"
+          text="Recipe Search"
           onClick={() => navigate("/recipes")}
         />
         <NavButton
@@ -115,6 +115,11 @@ const NavBar = () => {
           icon={faCarrot}
           text="Grocery List"
           onClick={() => navigate("/grocery-list")}
+        />
+        <NavButton
+          icon={faCarrot}
+          text="My Recipes"
+          onClick={() => navigate("/my-recipes")}
         />
         <button onClick={handleLogout}>Logout</button>
       </div>
