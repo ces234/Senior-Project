@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
+from pantry_management.models import Pantry
 from user_management.models import Household  # Adjust based on your actual model locations
 from recipe_management.models import Recipe
 from rest_framework.decorators import api_view, permission_classes
@@ -112,6 +113,8 @@ def signup(request):
 
                 print(f"Created grocery list for household ID: {household.id}")  # Debugging statement
 
+                pantry = Pantry.objects.create(household=household)
+                
             user_data = UserSerializer(user).data
             return Response({'message': 'User created successfully', 'user': user_data}, status=status.HTTP_201_CREATED)
 
