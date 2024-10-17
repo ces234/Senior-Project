@@ -10,6 +10,7 @@ class User(AbstractUser):
     ]
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)
     preferences = models.JSONField(null=True, blank=True)  # Store user-specific preferences in JSON format
+    saved_recipes = models.ManyToManyField('recipe_management.Recipe', related_name='saved_by_users', blank=True)  # New field to track saved recipes
 
     groups = models.ManyToManyField(
         'auth.Group',
