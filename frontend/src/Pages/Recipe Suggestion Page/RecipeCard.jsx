@@ -123,7 +123,7 @@ const RecipeCard = ({
       {error && <p style={{ color: "red" }}>{error}</p>}
       {success && <p style={{ color: "green" }}>{success}</p>}
       <Link to={`/recipe/${recipeId}`} className="recipeLink">
-        <img src={chicken} alt="" />
+        <RecipeCardImage categories={categories} />
 
         <div className="recipeTitleContainer">{title}</div>
         <div className="recipeTimeContainer">
