@@ -1,4 +1,5 @@
 import "./RecipeSuggestionPage.css";
+import "./RecipeCard.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { faCirclePlus, faXmark } from "@fortawesome/free-solid-svg-icons"; // Import the trash icon
