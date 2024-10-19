@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'recipe_management',
     'pantry_management',
     'db_populator',
+    'grocery_management',
 ]
 
 MIDDLEWARE = [
@@ -96,7 +97,7 @@ DATABASES = {
         'USER': 'ces234',
         'PASSWORD': 'ces234',
         'HOST': 'localhost',
-        'PORT': '5433',  # Default PostgreSQL port
+        'PORT': '5432',  # Default PostgreSQL port
     }
 }
 
@@ -148,6 +149,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',  # Optional, depending on your use case
     ),
     'DEFAULT_PERMISSION_CLASSES': (

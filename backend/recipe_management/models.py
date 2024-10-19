@@ -24,6 +24,9 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def get_categories(self):
+        return self.categories.all()  # Returns all categories related to this recipe
 
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)

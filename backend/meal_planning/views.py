@@ -124,3 +124,69 @@ def get_meal_plan_recipes(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def generate_grocery_list(request):
+    try:
+        # Retrieve the meal plan ID from the POST request body
+        meal_plan_id = request.data.get('meal_plan_id')
+
+        if not meal_plan_id:
+            return Response({"error": "Meal plan ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Fetch the meal plan based on the ID
+        meal_plan = MealPlan.objects.get(id=meal_plan_id)
+
+        
+        # Generate the grocery list
+        grocery_list = meal_plan.generate_grocery_list()
+
+        # Prepare the response with the ingredients
+        ingredients = [ingredient.name for ingredient in grocery_list.ingredients.all()]
+
+        return Response({"grocery_list": ingredients}, status=status.HTTP_201_CREATED)
+
+    except MealPlan.DoesNotExist:
+        return Response({"error": "Meal plan does not exist."}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['DELETE'])  # Use DELETE method for removing items
+@permission_classes([IsAuthenticated])
+def remove_recipe_from_meal(request, meal_plan_id, recipe_id):
+    day = request.data.get('day')
+    meal_type = request.data.get('meal_type')
+    
+    print(f"Attempting to remove recipe {recipe_id} from meal plan {meal_plan_id} on {day} for {meal_type}")
+    
+    try:
+        # Get the meal plan
+        meal_plan = MealPlan.objects.get(id=meal_plan_id)
+        print(f"Meal plan found: {meal_plan}")
+
+        # Find the recipe in the meal plan for the specified day and meal type
+        meal_plan_recipe = MealPlanRecipe.objects.get(
+            meal_plan=meal_plan,
+            recipe_id=recipe_id,
+            day=day,
+            meal_type=meal_type
+        )
+        print(f"Recipe found in meal plan: {meal_plan_recipe}")
+
+        # Delete the recipe from the meal plan
+        meal_plan_recipe.delete()
+        print("Recipe deleted successfully.")
+
+        return Response({"message": "Recipe removed from meal plan successfully."}, status=status.HTTP_200_OK)
+
+    except MealPlan.DoesNotExist:
+        print("Meal plan does not exist.")
+        return Response({"error": "Meal plan does not exist."}, status=status.HTTP_404_NOT_FOUND)
+    except MealPlanRecipe.DoesNotExist:
+        print("Recipe is not associated with this meal plan for the specified day and meal type.")
+        return Response({"error": "Recipe is not associated with this meal plan for the specified day and meal type."}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return Response({"error": "An unexpected error occurred."}, status=status.HTTP_400_BAD_REQUEST)
+

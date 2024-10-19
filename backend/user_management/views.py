@@ -1,10 +1,18 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
+from pantry_management.models import Pantry
 from user_management.models import Household  # Adjust based on your actual model locations
 from recipe_management.models import Recipe
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from .serializers import UserRegistrationSerializer
+from django.contrib.auth.hashers import make_password
+from django.db import transaction  # Import transaction for atomic operations
+from grocery_management.models import GroceryList
+from django.shortcuts import get_object_or_404
+
+
 
 
 
@@ -83,3 +91,72 @@ def add_recently_added_recipe(request):
         return Response({'error': 'Household not found.'}, status=402)
 
     
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def signup(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    household_option = request.data.get('householdOption')
+
+    if not all([username, password, household_option]):
+        return Response({'error': 'All fields are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        with transaction.atomic():
+            user = User.objects.create(username=username, password=make_password(password))
+
+            if household_option == 'new':
+                household = Household.objects.create(admin=user)
+                user.households.add(household)
+                GroceryList.objects.create(household=household)  # Creating the grocery list
+
+                print(f"Created grocery list for household ID: {household.id}")  # Debugging statement
+
+                pantry = Pantry.objects.create(household=household)
+                
+            user_data = UserSerializer(user).data
+            return Response({'message': 'User created successfully', 'user': user_data}, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_saved_recipes(request):
+    user = request.user
+    saved_recipes = user.saved_recipes.all()
+    serialized_recipes = [{
+        'id': recipe.id,
+        'name': recipe.name,
+        'prep_time': recipe.prep_time,
+        'cook_time': recipe.cook_time,
+        'servings': recipe.servings,
+    } for recipe in saved_recipes]
+    return Response(serialized_recipes, status=200)
+
+# Add a recipe to favorites
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def add_saved_recipe(request):
+    user = request.user
+    recipe_id = request.data.get('recipe_id')
+    
+    if not recipe_id:
+        return Response({'error': 'Recipe ID is required'}, status=400)
+
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    user.saved_recipes.add(recipe)
+    
+    return Response({'message': f'{recipe.name} added to favorites'}, status=201)
+
+# Remove a recipe from favorites
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def remove_saved_recipe(request, recipe_id):
+    user = request.user
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    user.saved_recipes.remove(recipe)
+    
+    return Response({'message': f'{recipe.name} removed from favorites'}, status=200)

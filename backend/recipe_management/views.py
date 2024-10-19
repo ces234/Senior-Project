@@ -1,7 +1,14 @@
 from django.http import JsonResponse
-from .models import Recipe, Category
+from .models import Recipe, Category, Ingredient
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view, permission_classes
+from .serializers import IngredientSerializer
 
 
 
@@ -64,6 +71,7 @@ def search_recipes(request):
     
     # Serialize the recipe data
     recipe_list = [{
+        'id': recipe.id,
         'name': recipe.name,
         'prep_time': recipe.prep_time,
         'cook_time': recipe.cook_time,
@@ -82,3 +90,61 @@ def categories_view(request):
     categories = Category.objects.all()
     categories_list = [{'id': cat.id, 'name': cat.name} for cat in categories]
     return JsonResponse(categories_list, safe = False)
+
+def get_recipe_by_id(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id = recipe_id)
+
+    recipe_data = {
+        'name': recipe.name,
+        'prep_time': recipe.prep_time,
+        'cook_time': recipe.cook_time,
+        'servings': recipe.servings,
+        'instructions': recipe.instructions,
+        'ingredients': [
+            {
+                'name': ri.ingredient.name,
+                'quantity': ri.quantity,
+                'unit': ri.unit
+            } for ri in recipe.recipeingredient_set.all()
+        ],
+        'categories': [category.name for category in recipe.categories.all()]
+    }
+
+    # Return the recipe data as a JSON response
+    return JsonResponse(recipe_data)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])  # Allow access without requiring authentication
+def get_all_ingredients(request):
+    try:
+        ingredients = Ingredient.objects.all()
+
+        ingredient_data = [{'id': ingredient.id, 'name': ingredient.name} for ingredient in ingredients]
+
+        return Response(ingredient_data, status=status.HTTP_200_OK)
+    
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+@api_view(['GET'])
+@permission_classes([AllowAny])  # Allow access without requiring authentication
+def search_ingredient(request): 
+    query = request.query_params.get('q', None)
+    if query: 
+        ingredients = Ingredient.objects.filter(Q(name__icontains=query))
+        serializer = IngredientSerializer(ingredients, many = True)
+        return Response(serializer.data)
+    else:
+        return Response({"message": "No query provided"}, status = 400)
+    
+
+def get_recipe_categories(recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)  # Fetch the recipe or return a 404 if not found
+    return recipe.categories.all()  # Return all categories related to this recipe
+
+
+def recipe_categories_view(request, recipe_id):
+    categories = get_recipe_categories(recipe_id)
+    categories_list = [category.name for category in categories]  # Extract category names
+    return JsonResponse({'categories': categories_list})
