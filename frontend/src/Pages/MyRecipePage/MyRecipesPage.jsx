@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import RecipeCard from "../Recipe Suggestion Page/RecipeCard";
-import "../Recipe Suggestion Page/RecipeSuggestionPage.css"; // Optional: Create CSS for this page
+import "./MyRecipesPage.css";
 
 const MyRecipesPage = () => {
   const [savedRecipes, setSavedRecipes] = useState([]);

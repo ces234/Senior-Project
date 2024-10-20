@@ -1,0 +1,22 @@
+.savedRecipesContainer {
+    max-width: 1200px; /* Optional: adjust as needed */
+    padding: 20px; /* Optional: add some padding */
+  }
+  
+  .recipeGrid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 4 columns */
+    gap: 20px; /* Space between cards */
+  }
+  
+
+  
+  .recipeCard:hover {
+    transform: scale(1.05); /* Optional: zoom effect on hover */
+  }
+  
+
+.recipeLink {
+    text-decoration: none; /* Remove underlines */
+    color: inherit; /* Inherit color from parent */
+}
