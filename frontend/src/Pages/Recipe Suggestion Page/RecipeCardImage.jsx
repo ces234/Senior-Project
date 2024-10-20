@@ -42,31 +42,31 @@ const RecipeCardImage = ({ categories }) => {
             return porkRibs; // Return the image path directly
         }
         if (categories.includes("Steak")) {
-            return porkRibs; // Return the image path directly
+            return steak; // Return the image path directly
         }
         if (categories.includes("Granola")) {
-            return porkRibs; // Return the image path directly
+            return granola; // Return the image path directly
         }
         if (categories.includes("Cookies")) {
-            return porkRibs; // Return the image path directly
+            return cookies; // Return the image path directly
         }
         if (categories.includes("Cupcakes")) {
-            return porkRibs; // Return the image path directly
+            return cupcakes; // Return the image path directly
         }
         if (categories.includes("Bagels")) {
-            return porkRibs; // Return the image path directly
+            return bagels; // Return the image path directly
         }
         if (categories.includes("Danishes")) {
-            return porkRibs; // Return the image path directly
+            return danishes; // Return the image path directly
         }
         if (categories.includes("Fudge")) {
-            return porkRibs; // Return the image path directly
+            return fudge; // Return the image path directly
         }
         if (categories.includes("Pancakes")) {
-            return porkRibs; // Return the image path directly
+            return pancakes; // Return the image path directly
         }
         if (categories.includes("Muffins")) {
-            return porkRibs; // Return the image path directly
+            return muffins; // Return the image path directly
         }
         return ""; // Or return a default image path or null
     };
