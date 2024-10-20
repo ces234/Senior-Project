@@ -8,6 +8,18 @@ import dumplings from "../../photos/dumplings.webp";
 import falafel from "../../photos/falafel.webp";
 import fondue from "../../photos/falafel.webp";
 import porkRibs from "../../photos/porkRibs.jpeg";
+import steak from "../../photos/steak.jpeg";
+import granola from "../../photos/granola.jpeg";
+import cookies from "../../photos/cookies.webp";
+import cupcakes from "../../photos/cupcakes.webp";
+import bagels from "../../photos/bagels.webp";
+import danishes from "../../photos/danishes.jpeg";
+import fudge from "../../photos/fudge.jpeg";
+import pancakes from "../../photos/pancakes.webp";
+import muffins from "../../photos/muffins.webp";
+
+
+
 
 const RecipeCardImage = ({ categories }) => {
     const getImage = () => {
