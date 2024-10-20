@@ -23,10 +23,20 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const PantryItem = ({ pantryItem, onClick }) => {
+
+  const [icon, setIcon] = useState(null);
+
+  useEffect(() => {
+    // Generate a consistent icon for this pantry item based on its unique identifier
+    const uniqueIdentifier = pantryItem.id || pantryItem.ingredient_name;
+    const assignedIcon = getRandomIcon(uniqueIdentifier);
+    setIcon(assignedIcon); // Set the generated icon in state
+  }, [pantryItem]); 
+
   return (
     <div className="pantryItemContainer" onClick={onClick}> {/* Attach onClick here */}
       <div className="ingredientIcon">
-        <FontAwesomeIcon icon={getRandomIcon()} className="pantryItemIcon" />
+        {icon && <FontAwesomeIcon icon={icon} className="pantryItemIcon" />}
         <div className="ingredientName">{pantryItem.ingredient_name}</div>
       </div>
       <div className="pantryItemDetails">
@@ -52,8 +62,12 @@ const icons = [
   faAppleWhole,
 ];
 
-const getRandomIcon = () => {
-  const randomIndex = Math.floor(Math.random() * icons.length);
+const getRandomIcon = (identifier) => {
+  let hash = 0;
+  for (let i = 0; i < identifier.length; i++) {
+    hash = identifier.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const randomIndex = Math.abs(hash) % icons.length; // Ensure index is within bounds
   return icons[randomIndex];
 };
 
