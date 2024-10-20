@@ -105,9 +105,10 @@
 .SRCSuggested {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    gap: 8px; /* Adjust this value to reduce the gap */
     padding: 20px;
 }
+
 
 .SRCFooter {
     display: flex;
