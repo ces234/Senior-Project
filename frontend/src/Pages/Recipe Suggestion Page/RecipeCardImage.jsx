@@ -75,6 +75,17 @@ import shrimp from "../../photos/shrimp.webp";
 import fruitcake from "../../photos/fruitcake.jpeg";
 import bakedBeans from "../../photos/bakedBeans.jpeg";
 import biscuit from "../../photos/biscuit.jpeg";
+import sandwhichFood from "../../photos/sandwhichFood.jpeg";
+import plannedFood from "../../photos/plannedFood.jpeg";
+import saladFood from "../../photos/saladFood.webp";
+import chickenFood from "../../photos/chickenFood.webp";
+import greenFood from "../../photos/greenFood.jpeg";
+import plateFood from "../../photos/plateFood.jpeg";
+import noodleFood from "../../photos/noodleFood.webp";
+import indianFood from "../../photos/indianFood.jpeg";
+import burgerFood from "../../photos/burgerFood.jpeg";
+
+
 
 
 
@@ -312,7 +323,8 @@ const RecipeCardImage = ({ categories }) => {
         if (categories.includes("Main Dishes")) {
             return main; // Return the image path directly
         }
-        return food; // Or return a default image path or null
+        const randomFood=[food, sandwhichFood,plannedFood,saladFood,chickenFood,greenFood,plateFood,noodleFood,indianFood,burgerFood];
+        return randomFood[Math.floor(Math.random()*10)]; // Or return a default image path or null
     };
 
     return (
