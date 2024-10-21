@@ -70,6 +70,22 @@ import flatbread from "../../photos/flatbread.jpeg";
 import breads from "../../photos/breads.jpeg";
 import doughnuts from "../../photos/doughnuts.jpeg";
 import cake from "../../photos/cake.jpeg";
+import pie from "../../photos/pie.jpeg";
+import shrimp from "../../photos/shrimp.webp";
+import fruitcake from "../../photos/fruitcake.jpeg";
+import bakedBeans from "../../photos/bakedBeans.jpeg";
+import biscuit from "../../photos/biscuit.jpeg";
+import sandwhichFood from "../../photos/sandwhichFood.jpeg";
+import plannedFood from "../../photos/plannedFood.jpeg";
+import saladFood from "../../photos/saladFood.webp";
+import chickenFood from "../../photos/chickenFood.webp";
+import greenFood from "../../photos/greenFood.jpeg";
+import plateFood from "../../photos/plateFood.jpeg";
+import noodleFood from "../../photos/noodleFood.webp";
+import indianFood from "../../photos/indianFood.jpeg";
+import burgerFood from "../../photos/burgerFood.jpeg";
+
+
 
 
 
@@ -81,6 +97,9 @@ const RecipeCardImage = ({ categories }) => {
         }
         if (categories.includes("Canning and Preserving")) {
             return Canning; // Return the image path directly
+        }
+        if(categories.includes("Fruitcake")){
+            return fruitcake;
         }
         if (categories.includes("Lettuce Wraps")) {
             return muffins; // Return the image path directly
@@ -112,10 +131,13 @@ const RecipeCardImage = ({ categories }) => {
         if (categories.includes("Steak")) {
             return steak; // Return the image path directly
         }
+        if (categories.includes("Shrimp Recipes")){
+            return shrimp;
+        }
         if (categories.includes("Granola")) {
             return granola; // Return the image path directly
         }
-        if (categories.includes("Cookies")) {
+        if (categories.includes("Cookies")||categories.includes("Oatmeal Cookies")) {
             return cookies; // Return the image path directly
         }
         if (categories.includes("Cupcakes")) {
@@ -145,7 +167,7 @@ const RecipeCardImage = ({ categories }) => {
         if (categories.includes("Flatbread")) {
             return flatbread; // Return the image path directly
         }
-        if (categories.includes("Pasta")) {
+        if (categories.includes("Homemade Pasta")||categories.includes("Pasta")||categories.includes("Pasta Carbonara")||categories.includes("Pasta Primavera")||categories.includes("Pasta Salad")||categories.includes("Lasagna")||categories.includes("Linguine")) {
             return pasta; // Return the image path directly
         }
         if (categories.includes("Rice")) {
@@ -166,7 +188,7 @@ const RecipeCardImage = ({ categories }) => {
         if (categories.includes("Stews")) {
             return stew; // Return the image path directly
         }
-        if (categories.includes("Soups")) {
+        if (categories.includes("Soups")||categories.includes("Chowder")) {
             return soups; // Return the image path directly
         }
         if (categories.includes("Chili Recipes")) {
@@ -196,7 +218,7 @@ const RecipeCardImage = ({ categories }) => {
         if (categories.includes("Indian Recipes")) {
             return indian; // Return the image path directly
         }
-        if (categories.includes("Mexican Recipes")) {
+        if (categories.includes("Mexican Recipes")||categories.includes("Tacos")||categories.includes("Enchiladas")||categories.includes("Fajitas")||categories.includes("Empanada Recipes")) {
             return mexican; // Return the image path directly
         }
         if (categories.includes("Chinese Recipes")) {
@@ -211,8 +233,17 @@ const RecipeCardImage = ({ categories }) => {
         if (categories.includes("Hawaiian")) {
             return hawaiian; // Return the image path directly
         }
+        if(categories.includes("Apple Pie")||categories.includes("Blueberry Pie")||categories.includes("Cherry Pie")||categories.includes("Chess Pie")||categories.includes("Key Lime Pie")||categories.includes("Mincemeat Pie")||categories.includes("Pecan Pie")||categories.includes("Pies")||categories.includes("Pies")||categories.includes("Pumpkin Pie")||categories.includes("Rhubarb Pie")||categories.includes("Apple Pie")||categories.includes("Shepherd's Pie")){
+            return pie
+        }
         if (categories.includes("Cake Recipes")) {
             return cake; // Return the image path directly
+        }
+        if (categories.includes("Biscuit")||categories.includes("Biscotti")) {
+            return biscuit; // Return the image path directly
+        }
+        if (categories.includes("Baked Beans")) {
+            return bakedBeans; // Return the image path directly
         }
         if (categories.includes("Healthy Recipes")) {
             return health; // Return the image path directly
@@ -256,10 +287,10 @@ const RecipeCardImage = ({ categories }) => {
         if (categories.includes("Gravy")) {
             return gravy; // Return the image path directly
         }
-        if (categories.includes("Salad")) {
+        if (categories.includes("Salad")||categories.includes("Broccoli Salad")||categories.includes("Chicken Salad")||categories.includes("Egg Salad")||categories.includes("Green Salads")||categories.includes("Pasta Salad")||categories.includes("Quinoa Salad Recipes")) {
             return salad; // Return the image path directly
         }
-        if (categories.includes("Bars")) {
+        if (categories.includes("Bar Cookies")||categories.includes("Lemon Bars")) {
             return bars; // Return the image path directly
         }
         if (categories.includes("Cobbler")) {
@@ -292,7 +323,8 @@ const RecipeCardImage = ({ categories }) => {
         if (categories.includes("Main Dishes")) {
             return main; // Return the image path directly
         }
-        return food; // Or return a default image path or null
+        const randomFood=[food, sandwhichFood,plannedFood,saladFood,chickenFood,greenFood,plateFood,noodleFood,indianFood,burgerFood];
+        return randomFood[Math.floor(Math.random()*10)]; // Or return a default image path or null
     };
 
     return (
