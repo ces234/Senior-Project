@@ -27,10 +27,9 @@ const PantryItem = ({ pantryItem, onClick }) => {
   const [icon, setIcon] = useState(null);
 
   useEffect(() => {
-    // Generate a consistent icon for this pantry item based on its unique identifier
     const uniqueIdentifier = pantryItem.id || pantryItem.ingredient_name;
     const assignedIcon = getRandomIcon(uniqueIdentifier);
-    setIcon(assignedIcon); // Set the generated icon in state
+    setIcon(assignedIcon);
   }, [pantryItem]); 
 
   return (

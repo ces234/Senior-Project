@@ -150,8 +150,8 @@ const EditItem = ({ pantryItem, fetchPantryItems }) => {
                         onChange={(e) => setExpiration(e.target.value)}
                     />
                     
-                    <button className="submitPantryItemButton" onClick={() => editItem(pantryItem.ingredient_id)}>Edit Item</button>
-                    <button className="deletePantryItemButton" onClick={() => deleteItem(pantryItem.ingredient_id)}>Delete Item</button>
+                    <button type="button" className="submitPantryItemButton" onClick={() => editItem(pantryItem.ingredient_id)}>Edit Item</button>
+                    <button type="button" className="deletePantryItemButton" onClick={() => deleteItem(pantryItem.ingredient_id)}>Delete Item</button>
                 </div>
             </form>
         </div>

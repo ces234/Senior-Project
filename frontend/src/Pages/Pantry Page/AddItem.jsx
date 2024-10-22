@@ -1,6 +1,6 @@
-import React, { useState } from "react"; // Import useState
+import React, { useState } from "react";
 import "./PantryPage.css";
-import axios from "axios"; // Import Axios
+import axios from "axios";
 
 const AddItem = ({ fetchPantryItems }) => {
     const [name, setName] = useState("");
