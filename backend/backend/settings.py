@@ -97,10 +97,13 @@ DATABASES = {
         'USER': 'ces234',
         'PASSWORD': 'ces234',
         'HOST': 'localhost',
-        'PORT': '5432',  # Default PostgreSQL port
+        'PORT': '5433',  # Default PostgreSQL port
     }
 }
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Default backend
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -156,7 +159,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
-
 
 
 AUTH_USER_MODEL = 'user_management.User'  # Adjust based on your app's name

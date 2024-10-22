@@ -1,12 +1,14 @@
 from django.http import JsonResponse
 from .models import Recipe, Category, Ingredient
+from pantry_management.models import Pantry
+from user_management.models import Household
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from .serializers import IngredientSerializer
 
@@ -20,8 +22,6 @@ def get_random_recipes(num_recipes=100):  # Allow fetching more than 16
         random_recipes = Recipe.objects.all()
     return random_recipes
 
-
-
 def random_recipes_view(request):
     page_number = request.GET.get('page', 1)  # Get the current page number from the request (default is 1)
     random_recipes = get_random_recipes()
@@ -31,6 +31,62 @@ def random_recipes_view(request):
     page_obj = paginator.get_page(page_number)
 
     # Serialize the recipe data
+    recipes_list = [{
+        'id': recipe.id,
+        'name': recipe.name,
+        'prep_time': recipe.prep_time,
+        'cook_time': recipe.cook_time,
+        'servings': recipe.servings,
+    } for recipe in page_obj]
+
+    return JsonResponse({
+        'recipes': recipes_list,
+        'current_page': page_obj.number,
+        'total_pages': paginator.num_pages,
+    })
+
+# suggest recipes based on items in pantry
+def get_suggested_recipes(pantry, num_recipes=100):
+
+    pantry_ingredients = pantry.ingredients.all()
+
+    # Get recipes that use those pantry ingredients
+    pantry_recipes = Recipe.objects.filter(ingredients__in=pantry_ingredients).distinct()
+
+    total_suggested = pantry_recipes.count()
+
+    if total_suggested >= num_recipes:
+        # Return a random subset of the suggested recipes
+        suggested_recipes = pantry_recipes.order_by('?')[:num_recipes]
+    else:
+        # Fetch additional random recipes not already in the suggestions
+        remaining_recipes = num_recipes - total_suggested
+        suggested_recipes = list(pantry_recipes.order_by('?'))
+        additional_recipes = Recipe.objects.exclude(id__in=[recipe.id for recipe in suggested_recipes]).order_by('?')[:remaining_recipes]
+        suggested_recipes.extend(additional_recipes)
+    
+    return suggested_recipes
+
+@api_view(['GET'])
+def suggested_recipes_view(request):
+    
+    user = request.user
+
+    if not user.is_authenticated:
+        return JsonResponse({'error': 'You must be logged in to view suggested recipes'}, status=401)
+    
+    userHousehold = Household.objects.filter(admin=user).first()  # Get the household where the user is the admin
+    pantry = Pantry.objects.get(household=userHousehold)
+
+    page_number = request.GET.get('page', 1)
+    
+    # Fetch suggested recipes based on the pantry
+    suggested_recipes = get_suggested_recipes(pantry)
+
+    # Use Django's Paginator to paginate the recipes
+    paginator = Paginator(suggested_recipes, 16)  # Show 16 recipes per page
+    page_obj = paginator.get_page(page_number)
+
     recipes_list = [{
         'id': recipe.id,
         'name': recipe.name,
@@ -83,7 +139,6 @@ def search_recipes(request):
         'total_pages': paginator.num_pages,  # Return the total number of pages
         'current_page': paginated_recipes.number,  # Return current page number for frontend use
     })
-
 
 
 def categories_view(request):
