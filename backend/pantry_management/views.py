@@ -6,6 +6,7 @@ from .models import Pantry, PantryIngredient
 from user_management.models import Household
 from recipe_management.models import Ingredient
 from .serializers import PantryIngredientSerializer, PantryIngredientWithNameSerializer
+from django.db.models import Q
 
 @api_view(['POST'])
 def add_pantry_item(request):
@@ -14,7 +15,10 @@ def add_pantry_item(request):
     
     try:
         # Fetch the user's household
-        household = Household.objects.get(admin=user)
+        # household = Household.objects.get(admin=user)
+        household = Household.objects.filter(
+            Q(admin=user) | Q(members=user)
+        ).first()
         pantry = Pantry.objects.get(household=household)  # Get the pantry associated with the household
 
         # Get the ingredient name from the request data
@@ -55,7 +59,10 @@ def get_pantry_items(request):
     
     try:
         # Fetch the user's household
-        household = Household.objects.get(admin=user)  # TODO: only works if user is admin rn
+        # household = Household.objects.get(admin=user)  # TODO: only works if user is admin rn
+        household = Household.objects.filter(
+            Q(admin=user) | Q(members=user)
+        ).first()
         pantry = household.pantry  # Get the pantry associated with the household
         
         # Get all pantry ingredients for the user's pantry
@@ -77,7 +84,11 @@ def delete_pantry_item(request, item_id):
         user = request.user
         
         # Fetch the user's household
-        household = Household.objects.get(admin=user)  # Assuming the user is an admin
+        # household = Household.objects.get(admin=user)  # Assuming the user is an admin
+        household = Household.objects.filter(
+            Q(admin=user) | Q(members=user)
+        ).first()
+
         pantry = household.pantry  # Get the pantry associated with the household
         
         # Fetch the pantry ingredient to be deleted
@@ -99,7 +110,11 @@ def edit_pantry_item(request, item_id):
 
     try:
         # Fetch the user's household
-        household = Household.objects.get(admin=user)
+        # household = Household.objects.get(admin=user)
+        household = Household.objects.filter(
+            Q(admin=user) | Q(members=user)
+        ).first()
+
         pantry = Pantry.objects.get(household=household)  # Get the pantry associated with the household
 
         # Retrieve the PantryIngredient instance to update

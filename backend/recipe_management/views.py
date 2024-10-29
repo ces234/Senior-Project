@@ -11,6 +11,7 @@ from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from .serializers import IngredientSerializer
+from django.db.models import Q
 
 
 
@@ -75,7 +76,12 @@ def suggested_recipes_view(request):
     if not user.is_authenticated:
         return JsonResponse({'error': 'You must be logged in to view suggested recipes'}, status=401)
     
-    userHousehold = Household.objects.filter(admin=user).first()  # Get the household where the user is the admin
+    # userHousehold = Household.objects.filter(admin=user).first()  # Get the household where the user is the admin
+
+    userHousehold = Household.objects.filter(
+        Q(admin=user) | Q(members=user)
+    ).first()
+
     pantry = Pantry.objects.get(household=userHousehold)
 
     page_number = request.GET.get('page', 1)
