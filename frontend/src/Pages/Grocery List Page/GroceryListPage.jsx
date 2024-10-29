@@ -35,7 +35,6 @@ const GroceryListPage = () => {
   // useEffect to fetch grocery list on component mount
   useEffect(() => {
     fetchGroceryList();
-    console.log(groceryList);
   }, []);
 
   const handleSearch = async () => {

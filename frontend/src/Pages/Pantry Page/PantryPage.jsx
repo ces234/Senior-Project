@@ -85,7 +85,6 @@ const PantryPage = () => {
           'Content-Type': 'application/json'
         }
       });
-      console.log(response.data)
       setPantryItems(response.data); // Set the pantry items from the response
     } catch (error) {
       console.error('Error fetching pantry items:', error.response.data);
