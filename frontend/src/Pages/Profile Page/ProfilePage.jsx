@@ -5,6 +5,8 @@ import { useAuth } from "../../AuthContext";
 const ProfilePage = () => {
     const { user, logout } = useAuth();
     const token = localStorage.getItem("token");
+    console.log("Token in RecipePage:", token);
+
     const [joinCode, setJoinCode] = useState(null);
 
     useEffect(() => {
