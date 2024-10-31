@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from .models import Recipe, Category, Ingredient
+from .models import Recipe, Category, Ingredient, RecipeRating
 from pantry_management.models import Pantry
 from user_management.models import Household
 from django.db.models import Q
@@ -10,8 +10,9 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
-from .serializers import IngredientSerializer
+from .serializers import IngredientSerializer, RecipeRatingSerializer
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 
 
 
@@ -152,8 +153,28 @@ def categories_view(request):
     categories_list = [{'id': cat.id, 'name': cat.name} for cat in categories]
     return JsonResponse(categories_list, safe = False)
 
+@api_view(['GET'])
+# @permission_classes([AllowAny])  # Allow access without requiring authentication
 def get_recipe_by_id(request, recipe_id):
-    recipe = get_object_or_404(Recipe, id = recipe_id)
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    user = request.user
+
+    if not user.is_authenticated:
+        return JsonResponse({'error': 'You must be logged in to view recipe details'}, status=401)
+
+    # Fetch user's household, if it exists
+    user_household = Household.objects.filter(members=user).first()
+
+    if not user_household:
+        return JsonResponse({'error': 'User is not part of a household'}, status=400)
+
+    # Fetch ratings only for members in the household
+    ratings_data = [
+        {
+            'username': rating.user.username,
+            'rating': rating.rating
+        } for rating in RecipeRating.objects.filter(recipe=recipe, user__in=user_household.members.all())
+    ]
 
     recipe_data = {
         'name': recipe.name,
@@ -168,11 +189,13 @@ def get_recipe_by_id(request, recipe_id):
                 'unit': ri.unit
             } for ri in recipe.recipeingredient_set.all()
         ],
-        'categories': [category.name for category in recipe.categories.all()]
+        'categories': [category.name for category in recipe.categories.all()],
+        'ratings': ratings_data
     }
 
     # Return the recipe data as a JSON response
     return JsonResponse(recipe_data)
+
 
 @api_view(['GET'])
 @permission_classes([AllowAny])  # Allow access without requiring authentication
@@ -209,3 +232,22 @@ def recipe_categories_view(request, recipe_id):
     categories = get_recipe_categories(recipe_id)
     categories_list = [category.name for category in categories]  # Extract category names
     return JsonResponse({'categories': categories_list})
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def rate_recipe(request, recipe_id):
+    user = request.user
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+
+    rating_value = request.data.get("rating")
+
+    # Check if the user has already rated the recipe
+    rating_instance, created = RecipeRating.objects.get_or_create(recipe=recipe, user=user, defaults={'rating': rating_value})
+
+    # Deserialize and validate data
+    serializer = RecipeRatingSerializer(rating_instance, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save(user=user)  # Ensure the user is the request user
+        return Response(serializer.data, status=status.HTTP_200_OK if not created else status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
