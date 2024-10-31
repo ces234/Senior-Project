@@ -23,10 +23,19 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const PantryItem = ({ pantryItem, onClick }) => {
+
+  const [icon, setIcon] = useState(null);
+
+  useEffect(() => {
+    const uniqueIdentifier = pantryItem.id || pantryItem.ingredient_name;
+    const assignedIcon = getRandomIcon(uniqueIdentifier);
+    setIcon(assignedIcon);
+  }, [pantryItem]); 
+
   return (
     <div className="pantryItemContainer" onClick={onClick}> {/* Attach onClick here */}
       <div className="ingredientIcon">
-        <FontAwesomeIcon icon={getRandomIcon()} className="pantryItemIcon" />
+        {icon && <FontAwesomeIcon icon={icon} className="pantryItemIcon" />}
         <div className="ingredientName">{pantryItem.ingredient_name}</div>
       </div>
       <div className="pantryItemDetails">
@@ -52,8 +61,12 @@ const icons = [
   faAppleWhole,
 ];
 
-const getRandomIcon = () => {
-  const randomIndex = Math.floor(Math.random() * icons.length);
+const getRandomIcon = (identifier) => {
+  let hash = 0;
+  for (let i = 0; i < identifier.length; i++) {
+    hash = identifier.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const randomIndex = Math.abs(hash) % icons.length; // Ensure index is within bounds
   return icons[randomIndex];
 };
 
@@ -72,7 +85,6 @@ const PantryPage = () => {
           'Content-Type': 'application/json'
         }
       });
-      console.log(response.data)
       setPantryItems(response.data); // Set the pantry items from the response
     } catch (error) {
       console.error('Error fetching pantry items:', error.response.data);

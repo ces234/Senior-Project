@@ -105,9 +105,10 @@
 .SRCSuggested {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    gap: 8px; /* Adjust this value to reduce the gap */
     padding: 20px;
 }
+
 
 .SRCFooter {
     display: flex;
@@ -272,4 +273,25 @@
     text-decoration: none; /* Remove underlines */
     color: inherit; /* Inherit color from parent */
   }
+
   
+.suggestedRecipesContainer .recipeCardContainer .deleteButton {
+    display: none;
+}
+  
+  .deleteButton {
+    position: absolute;
+    top: 10px; /* Adjust to your preference */
+    right: 10px; /* Adjust to your preference */
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #B35B5A;
+    background-color: white;
+    border-radius: 100%;
+    font-size: 20px; /* Adjust size */
+}
+
+.deleteButton:hover {
+    color: #793F3E; /* Optional hover effect */
+}

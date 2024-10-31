@@ -1,6 +1,8 @@
 # userManagement/models.py
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+import random
+
 
 class User(AbstractUser):
     # Inherits username, password, email, etc. from AbstractUser
@@ -31,12 +33,17 @@ class Household(models.Model):
     members = models.ManyToManyField(User, related_name='households')
     saved_recipes = models.ManyToManyField('recipe_management.Recipe', related_name='saved_by_households')  # Many-to-Many to track saved recipes
     recently_added = models.ManyToManyField('recipe_management.Recipe', related_name = "receadntly_added_by_households")
+    join_code = models.CharField(max_length = 6, unique = True, blank = True)
 
     def addRecentlyAddedRecipe(self, recipe):
         if recipe not in self.recently_added.all():
             self.recently_added.add(recipe)
             self.save()
-            
+    
+    def save(self, *args, **kwargs):
+        if not self.join_code:
+            self.join_code = ''.join(random.choices('0123456789', k = 6))
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Household of {self.admin.username if self.admin else 'Unknown Admin'}"

@@ -121,6 +121,11 @@ const NavBar = () => {
           text="My Recipes"
           onClick={() => navigate("/my-recipes")}
         />
+        <NavButton
+          icon={faCarrot}
+          text="Profile"
+          onClick={() => navigate("/profile")}
+        />
         <button onClick={handleLogout}>Logout</button>
       </div>
       {loading && <div className="loading">Loading...</div>}

@@ -1,7 +1,8 @@
 import "./RecipeSuggestionPage.css";
+import "./RecipeCard.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
-import { faCirclePlus, faTrash } from "@fortawesome/free-solid-svg-icons"; // Import the trash icon
+import { faCirclePlus, faXmark } from "@fortawesome/free-solid-svg-icons"; // Import the trash icon
 import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react"; // Import useEffect
 import RecipeCardImage from "./RecipeCardImage";
@@ -115,15 +116,13 @@ const RecipeCard = ({
 
   return (
     <div className="recipeCardContainer" draggable onDragStart={onDragStart}>
-      <FontAwesomeIcon
-        icon={faTrash} // Trash icon for deleting
-        onClick={handleDelete} // Call handleDelete on click
-        style={{ cursor: "pointer", color: "red" }} // Style for the delete icon
-      />
+      <button className="deleteButton" onClick={handleDelete}>
+        <FontAwesomeIcon icon={faXmark} />
+      </button>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {success && <p style={{ color: "green" }}>{success}</p>}
       <Link to={`/recipe/${recipeId}`} className="recipeLink">
-        <img src={chicken} alt="" />
+        <RecipeCardImage categories={categories} />
 
         <div className="recipeTitleContainer">{title}</div>
         <div className="recipeTimeContainer">
@@ -134,20 +133,19 @@ const RecipeCard = ({
       <div className="recipeButtonContainer">
         <FontAwesomeIcon
           icon={faHeart}
-          onClick={saveRecipeToFavorites} // Handle click on heart
+          onClick={saveRecipeToFavorites}
           style={{
             cursor: "pointer",
-            color: isSaved ? "red" : "grey", // Change color if saved
+            color: isSaved ? "red" : "grey",
           }}
-        />{" "}
+        />
         <FontAwesomeIcon
           icon={faCirclePlus}
-          onClick={(e) => addToRecentlyAdded(e, recipeId)} // Pass the event and recipeId
-          style={{ cursor: "pointer" }} // Add pointer style to indicate it's clickable
+          onClick={(e) => addToRecentlyAdded(e, recipeId)}
+          style={{ cursor: "pointer" }}
         />
       </div>
     </div>
   );
-};
-
+};  
 export default RecipeCard;

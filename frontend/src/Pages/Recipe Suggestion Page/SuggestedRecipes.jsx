@@ -36,11 +36,18 @@ const SuggestedRecipes = () => {
   }, []);
 
   const fetchRecipes = (pageNumber, query = "") => {
+    const token = localStorage.getItem('token'); // Get the user's token
+    const headers = {
+      'Authorization': `Token ${token}`,
+      'Content-Type': 'application/json'
+    }
+
     const url = query
       ? `http://localhost:8000/recipes/search/?q=${query}&page=${pageNumber}&pageSize=${recipesPerPage}`
-      : `http://localhost:8000/recipes/random-recipes/?page=${pageNumber}&pageSize=${recipesPerPage}`;
+      : `http://localhost:8000/recipes/suggested-recipes/?page=${pageNumber}&pageSize=${recipesPerPage}`;
+      // : `http://localhost:8000/recipes/random-recipes/?page=${pageNumber}&pageSize=${recipesPerPage}`;
 
-    fetch(url)
+    fetch(url, { headers })
       .then((response) => response.json())
       .then((data) => {
         if (query) {

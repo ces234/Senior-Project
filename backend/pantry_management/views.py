@@ -6,6 +6,7 @@ from .models import Pantry, PantryIngredient
 from user_management.models import Household
 from recipe_management.models import Ingredient
 from .serializers import PantryIngredientSerializer, PantryIngredientWithNameSerializer
+from django.db.models import Q
 
 @api_view(['POST'])
 def add_pantry_item(request):
@@ -14,7 +15,9 @@ def add_pantry_item(request):
     
     try:
         # Fetch the user's household
-        household = Household.objects.get(admin=user)
+        household = Household.objects.filter(
+            Q(admin=user) | Q(members=user)
+        ).first()
         pantry = Pantry.objects.get(household=household)  # Get the pantry associated with the household
 
         # Get the ingredient name from the request data
@@ -29,7 +32,6 @@ def add_pantry_item(request):
             'ingredient': ingredient.id,
             'quantity': request.data.get('quantity'),
             'unit': request.data.get('unit'),
-            #TODO: need to edit PantryIngredient table to have expiration_date
         }
 
         # Serialize and save the pantry ingredient
@@ -55,7 +57,9 @@ def get_pantry_items(request):
     
     try:
         # Fetch the user's household
-        household = Household.objects.get(admin=user)  # TODO: only works if user is admin rn
+        household = Household.objects.filter(
+            Q(admin=user) | Q(members=user)
+        ).first()
         pantry = household.pantry  # Get the pantry associated with the household
         
         # Get all pantry ingredients for the user's pantry
@@ -77,7 +81,10 @@ def delete_pantry_item(request, item_id):
         user = request.user
         
         # Fetch the user's household
-        household = Household.objects.get(admin=user)  # Assuming the user is an admin
+        household = Household.objects.filter(
+            Q(admin=user) | Q(members=user)
+        ).first()
+
         pantry = household.pantry  # Get the pantry associated with the household
         
         # Fetch the pantry ingredient to be deleted
@@ -86,7 +93,7 @@ def delete_pantry_item(request, item_id):
         # Delete the pantry ingredient
         pantry_item.delete()
         
-        return Response(status=status.HTTP_204_NO_CONTENT)  # Return a 204 No Content response
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     except Household.DoesNotExist:
         return Response({'error': 'Household not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -99,7 +106,10 @@ def edit_pantry_item(request, item_id):
 
     try:
         # Fetch the user's household
-        household = Household.objects.get(admin=user)
+        household = Household.objects.filter(
+            Q(admin=user) | Q(members=user)
+        ).first()
+
         pantry = Pantry.objects.get(household=household)  # Get the pantry associated with the household
 
         # Retrieve the PantryIngredient instance to update
@@ -121,8 +131,6 @@ def edit_pantry_item(request, item_id):
         pantry_item.ingredient = ingredient
         pantry_item.quantity = request.data.get('quantity')
         pantry_item.unit = request.data.get('unit')
-        # TODO: Update the expiration_date once it exists
-        # pantry_item.expiration_date = request.data.get('expiration_date')
 
         # Serialize and save the updated pantry ingredient
         serializer = PantryIngredientSerializer(pantry_item, data=request.data, partial=True)  # partial=True allows partial updates
