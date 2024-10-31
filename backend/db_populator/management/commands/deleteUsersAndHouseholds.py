@@ -2,13 +2,14 @@ import os
 import django
 from django.core.management.base import BaseCommand
 from user_management.models import User, Household  # Adjust the import to your actual model names
+from pantry_management.models import Pantry  # Import the Pantry model
 
 # Set up Django environment
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
 django.setup()
 
 class Command(BaseCommand):
-    help = 'Delete all users and households from the database'
+    help = 'Delete all users, households, and pantries from the database'
 
     def handle(self, *args, **options):
         # Delete all users
@@ -21,4 +22,9 @@ class Command(BaseCommand):
         Household.objects.all().delete()
         self.stdout.write(self.style.SUCCESS(f'Deleted {household_count} households.'))
 
-        self.stdout.write(self.style.SUCCESS('All users and households have been deleted.'))
+        # Delete all pantries
+        pantry_count = Pantry.objects.count()  # Count pantries before deletion
+        Pantry.objects.all().delete()
+        self.stdout.write(self.style.SUCCESS(f'Deleted {pantry_count} pantries.'))
+
+        self.stdout.write(self.style.SUCCESS('All users, households, and pantries have been deleted.'))

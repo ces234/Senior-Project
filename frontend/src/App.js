@@ -13,6 +13,7 @@ import SignupPage from "./Pages/Signup Page/SignupPage";
 import GroceryListPage from "./Pages/Grocery List Page/GroceryListPage";
 import { AuthProvider, useAuth } from "./AuthContext"; // Ensure correct path
 import MyRecipesPage from "./Pages/MyRecipePage/MyRecipesPage";
+import ProfilePage from "./Pages/Profile Page/ProfilePage";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
               <Route path = "/recipe/:id" element = {<PrivateRoute component= {RecipePage} />} />
               <Route path = "/grocery-list" element = {<PrivateRoute component={GroceryListPage} />} />
               <Route path = "/my-recipes" element = {<PrivateRoute component={MyRecipesPage} />} />
+              <Route path = "/profile" element = {<PrivateRoute component={ProfilePage} />} /> 
             </Routes>
           </div>
         </Router>

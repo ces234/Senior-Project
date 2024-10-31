@@ -11,9 +11,7 @@ from django.contrib.auth.hashers import make_password
 from django.db import transaction  # Import transaction for atomic operations
 from grocery_management.models import GroceryList
 from django.shortcuts import get_object_or_404
-
-
-
+from rest_framework.permissions import AllowAny
 
 
 # userManagement/views.py
@@ -24,10 +22,14 @@ from .serializers import UserSerializer, HouseholdSerializer
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [AllowAny]  # Allow access to everyone
+
 
 class HouseholdListView(generics.ListAPIView):
     queryset = Household.objects.all()
     serializer_class = HouseholdSerializer
+    permission_classes = [AllowAny]  # Allow access to everyone
+
 
 
 from rest_framework.views import APIView
@@ -98,6 +100,8 @@ def signup(request):
     username = request.data.get('username')
     password = request.data.get('password')
     household_option = request.data.get('householdOption')
+    join_code = request.data.get('joinCode')
+
 
     if not all([username, password, household_option]):
         return Response({'error': 'All fields are required'}, status=status.HTTP_400_BAD_REQUEST)
@@ -114,6 +118,14 @@ def signup(request):
                 print(f"Created grocery list for household ID: {household.id}")  # Debugging statement
 
                 pantry = Pantry.objects.create(household=household)
+
+            elif household_option == 'existing' and join_code:
+                # Attempt to find an existing household with the provided join code
+                household = get_object_or_404(Household, join_code=join_code)
+                household.members.add(user)  # Add user to the existing household
+            else:
+                return Response({'error': 'Invalid household option or missing join code.'}, status=status.HTTP_400_BAD_REQUEST)
+
                 
             user_data = UserSerializer(user).data
             return Response({'message': 'User created successfully', 'user': user_data}, status=status.HTTP_201_CREATED)
@@ -135,6 +147,16 @@ def get_saved_recipes(request):
         'servings': recipe.servings,
     } for recipe in saved_recipes]
     return Response(serialized_recipes, status=200)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_join_code(request):
+    user = request.user
+    household = request.user.households.first()
+    joinCode = household.join_code
+    return Response({'join_code': joinCode}, status=status.HTTP_200_OK)
+
+
 
 # Add a recipe to favorites
 @api_view(["POST"])

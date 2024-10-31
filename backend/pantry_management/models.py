@@ -10,6 +10,13 @@ class Pantry(models.Model):
     def __str__(self):
         return f"Pantry of {self.household.admin.username if self.household and self.household.admin else 'Unknown Household'}"
 
+    @classmethod
+    def delete_all_pantries(cls):
+        """
+        Deletes all Pantry records and their related PantryIngredient records.
+        """
+        cls.objects.all().delete()
+
 class PantryIngredient(models.Model):
     pantry = models.ForeignKey(Pantry, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
