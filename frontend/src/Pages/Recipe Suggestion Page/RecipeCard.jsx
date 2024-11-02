@@ -6,7 +6,7 @@ import { faCirclePlus, faXmark } from "@fortawesome/free-solid-svg-icons"; // Im
 import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react"; // Import useEffect
 import RecipeCardImage from "./RecipeCardImage";
-import chicken from "../../photos/chicken.webp"
+import chicken from "../../photos/chicken.webp";
 
 const RecipeCard = ({
   image,
@@ -19,6 +19,7 @@ const RecipeCard = ({
   mealPlanId,
   meal,
   day,
+  requestedBy,
 }) => {
   const [error, setError] = useState(null); // State for error messages
   const [success, setSuccess] = useState(null); // State for success messages
@@ -76,10 +77,8 @@ const RecipeCard = ({
       }
 
       const data = await response.json();
-
     } catch (error) {
       console.error("Error adding recipe: ", error);
-
     }
   };
 
@@ -113,7 +112,6 @@ const RecipeCard = ({
     fetchCategories();
   }, [recipeId]); // Dependency array ensures fetch is called when recipeId changes
 
-
   return (
     <div className="recipeCardContainer" draggable onDragStart={onDragStart}>
       <button className="deleteButton" onClick={handleDelete}>
@@ -130,6 +128,12 @@ const RecipeCard = ({
           <div className="prepTime">Prep Time: {prepTime}</div>
         </div>
       </Link>
+      {/* Conditionally render the 'Requested by' section */}
+      {requestedBy && (
+        <div className="requestedBy">
+          <p>Requested by: {requestedBy}</p>
+        </div>
+      )}
       <div className="recipeButtonContainer">
         <FontAwesomeIcon
           icon={faHeart}
@@ -147,5 +151,5 @@ const RecipeCard = ({
       </div>
     </div>
   );
-};  
+};
 export default RecipeCard;

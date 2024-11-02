@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import RecipeCard from "./RecipeCard";
 import chicken from "../../photos/chicken.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import RequestedRecipes from "./RequestedRecipes";
 import {
   faAnglesRight,
   faChevronRight,
@@ -93,6 +94,7 @@ const SuggestedRecipes = () => {
 
   return (
     <div className="suggestedRecipesContainer">
+      <RequestedRecipes /> 
         <div className="SRCHeader">
           <div className="SRCHeaderSearchBar">
             <form className="SRCHeaderSearchBar" onSubmit={handleSearch}>

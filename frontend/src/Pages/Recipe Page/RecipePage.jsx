@@ -8,9 +8,11 @@ const RecipePage = () => {
   const [recipe, setRecipe] = useState(null);
   const [pantryIngredients, setPantryIngredients] = useState([]);
   const [groceryIngredients, setGroceryIngredients] = useState([]);
-  const { user, logout } = useAuth();
-  const [rating, setRating] = useState(null); // State for rating input
+  const { user, logout, isMember } = useAuth(); // Use isMember from context
+  const [rating, setRating] = useState(null);
   const [submittedRating, setSubmittedRating] = useState(false);
+
+  console.log(isMember()); // This will show true or false
 
   const token = localStorage.getItem("token");
 
@@ -64,7 +66,7 @@ const RecipePage = () => {
 
         if (!response.ok) throw new Error("Failed to fetch grocery list");
         const fetchedList = await response.json();
-        setGroceryIngredients(fetchedList.ingredients || []); // Set to an empty array if undefined
+        setGroceryIngredients(fetchedList.ingredients || []);
       } catch (error) {
         console.error("Error fetching grocery list: ", error);
         alert("Failed to fetch list. Please try again.");
@@ -77,8 +79,6 @@ const RecipePage = () => {
       fetchGroceryList();
     }
   }, [id, token, submittedRating]);
-
-  console.log(recipe);
 
   const handleRatingSubmit = async () => {
     try {
@@ -102,6 +102,24 @@ const RecipePage = () => {
     }
   };
 
+  const handleRequestRecipe = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/recipes/request/${id}/`, {
+        method: "POST",
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to request recipe");
+
+      alert("Recipe requested successfully!");
+    } catch (error) {
+      console.error("Error requesting recipe:", error);
+    }
+  };
+
   if (!recipe) {
     return <div>Loading...</div>;
   }
@@ -111,15 +129,9 @@ const RecipePage = () => {
       <h1>{recipe.name}</h1>
 
       <div>
-        <p>
-          <strong>Prep Time:</strong> {recipe.prep_time} minutes
-        </p>
-        <p>
-          <strong>Cook Time:</strong> {recipe.cook_time} minutes
-        </p>
-        <p>
-          <strong>Servings:</strong> {recipe.servings}
-        </p>
+        <p><strong>Prep Time:</strong> {recipe.prep_time} minutes</p>
+        <p><strong>Cook Time:</strong> {recipe.cook_time} minutes</p>
+        <p><strong>Servings:</strong> {recipe.servings}</p>
       </div>
 
       <div>
@@ -144,6 +156,13 @@ const RecipePage = () => {
         <h2>Instructions</h2>
         <p>{recipe.instructions}</p>
       </div>
+
+      {isMember() && ( // Render request button only for members
+        <div>
+          <button onClick={handleRequestRecipe}>Request Recipe</button>
+        </div>
+      )}
+
       <div className="rating-section">
         <h2>Rate this Recipe</h2>
         {!submittedRating ? (
