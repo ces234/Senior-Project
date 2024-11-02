@@ -108,9 +108,9 @@ def signup(request):
 
     try:
         with transaction.atomic():
-            user = User.objects.create(username=username, password=make_password(password))
 
             if household_option == 'new':
+                user = User.objects.create(username=username, password = make_password(password), status = "admin")
                 household = Household.objects.create(admin=user)
                 user.households.add(household)
                 GroceryList.objects.create(household=household)  # Creating the grocery list
@@ -120,6 +120,7 @@ def signup(request):
                 pantry = Pantry.objects.create(household=household)
 
             elif household_option == 'existing' and join_code:
+                user = User.objects.create(username=username, password = make_password(password), status = "member")
                 # Attempt to find an existing household with the provided join code
                 household = get_object_or_404(Household, join_code=join_code)
                 household.members.add(user)  # Add user to the existing household

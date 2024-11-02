@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from .models import Recipe, Category, Ingredient, RecipeRating
+from .models import Recipe, Category, Ingredient, RecipeRating, RecipeRequest
 from pantry_management.models import Pantry
 from user_management.models import Household
 from django.db.models import Q
@@ -10,7 +10,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
-from .serializers import IngredientSerializer, RecipeRatingSerializer
+from .serializers import IngredientSerializer, RecipeRatingSerializer, RecipeRequestSerializer
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 
@@ -251,3 +251,55 @@ def rate_recipe(request, recipe_id):
         serializer.save(user=user)  # Ensure the user is the request user
         return Response(serializer.data, status=status.HTTP_200_OK if not created else status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def allRequests(request):  # Add 'request' parameter
+    requests = RecipeRequest.objects.all()  # Get all RecipeRequest instances
+    serializer = RecipeRequestSerializer(requests, many=True)  # Serialize the data
+    return Response(serializer.data)  # Return the serialized data in the response
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def request_recipe_view(request, recipe_id):
+    user = request.user
+
+    # Check that the user is a member and not an admin
+    if user.status != 'member':
+        return Response({"error": "Only household members can request recipes"}, status=status.HTTP_403_FORBIDDEN)
+
+    # Fetch the household the user belongs to
+    household = Household.objects.filter(members=user).first()
+    if not household:
+        return Response({"error": "User is not part of a household"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Get the recipe requested
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+
+    # Create and save the recipe request
+    recipe_request, created = RecipeRequest.objects.get_or_create(
+        recipe=recipe,
+        user=user
+    )
+
+    if not created:
+        return Response({"message": "This recipe has already been requested by this household"}, status=status.HTTP_200_OK)
+
+    return Response({"message": "Recipe request successfully created"}, status=status.HTTP_201_CREATED)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])  # Ensure only authenticated users can access this endpoint
+def household_requests(request):
+    user = request.user
+
+    # Get the household to which the user belongs
+    user_household = Household.objects.filter(members=user).first()
+    if not user_household:
+        return JsonResponse({'error': 'User is not part of a household'}, status=400)
+
+    # Filter requests to only those made by members of the user's household
+    household_requests = RecipeRequest.objects.filter(user__in=user_household.members.all())
+
+    # Serialize the requests data
+    serializer = RecipeRequestSerializer(household_requests, many=True)
+    return JsonResponse(serializer.data, safe=False, status=200)
