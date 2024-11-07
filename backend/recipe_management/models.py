@@ -1,6 +1,5 @@
 from django.db import models
 from user_management.models import User  # Import your custom User model
-from django.core.exceptions import ValidationError
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=200)
@@ -51,29 +50,3 @@ class RecipeRating(models.Model):
 
     def __str__(self):
         return f"Rating of {self.rating} for {self.recipe.name} by {self.user.username}"
-
-class RecipeRequest(models.Model):
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='requests')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipe_requests')
-    request_date = models.DateTimeField(auto_now_add=True)  # Date and time when the request was made
-    message = models.TextField(null=True, blank=True)  # Optional message from the user
-
-    class Meta:
-        unique_together = ('recipe', 'user')  # Ensure a user can only request a specific recipe once
-
-    def clean(self):
-        # Ensure the user has "member" status and belongs to a household
-        if self.user.status != 'member':
-            raise ValidationError("Only household members (not admins) can request a recipe.")
-        
-        # Check if the user is part of a household
-        if not self.user.households.exists():
-            raise ValidationError("User must be a member of a household to request a recipe.")
-
-    def save(self, *args, **kwargs):
-        # Call clean() to apply validations before saving
-        self.clean()
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"{self.user.username} requested {self.recipe.name} on {self.request_date.strftime('%Y-%m-%d')}"
