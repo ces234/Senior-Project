@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
+import './RecipePage.css';
 
 const RecipePage = () => {
   const { id } = useParams();
@@ -124,37 +125,93 @@ const RecipePage = () => {
     return <div>Loading...</div>;
   }
 
+  const RecipeDetails = ({ recipe }) => {
   return (
-    <div className="recipe-container">
-      <h1>{recipe.name}</h1>
-
-      <div>
-        <p><strong>Prep Time:</strong> {recipe.prep_time} minutes</p>
-        <p><strong>Cook Time:</strong> {recipe.cook_time} minutes</p>
-        <p><strong>Servings:</strong> {recipe.servings}</p>
+    <div className="recipe-details">
+      <div className="detail">
+        <span>Prep Time:</span> {recipe.prep_time} min
       </div>
+      <div className="detail">
+        <span>Cook Time:</span> {recipe.cook_time} min
+      </div>
+      <div className="detail">
+        <span>Avg. Rating:</span> {recipe.ratings} 
+        {/* //TODO: compute avg ratings */}
+      </div>
+    </div>
+  );
+};
 
-      <div>
-        <h2>Ingredients</h2>
+  const Instructions = () => {
+    return (
+      <div className="instructions">
+        <p>{recipe.instructions}</p>
+      </div>
+    );
+  };
+
+  const Ingredients = () => {
+    return (
+        <div className="ingredients">
+          <ul>
+            {recipe.ingredients.map((ingredient, index) => (
+              <li key={index}>
+                {ingredient.name}
+                {pantryIngredients.some(
+                  (pantryItem) => pantryItem.ingredient_name === ingredient.name
+                ) && <span> <InPantryTag/> </span>}
+                {groceryIngredients &&
+                  groceryIngredients.some(
+                    (groceryItem) => groceryItem.name === ingredient.name
+                  ) && <span> (in grocery list)</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+    );
+  };
+
+  const Ratings = () => {
+    return (
+      <div className="ratings">
         <ul>
-          {recipe.ingredients.map((ingredient, index) => (
+          hkbkhbhk
+          {recipe.ratings.map((rating, index) => (
             <li key={index}>
-              {ingredient.name}
-              {pantryIngredients.some(
-                (pantryItem) => pantryItem.ingredient_name === ingredient.name
-              ) && <span> (in pantry)</span>}
-              {groceryIngredients &&
-                groceryIngredients.some(
-                  (groceryItem) => groceryItem.name === ingredient.name
-                ) && <span> (in grocery list)</span>}
+              {rating.username}: {rating.rating}{" "}
+              {rating.rating === 1 ? "star" : "stars"}
             </li>
           ))}
         </ul>
       </div>
+    );
+  };
+
+  const InPantryTag = () => {
+    return (
+      <span className="ingredient-tag">In Pantry</span>
+    )
+  };
+  
+  return (
+    <div className="recipe-container">
+      <h1>{recipe.name} Recipe</h1>
 
       <div>
-        <h2>Instructions</h2>
-        <p>{recipe.instructions}</p>
+        <RecipeDetails recipe={recipe}/>
+      </div>
+
+      <div className="details-container">
+        <div className="instructions-container">
+          <h2>Instructions</h2>
+          <Instructions/>
+        </div>
+        <div className="ingredients-ratings-container">
+          <h2>Ingredients</h2>
+          <Ingredients/>
+          <h2>Ratings</h2>
+          <Ratings/>
+        </div>
       </div>
 
       {isMember() && ( // Render request button only for members
@@ -185,17 +242,7 @@ const RecipePage = () => {
         )}
       </div>
 
-      <div className="existing-ratings">
-        <h2>Ratings</h2>
-        <ul>
-          {recipe.ratings.map((rating, index) => (
-            <li key={index}>
-              {rating.username}: {rating.rating}{" "}
-              {rating.rating === 1 ? "star" : "stars"}
-            </li>
-          ))}
-        </ul>
-      </div>
+      
     </div>
   );
 };

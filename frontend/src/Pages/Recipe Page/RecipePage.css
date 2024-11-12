@@ -1,0 +1,62 @@
+.instructions {
+    background-color: #D9D9D9;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+}
+
+.ingredient-tag {
+    color: #363F26;
+    background-color: #D9D9D9;
+    margin: 2px;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.recipe-details {
+    display: flex;
+    justify-content: space-between; /* Distribute the details in a row */
+    gap: 15px; /* Space between the boxes */
+}
+  
+.detail {
+    background-color: #617330; /* Grey background */
+    padding: 20px;
+    text-align: center;
+    flex: 1; /* Each box takes equal width */
+    border-radius: 8px; /* Optional: rounded corners */
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
+}
+
+.details-container {
+    display: flex;
+}
+
+.instructions-container {
+    color: #363F26;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.ingredients-ratings-container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.ingredients {
+    background-color: #617330;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+}
+
+.ratings {
+    background-color: #617330;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+}
+
