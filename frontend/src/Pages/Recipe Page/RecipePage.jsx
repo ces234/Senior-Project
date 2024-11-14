@@ -135,6 +135,9 @@ const RecipePage = () => {
         <span>Cook Time:</span> {recipe.cook_time} min
       </div>
       <div className="detail">
+        <span>Servings:</span> {recipe.servings}
+      </div>
+      <div className="detail">
         <span>Avg. Rating:</span> {recipe.ratings} 
         {/* //TODO: compute avg ratings */}
       </div>
@@ -142,13 +145,25 @@ const RecipePage = () => {
   );
 };
 
-  const Instructions = () => {
-    return (
-      <div className="instructions">
-        <p>{recipe.instructions}</p>
-      </div>
-    );
-  };
+const Instructions = () => {
+
+  // Split instructions into sentences, filtering out any empty strings
+  const instructionsList = recipe.instructions
+    .split('.')
+    .map((sentence) => sentence.trim()) // Remove extra whitespace
+    .filter((sentence) => sentence); // Remove any empty strings
+
+  return (
+    <div className="instructions">
+      <ol>
+        {instructionsList.map((sentence, index) => (
+          <li key={index}>{sentence}.</li>
+        ))}
+      </ol>
+    </div>
+  );
+};
+
 
   const Ingredients = () => {
     return (
@@ -156,6 +171,8 @@ const RecipePage = () => {
           <ul>
             {recipe.ingredients.map((ingredient, index) => (
               <li key={index}>
+                {ingredient.quantity}{' '}
+                {ingredient.unit}{' '}
                 {ingredient.name}
                 {pantryIngredients.some(
                   (pantryItem) => pantryItem.ingredient_name === ingredient.name
@@ -175,7 +192,6 @@ const RecipePage = () => {
     return (
       <div className="ratings">
         <ul>
-          hkbkhbhk
           {recipe.ratings.map((rating, index) => (
             <li key={index}>
               {rating.username}: {rating.rating}{" "}
@@ -183,6 +199,27 @@ const RecipePage = () => {
             </li>
           ))}
         </ul>
+        <div className="rating-section">
+        <h2>Rate this Recipe</h2>
+        {!submittedRating ? (
+          <>
+            <select
+              value={rating}
+              onChange={(e) => setRating(Number(e.target.value))}
+            >
+              <option value="">Select rating</option>
+              {[1, 2, 3, 4, 5].map((value) => (
+                <option key={value} value={value}>
+                  {value} {value === 1 ? "star" : "stars"}
+                </option>
+              ))}
+            </select>
+            <button onClick={handleRatingSubmit}>Submit Rating</button>
+          </>
+        ) : (
+          <p>Thank you for rating!</p>
+        )}
+      </div>
       </div>
     );
   };
@@ -209,7 +246,7 @@ const RecipePage = () => {
         <div className="ingredients-ratings-container">
           <h2>Ingredients</h2>
           <Ingredients/>
-          <h2>Ratings</h2>
+          <h2>Family Ratings</h2>
           <Ratings/>
         </div>
       </div>
@@ -219,30 +256,6 @@ const RecipePage = () => {
           <button onClick={handleRequestRecipe}>Request Recipe</button>
         </div>
       )}
-
-      <div className="rating-section">
-        <h2>Rate this Recipe</h2>
-        {!submittedRating ? (
-          <>
-            <select
-              value={rating}
-              onChange={(e) => setRating(Number(e.target.value))}
-            >
-              <option value="">Select rating</option>
-              {[1, 2, 3, 4, 5].map((value) => (
-                <option key={value} value={value}>
-                  {value} {value === 1 ? "star" : "stars"}
-                </option>
-              ))}
-            </select>
-            <button onClick={handleRatingSubmit}>Submit Rating</button>
-          </>
-        ) : (
-          <p>Thank you for rating!</p>
-        )}
-      </div>
-
-      
     </div>
   );
 };

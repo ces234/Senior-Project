@@ -1,5 +1,6 @@
 .instructions {
     background-color: #D9D9D9;
+    color: #363F26;
     padding: 20px;
     margin: 20px;
     border-radius: 10px;
@@ -34,10 +35,14 @@
 }
 
 .instructions-container {
-    color: #363F26;
     display: flex;
     flex: 1;
     flex-direction: column;
+}
+
+.instructions ol {
+    margin-bottom: 15px; /* Space between each list item */
+    font-size: 16px; /* Adjust text size as needed */
 }
 
 .ingredients-ratings-container {
@@ -51,6 +56,12 @@
     padding: 20px;
     margin: 20px;
     border-radius: 10px;
+}
+  
+.ingredients li {
+    margin-bottom: 15px; /* Space between each list item */
+    font-size: 16px; /* Adjust text size as needed */
+    color: #fff; /* Optional: Change text color */
 }
 
 .ratings {
