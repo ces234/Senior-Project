@@ -20,6 +20,8 @@ const RecipeCard = ({
   meal,
   day,
   requestedBy,
+  requestId,
+  onUpdate, 
 }) => {
   const [error, setError] = useState(null); // State for error messages
   const [success, setSuccess] = useState(null); // State for success messages
@@ -61,6 +63,22 @@ const RecipeCard = ({
     try {
       const token = localStorage.getItem("token"); // Adjust according to where you store your token
 
+      if (requestId) {
+        const deleteResponse = await fetch(
+          `http://localhost:8000/recipes/delete_request/${requestId}/`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        );
+
+        if (!deleteResponse.ok) {
+          throw new Error("Failed to delete the recipe request");
+        }
+      }
+
       const response = await fetch(
         "http://localhost:8000/user/add-recently-added-recipe/",
         {
@@ -79,6 +97,9 @@ const RecipeCard = ({
       const data = await response.json();
     } catch (error) {
       console.error("Error adding recipe: ", error);
+    }
+    if (onUpdate) {
+      onUpdate();
     }
   };
 

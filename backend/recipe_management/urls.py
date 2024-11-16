@@ -14,4 +14,5 @@ urlpatterns = [
     path('request/<int:recipe_id>/', views.request_recipe_view, name='request_recipe'),
     path('requests/', views.allRequests, name='allRequests'),
     path('household_requests/', views.household_requests, name='household_requests'),  # Corrected line
+    path('delete_request/<int:request_id>/', views.delete_recipe_request, name='delete_recipe_request'),
 ]

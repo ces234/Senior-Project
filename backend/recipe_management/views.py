@@ -303,3 +303,20 @@ def household_requests(request):
     # Serialize the requests data
     serializer = RecipeRequestSerializer(household_requests, many=True)
     return JsonResponse(serializer.data, safe=False, status=200)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_recipe_request(request, request_id):
+    """View to delete a recipe request by its ID"""
+    # Get the recipe request object or return a 404 if not found
+    recipe_request = get_object_or_404(RecipeRequest, id=request_id)
+
+    # Ensure the user is authorized to delete the request (e.g., owner check)
+    if recipe_request.user != request.user:
+        return Response({'error': 'You do not have permission to delete this request.'}, status=status.HTTP_403_FORBIDDEN)
+
+    # Delete the recipe request
+    recipe_request.delete()
+
+    return Response({'message': 'Recipe request deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
