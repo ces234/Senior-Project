@@ -221,6 +221,17 @@ def search_ingredient(request):
         return Response(serializer.data)
     else:
         return Response({"message": "No query provided"}, status = 400)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])  # Allow access without requiring authentication
+def search_exact_ingredient(request): 
+    query = request.query_params.get('q', None)
+    if query:
+        ingredients = Ingredient.objects.filter(Q(name__iexact=query))
+        serializer = IngredientSerializer(ingredients, many = True)
+        return Response(serializer.data)
+    else:
+        return Response({"message": "No query provided"}, status = 400)
     
 
 def get_recipe_categories(recipe_id):

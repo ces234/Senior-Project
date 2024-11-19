@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
-import "./RecipePage.css";
+import './RecipePage.css';
+import { BsCart4, BsPlusCircle } from "react-icons/bs";
 
 const RecipePage = () => {
   const { id } = useParams();
@@ -85,6 +86,52 @@ const RecipePage = () => {
     }
   }, [id, token, submittedRating, user.username]);
 
+  const addToGroceryList = async (ingredient) => {
+    const token = localStorage.getItem("token");
+    try {
+      // First, search for the ingredient by name to get the id
+      const searchResponse = await fetch(
+        `http://localhost:8000/recipes/search-exact-ingredient/?q=${ingredient.name}`,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
+  
+      console.log(searchResponse);
+      if (!searchResponse.ok) throw new Error("Failed to fetch ingredient.");
+  
+      const ingredientData = await searchResponse.json();
+  
+      // Ensure ingredientData is not empty
+      if (ingredientData.length === 0) {
+        throw new Error("Ingredient not found in database.");
+      }
+  
+      // Use the first matching ingredient (or handle cases if multiple matches)
+      const ingredientId = ingredientData[0].id;
+      console.log("Searched ingredient:", ingredientData[0]);
+  
+      // Now, proceed to add the ingredient to the grocery list with the obtained id
+      const response = await fetch("http://localhost:8000/grocery/add-ingredient/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+        body: JSON.stringify({
+          ingredient_id: ingredientId,
+        }),
+      });
+  
+      if (!response.ok) throw new Error("Failed to add ingredient to grocery list.");
+      console.log("Ingredient successfully added to grocery list.");
+    } catch (error) {
+      console.error("Error adding ingredient to grocery list:", error);
+    }
+  };  
+
   const handleRequestRecipe = async () => {
     try {
       const response = await fetch(
@@ -112,6 +159,11 @@ const RecipePage = () => {
   }
 
   const RecipeDetails = ({ recipe }) => {
+    const totalRatings = recipe.ratings.length;
+    const averageRating = totalRatings
+      ? recipe.ratings.reduce((sum, rating) => sum + rating.rating, 0) / totalRatings
+      : 0;
+
     return (
       <div className="recipe-details">
         <div className="detail">
@@ -124,8 +176,7 @@ const RecipePage = () => {
           <span>Servings:</span> {recipe.servings}
         </div>
         <div className="detail">
-          {/* <span>Avg. Rating:</span> {recipe.ratings} 
-        //TODO: compute avg ratings */}
+          <span>Avg. Rating:</span> {averageRating} {averageRating === 1 ? "star" : "stars"}
         </div>
       </div>
     );
@@ -151,27 +202,26 @@ const RecipePage = () => {
 
   const Ingredients = () => {
     return (
-      <div className="ingredients">
-        <ul>
-          {recipe.ingredients.map((ingredient, index) => (
-            <li key={index}>
-              {ingredient.quantity} {ingredient.unit} {ingredient.name}
-              {pantryIngredients.some(
-                (pantryItem) => pantryItem.ingredient_name === ingredient.name
-              ) && (
-                <span>
-                  {" "}
-                  <InPantryTag />{" "}
-                </span>
-              )}
-              {groceryIngredients &&
-                groceryIngredients.some(
-                  (groceryItem) => groceryItem.name === ingredient.name
-                ) && <span> (in grocery list)</span>}
-            </li>
-          ))}
-        </ul>
-      </div>
+        <div className="ingredients">
+          <ul>
+            {recipe.ingredients.map((ingredient, index) => (
+              <li key={index}>
+                {ingredient.quantity}{' '}
+                {ingredient.unit}{' '}
+                {ingredient.name}
+                <button onClick={() => addToGroceryList(ingredient)}><BsPlusCircle /></button>
+                <span><AddToGroceryList ingredient={ingredient}/></span>
+                {pantryIngredients.some(
+                  (pantryItem) => pantryItem.ingredient_name === ingredient.name
+                ) && <span> <InPantryTag/> </span>}
+                {groceryIngredients &&
+                  groceryIngredients.some(
+                    (groceryItem) => groceryItem.name === ingredient.name
+                  ) && <span><InCartTag /></span>}
+              </li>
+            ))}
+          </ul>
+        </div>
     );
   };
 
@@ -268,6 +318,12 @@ const RecipePage = () => {
     return <span className="ingredient-tag">In Pantry</span>;
   };
 
+  const InCartTag = () => {
+    return (
+      <span className="ingredient-tag"><BsCart4 />In Cart</span>
+    )
+  };
+  
   return (
     <div className="recipe-container">
       {alertMessage && (
