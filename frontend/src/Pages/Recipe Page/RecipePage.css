@@ -71,3 +71,61 @@
     border-radius: 10px;
 }
 
+.ratings ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ratings li {
+    display: flex;
+    align-items: center;
+    /* justify-content: space-between; */
+    font-size: 19px;
+    margin-bottom: 10px;
+}
+
+.ratings .username {
+    font-weight: bold;
+    padding-right: 10px;
+    padding-top: 10px;
+}
+
+.star-rating {
+    display: flex;
+    gap: 5px;
+    font-size: 30px;
+    cursor: pointer;
+  }
+  
+  .star {
+    color: #363F26;
+    transition: color 0.3s;
+    font-size: 35px;
+    padding: 5px;
+  }
+
+  .star:hover {
+    cursor: pointer;
+  }
+  
+  .star.filled {
+    color: gold; /* Change color for filled stars */
+  }
+  
+
+  .submitRatingButton{
+    all: unset;
+    background-color: #363F26;
+    color: white;
+    border-radius: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .rateRecipeText {
+    margin-top: 20px;
+    margin-bottom: 0px;
+    font-size: 18px;
+  }
