@@ -295,3 +295,22 @@
 .deleteButton:hover {
     color: #793F3E; /* Optional hover effect */
 }
+
+.requestGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    gap: 16px; /* Adjust spacing between items */
+    padding: 0;
+    list-style: none; /* Remove default list styles */
+    margin: 0 auto;
+}
+
+.requestGrid li {
+    list-style: none; /* Remove bullet points */
+}
+
+.requestedRecipes {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto; /* Center the grid on the page */
+}

@@ -49,7 +49,7 @@ const RequestedRecipes = () => {
         <div className="requestedRecipes">
             <h2>Requested Recipes</h2>
             {requests.length > 0 ? (
-                <ul>
+                <ul className = "requestGrid">
                     {requests.map((request) => (
                         <RecipeCard 
                             key={request.id} // Add a unique key

@@ -11,6 +11,7 @@ const RecipePage = () => {
   const [groceryIngredients, setGroceryIngredients] = useState([]);
   const { user, logout, isMember } = useAuth(); // Use isMember from context
   const [submittedRating, setSubmittedRating] = useState(false);
+  const [alertMessage, setAlertMessage] = useState(null);
 
   console.log(isMember()); // This will show true or false
 
@@ -99,8 +100,9 @@ const RecipePage = () => {
 
       if (!response.ok) throw new Error("Failed to request recipe");
 
-      alert("Recipe requested successfully!");
+      setAlertMessage("Recipe requested successfully!");
     } catch (error) {
+      setAlertMessage("Failed to request recipe. Please try again.");
       console.error("Error requesting recipe:", error);
     }
   };
@@ -235,7 +237,7 @@ const RecipePage = () => {
         </ul>
         {!submittedRating && (
           <div className="rating-section">
-            <h2 className = "rateRecipeText">Rate this Recipe</h2>
+            <h2 className="rateRecipeText">Rate this Recipe</h2>
             <div className="stars">
               {[...Array(5)].map((_, index) => (
                 <span
@@ -268,7 +270,22 @@ const RecipePage = () => {
 
   return (
     <div className="recipe-container">
-      <h1>{recipe.name} Recipe</h1>
+      {alertMessage && (
+        <div className="custom-alert">
+          <span>{alertMessage}</span>
+          <button onClick={() => setAlertMessage(null)} className="close-btn">
+            &times;
+          </button>
+        </div>
+      )}
+      <div className="recipeHeaderContainer">
+        <h1>{recipe.name} Recipe</h1>
+        {isMember() && ( // Render request button only for members
+        <div>
+          <button className = "requestRecipeButton" onClick={handleRequestRecipe}>Request Recipe</button>
+        </div>
+      )}
+      </div>
 
       <div>
         <RecipeDetails recipe={recipe} />
@@ -287,11 +304,8 @@ const RecipePage = () => {
         </div>
       </div>
 
-      {isMember() && ( // Render request button only for members
-        <div>
-          <button onClick={handleRequestRecipe}>Request Recipe</button>
-        </div>
-      )}
+      
+      
     </div>
   );
 };
