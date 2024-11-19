@@ -99,7 +99,6 @@ const RecipePage = () => {
         }
       );
   
-      console.log(searchResponse);
       if (!searchResponse.ok) throw new Error("Failed to fetch ingredient.");
   
       const ingredientData = await searchResponse.json();
@@ -111,7 +110,6 @@ const RecipePage = () => {
   
       // Use the first matching ingredient (or handle cases if multiple matches)
       const ingredientId = ingredientData[0].id;
-      console.log("Searched ingredient:", ingredientData[0]);
   
       // Now, proceed to add the ingredient to the grocery list with the obtained id
       const response = await fetch("http://localhost:8000/grocery/add-ingredient/", {
@@ -210,7 +208,6 @@ const RecipePage = () => {
                 {ingredient.unit}{' '}
                 {ingredient.name}
                 <button onClick={() => addToGroceryList(ingredient)}><BsPlusCircle /></button>
-                <span><AddToGroceryList ingredient={ingredient}/></span>
                 {pantryIngredients.some(
                   (pantryItem) => pantryItem.ingredient_name === ingredient.name
                 ) && <span> <InPantryTag/> </span>}
