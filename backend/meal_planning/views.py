@@ -5,7 +5,6 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from .models import MealPlan, MealPlanRecipe
 from .serializers import MealPlanSerializer, MealPlanRecipeSerializer
-import datetime
 from recipe_management.models import Recipe
 from user_management.models import Household
 
@@ -137,7 +136,6 @@ def generate_grocery_list(request):
 
         # Fetch the meal plan based on the ID
         meal_plan = MealPlan.objects.get(id=meal_plan_id)
-
         
         # Generate the grocery list
         grocery_list = meal_plan.generate_grocery_list()

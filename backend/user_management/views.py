@@ -12,6 +12,7 @@ from django.db import transaction  # Import transaction for atomic operations
 from grocery_management.models import GroceryList
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import AllowAny
+from user_management.utils import get_user_saved_recipes
 
 
 # userManagement/views.py
@@ -138,15 +139,9 @@ def signup(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_saved_recipes(request):
+    print("get_sasved_recipes called")
     user = request.user
-    saved_recipes = user.saved_recipes.all()
-    serialized_recipes = [{
-        'id': recipe.id,
-        'name': recipe.name,
-        'prep_time': recipe.prep_time,
-        'cook_time': recipe.cook_time,
-        'servings': recipe.servings,
-    } for recipe in saved_recipes]
+    serialized_recipes = get_user_saved_recipes(user)
     return Response(serialized_recipes, status=200)
 
 @api_view(["GET"])

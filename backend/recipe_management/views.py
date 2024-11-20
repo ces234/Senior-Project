@@ -13,8 +13,8 @@ from rest_framework.decorators import api_view, permission_classes
 from .serializers import IngredientSerializer, RecipeRatingSerializer, RecipeRequestSerializer
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
-
-
+from user_management.utils import get_user_saved_recipes
+from pantry_management.utils import get_user_pantry_items
 
 def get_random_recipes(num_recipes=100):  # Allow fetching more than 16
     total_recipes = Recipe.objects.count()
@@ -77,8 +77,6 @@ def suggested_recipes_view(request):
     if not user.is_authenticated:
         return JsonResponse({'error': 'You must be logged in to view suggested recipes'}, status=401)
     
-    # userHousehold = Household.objects.filter(admin=user).first()  # Get the household where the user is the admin
-
     userHousehold = Household.objects.filter(
         Q(admin=user) | Q(members=user)
     ).first()
@@ -102,11 +100,34 @@ def suggested_recipes_view(request):
         'servings': recipe.servings,
     } for recipe in page_obj]
 
+    print(calculate_recipe_points(recipes_list[0], user))
+
     return JsonResponse({
         'recipes': recipes_list,
         'current_page': page_obj.number,
         'total_pages': paginator.num_pages,
     })
+
+def calculate_recipe_points(recipe, user):
+    points = 0
+
+    saved_recipes = get_user_saved_recipes(user)
+    if recipe in saved_recipes:
+        points += 100
+
+    ingredient_points = 0
+
+    pantry_list = get_user_pantry_items(user)
+
+    for ingredient in recipe.ingredients:
+        if ingredient in pantry_list:
+            ingredient_points += 10
+    
+    # Add 10 points * the percentage of ingredients they have in the pantry
+    points += 10 * (ingredient_points/recipe.ingredients.length)
+
+    return points
+
 
 def search_recipes(request):
     query = request.GET.get('q', '')
