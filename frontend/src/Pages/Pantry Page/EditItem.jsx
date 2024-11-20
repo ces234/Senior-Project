@@ -139,16 +139,6 @@ const EditItem = ({ pantryItem, fetchPantryItems }) => {
                         <option value="g">Gram</option>
                         <option value="none">None</option>
                     </select>
-
-                    <label htmlFor="expiration">Expiration Date:</label>
-                    <hr />
-                    <input
-                        type="date"
-                        id="expiration"
-                        name="expiration"
-                        value={expiration}
-                        onChange={(e) => setExpiration(e.target.value)}
-                    />
                     
                     <button type="button" className="submitPantryItemButton" onClick={() => editItem(pantryItem.ingredient_id)}>Edit Item</button>
                     <button type="button" className="deletePantryItemButton" onClick={() => deleteItem(pantryItem.ingredient_id)}>Delete Item</button>

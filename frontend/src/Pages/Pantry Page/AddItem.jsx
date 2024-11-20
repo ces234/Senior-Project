@@ -84,16 +84,6 @@ const AddItem = ({ fetchPantryItems }) => {
                         <option value="g">Gram</option>
                         <option value="none">None</option>
                     </select>
-
-                    <label htmlFor="expiration">Expiration Date:</label>
-                    <hr />
-                    <input
-                        type="date"
-                        id="expiration"
-                        name="expiration"
-                        value={expiration}
-                        onChange={(e) => setExpiration(e.target.value)}
-                    />
                     
                     <button type="submit" className="submitPantryItemButton">Add Item</button>
                 </div>
