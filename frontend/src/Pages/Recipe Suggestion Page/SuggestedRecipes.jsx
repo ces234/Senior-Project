@@ -1,5 +1,5 @@
-import "./RecipeSuggestionPage.css";
 import React, { useEffect, useState } from "react";
+import { useAuth } from "../../AuthContext";
 import RecipeCard from "./RecipeCard";
 import chicken from "../../photos/chicken.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,40 +11,41 @@ import {
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
 
-const SuggestedRecipes = ({ query, categories, setQuery, onRefinedSearch, searchResults, setSearchResults}) => {
-  const [currentPage, setCurrentPage] = useState(1); // Track current page
-  const recipesPerPage = 16; // Set how many recipes per page
-  const [totalPages, setTotalPages] = useState(1); // Track total pages
+const SuggestedRecipes = ({ query, categories, setQuery, onRefinedSearch, searchResults, setSearchResults }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const recipesPerPage = 16;
+  const [totalPages, setTotalPages] = useState(1);
   const [recipes, setRecipes] = useState([]);
-  const [isLoading, setIsLoading] = useState(false); // Loading state
-  const [noResults, setNoResults] = useState(true); 
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [noResults, setNoResults] = useState(true);
+  
+  const { user } = useAuth(); // Access user context
+  
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    fetchRecipes(pageNumber, query); // Pass the query along with the page number
+    fetchRecipes(pageNumber, query);
   };
 
-  // Handle search form submission
   const handleSearch = (event) => {
     event.preventDefault();
-    setCurrentPage(1); // Reset to first page on search
+    setCurrentPage(1);
     if (onRefinedSearch) {
-      onRefinedSearch(query, 1, recipesPerPage); // Use refined search function with the query
+      onRefinedSearch(query, 1, recipesPerPage);
     } else {
-      fetchRecipes(1, query); // Fall back to regular fetch if refined search isn't available
+      fetchRecipes(1, query);
     }
   };
 
   useEffect(() => {
-    fetchRecipes(currentPage); // Fetch random recipes on mount
+    fetchRecipes(currentPage);
   }, []);
 
   const fetchRecipes = (pageNumber, query = "") => {
-    setIsLoading(true); // Set loading to true before making the request
-    const token = localStorage.getItem('token'); // Get the user's token
+    setIsLoading(true);
+    const token = localStorage.getItem("token");
     const headers = {
-      'Authorization': `Token ${token}`,
-      'Content-Type': 'application/json',
+      Authorization: `Token ${token}`,
+      "Content-Type": "application/json",
     };
 
     const url = `http://localhost:8000/recipes/suggested-recipes/?page=${pageNumber}&pageSize=${recipesPerPage}`;
@@ -52,25 +53,25 @@ const SuggestedRecipes = ({ query, categories, setQuery, onRefinedSearch, search
     fetch(url, { headers })
       .then((response) => response.json())
       .then((data) => {
-        setIsLoading(false); // Set loading to false after data is fetched
+        setIsLoading(false);
         if (query) {
           setSearchResults(data.recipes);
           setNoResults(false);
-          setTotalPages(data.total_pages); // Make sure to set total pages here
+          setTotalPages(data.total_pages);
         } else {
           setRecipes(data.recipes);
-          setTotalPages(data.total_pages); // Set total pages for random recipes too
+          setTotalPages(data.total_pages);
           setNoResults(true);
         }
       })
       .catch((error) => {
-        setIsLoading(false); // Set loading to false in case of error
+        setIsLoading(false);
         console.error("Error fetching recipes:", error);
       });
   };
 
   const getPaginationRange = () => {
-    const maxPageDisplay = 5; // Maximum number of pagination bubbles to display
+    const maxPageDisplay = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxPageDisplay / 2));
     let endPage = Math.min(totalPages, currentPage + Math.floor(maxPageDisplay / 2));
 
@@ -92,16 +93,15 @@ const SuggestedRecipes = ({ query, categories, setQuery, onRefinedSearch, search
     return pageRange;
   };
 
-  console.log("SEARCH RESULTS: ", searchResults);
-
   // Ensure that searchResults and recipes are always arrays
   const validSearchResults = Array.isArray(searchResults) ? searchResults : [];
-  console.log("valid search results? ", validSearchResults);
   const validRecipes = Array.isArray(recipes) ? recipes : [];
 
   return (
     <div className="suggestedRecipesContainer">
-      <RequestedRecipes />
+      {/* Render RequestedRecipes only if the user is an admin */}
+      {user && user.status === 'admin' && <RequestedRecipes />}
+      
       <div className="SRCHeader">
         <div className="SRCHeaderSearchBar">
           <form className="SRCHeaderSearchBar" onSubmit={handleSearch}>
@@ -157,7 +157,7 @@ const SuggestedRecipes = ({ query, categories, setQuery, onRefinedSearch, search
 
       {/* Loading indicator */}
       {isLoading ? (
-        <div className="loadingIndicator">Loading...</div> // Add your loading indicator here
+        <div className="loadingIndicator">Loading...</div>
       ) : (
         <div className="SRCSuggested">
           {validSearchResults.length > 0
@@ -183,7 +183,7 @@ const SuggestedRecipes = ({ query, categories, setQuery, onRefinedSearch, search
               ))}
         </div>
       )}
-      
+
       <div className="SRCFooter">
         <button
           className="leftMultipleButton"

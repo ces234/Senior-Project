@@ -22,6 +22,10 @@ export const AuthProvider = ({ children }) => {
         return (user && user.status === 'member'); // Check if user is a member
     };
 
+    const isAdmin = () => {
+        return (user && user.status === 'admin');
+    }
+
     const logout = () => {
         setUser(null);
         setToken(null);
