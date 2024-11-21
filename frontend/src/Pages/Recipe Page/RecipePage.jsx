@@ -14,8 +14,6 @@ const RecipePage = () => {
   const [submittedRating, setSubmittedRating] = useState(false);
   const [alertMessage, setAlertMessage] = useState(null);
 
-  console.log(isMember()); // This will show true or false
-
   const token = localStorage.getItem("token");
 
   useEffect(() => {

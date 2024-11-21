@@ -15,7 +15,9 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from user_management.utils import get_user_saved_recipes
 from pantry_management.utils import get_user_pantry_items
+from operator import itemgetter
 
+# Gets random recipes without any logic
 def get_random_recipes(num_recipes=100):  # Allow fetching more than 16
     total_recipes = Recipe.objects.count()
     if total_recipes >= num_recipes:
@@ -47,27 +49,6 @@ def random_recipes_view(request):
         'total_pages': paginator.num_pages,
     })
 
-# suggest recipes based on items in pantry
-def get_suggested_recipes(pantry, num_recipes=100):
-
-    pantry_ingredients = pantry.ingredients.all()
-
-    # Get recipes that use those pantry ingredients
-    pantry_recipes = Recipe.objects.filter(ingredients__in=pantry_ingredients).distinct()
-
-    total_suggested = pantry_recipes.count()
-
-    if total_suggested >= num_recipes:
-        # Return a random subset of the suggested recipes
-        suggested_recipes = pantry_recipes.order_by('?')[:num_recipes]
-    else:
-        # Fetch additional random recipes not already in the suggestions
-        remaining_recipes = num_recipes - total_suggested
-        suggested_recipes = list(pantry_recipes.order_by('?'))
-        additional_recipes = Recipe.objects.exclude(id__in=[recipe.id for recipe in suggested_recipes]).order_by('?')[:remaining_recipes]
-        suggested_recipes.extend(additional_recipes)
-    
-    return suggested_recipes
 
 @api_view(['GET'])
 def suggested_recipes_view(request):
@@ -86,7 +67,7 @@ def suggested_recipes_view(request):
     page_number = request.GET.get('page', 1)
     
     # Fetch suggested recipes based on the pantry
-    suggested_recipes = get_suggested_recipes(pantry)
+    suggested_recipes = get_suggested_recipes(pantry, user)
 
     # Use Django's Paginator to paginate the recipes
     paginator = Paginator(suggested_recipes, 16)  # Show 16 recipes per page
@@ -100,34 +81,81 @@ def suggested_recipes_view(request):
         'servings': recipe.servings,
     } for recipe in page_obj]
 
-    # print(calculate_recipe_points(recipes_list[0], user))
-
     return JsonResponse({
         'recipes': recipes_list,
         'current_page': page_obj.number,
         'total_pages': paginator.num_pages,
     })
 
-# def calculate_recipe_points(recipe, user):
-#     points = 0
+# Suggest recipes based on points
+def get_suggested_recipes(pantry, user, num_recipes=100):
 
-#     saved_recipes = get_user_saved_recipes(user)
-#     if recipe in saved_recipes:
-#         points += 100
+    pantry_ingredients = pantry.ingredients.all()
 
-#     ingredient_points = 0
+    # Get recipes that use those pantry ingredients
+    pantry_recipes = Recipe.objects.filter(ingredients__in=pantry_ingredients).distinct() #TODO: might have to get all recipes right here
 
-#     pantry_list = get_user_pantry_items(user)
+    saved_test = Recipe.objects.filter(id = 7343).distinct()
+    print("saved points: ", calculate_recipe_points(saved_test[0], user))
 
-#     for ingredient in recipe.ingredients:
-#         if ingredient in pantry_list:
-#             ingredient_points += 10
+    print("recipe: ", pantry_recipes[0])
+    # print("points: ", calculate_recipe_points(pantry_recipes[0], user))
+
+    pantry_recipes_with_points = [
+        (recipe, calculate_recipe_points(recipe, user)) for recipe in pantry_recipes
+    ]
+
+    # Sort pantry recipes by points in descending order
+    sorted_pantry_recipes = sorted(pantry_recipes_with_points, key=itemgetter(1), reverse=True)
+
+    total_suggested = len(sorted_pantry_recipes)
+
+    if total_suggested >= num_recipes:
+        # Return the top `num_recipes` recipes based on points
+        suggested_recipes = [recipe for recipe, points in sorted_pantry_recipes[:num_recipes]]
+    else:
+        # Fetch additional random recipes not already in the suggestions
+        remaining_recipes = num_recipes - len(sorted_pantry_recipes)
+        suggested_recipes = [recipe for recipe, points in sorted_pantry_recipes]
+
+        # Get additional recipes not in the suggested recipes
+        additional_recipes = Recipe.objects.exclude(
+            id__in=[recipe.id for recipe in suggested_recipes]
+        ).order_by('?')[:remaining_recipes]
+
+        suggested_recipes.extend(additional_recipes)
     
-#     # Add 10 points * the percentage of ingredients they have in the pantry
-#     points += 10 * (ingredient_points/recipe.ingredients.length)
+    return suggested_recipes
 
-#     return points
 
+def calculate_recipe_points(recipe, user):
+
+    points = 0
+
+    saved_recipes = get_user_saved_recipes(user)
+
+    for saved_recipe in saved_recipes:
+        if saved_recipe['id'] == recipe.id:
+            print(True)
+            points += 100
+    
+
+    ingredient_points = 0
+
+    pantry_list = get_user_pantry_items(user)
+
+    # Loop through all recipe ingredients
+    for recipe_ingredient in recipe.ingredients.all():
+        # Check if the recipe ingredient is in the pantry list
+        for pantry_item in pantry_list:
+            if recipe_ingredient.name == pantry_item['ingredient_name']:
+                ingredient_points += 10
+
+    # Add 10 points * the percentage of ingredients they have in the pantry
+    if recipe.ingredients.all().count() >  0:
+        points += 10 * (ingredient_points/recipe.recipeingredient_set.all().count())
+
+    return points
 
 def search_recipes(request):
     query = request.GET.get('q', '')
@@ -245,7 +273,7 @@ def search_ingredient(request):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])  # Allow access without requiring authentication
-def search_exact_ingredient(request): 
+def get_ingredient_by_name(request): 
     query = request.query_params.get('q', None)
     if query:
         ingredients = Ingredient.objects.filter(Q(name__iexact=query))
