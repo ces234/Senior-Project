@@ -100,7 +100,7 @@ def suggested_recipes_view(request):
         'servings': recipe.servings,
     } for recipe in page_obj]
 
-    print(calculate_recipe_points(recipes_list[0], user))
+    # print(calculate_recipe_points(recipes_list[0], user))
 
     return JsonResponse({
         'recipes': recipes_list,
@@ -108,25 +108,25 @@ def suggested_recipes_view(request):
         'total_pages': paginator.num_pages,
     })
 
-def calculate_recipe_points(recipe, user):
-    points = 0
+# def calculate_recipe_points(recipe, user):
+#     points = 0
 
-    saved_recipes = get_user_saved_recipes(user)
-    if recipe in saved_recipes:
-        points += 100
+#     saved_recipes = get_user_saved_recipes(user)
+#     if recipe in saved_recipes:
+#         points += 100
 
-    ingredient_points = 0
+#     ingredient_points = 0
 
-    pantry_list = get_user_pantry_items(user)
+#     pantry_list = get_user_pantry_items(user)
 
-    for ingredient in recipe.ingredients:
-        if ingredient in pantry_list:
-            ingredient_points += 10
+#     for ingredient in recipe.ingredients:
+#         if ingredient in pantry_list:
+#             ingredient_points += 10
     
-    # Add 10 points * the percentage of ingredients they have in the pantry
-    points += 10 * (ingredient_points/recipe.ingredients.length)
+#     # Add 10 points * the percentage of ingredients they have in the pantry
+#     points += 10 * (ingredient_points/recipe.ingredients.length)
 
-    return points
+#     return points
 
 
 def search_recipes(request):
