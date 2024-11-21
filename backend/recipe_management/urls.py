@@ -5,6 +5,7 @@ urlpatterns = [
     path('random-recipes/', views.random_recipes_view, name='random_recipes'),
     path('suggested-recipes/', views.suggested_recipes_view, name='suggested_recipes'),
     path('search/', views.search_recipes, name='search_recipes'),
+    path('refined-search/', views.refine_search_recipes, name = 'refined-search'),
     path('categories/', views.categories_view, name='get_categories'),
     path('recipe/<int:recipe_id>/', views.get_recipe_by_id, name='get_recipe_by_id'),
     path('ingredients/', views.get_all_ingredients, name='get_all_ingredients'),

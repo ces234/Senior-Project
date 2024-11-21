@@ -331,3 +331,42 @@ def delete_recipe_request(request, request_id):
     recipe_request.delete()
 
     return Response({'message': 'Recipe request deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
+
+
+def refine_search_recipes(request):
+    query = request.GET.get('q', '').strip()
+    category_param = request.GET.get('categories', '')  # Comma-separated category names
+    category_names = [name.strip() for name in category_param.split(',') if name.strip()]  # Split and clean
+    page = int(request.GET.get('page', 1))
+    recipes_per_page = 16
+
+    recipes = Recipe.objects.all()
+
+    if query:
+        recipes = recipes.filter(name__icontains=query)
+
+    if category_names:
+        matching_categories = Category.objects.filter(name__in=category_names)
+        recipes = recipes.filter(categories__in=matching_categories)
+
+    recipes = recipes.distinct()
+
+    paginator = Paginator(recipes, recipes_per_page)
+    paginated_recipes = paginator.get_page(page)
+
+    recipe_list = [
+        {
+            'id': recipe.id,
+            'name': recipe.name,
+            'prep_time': recipe.prep_time, 
+            'cook_time': recipe.cook_time, 
+            'servings': recipe.servings,
+        }
+        for recipe in paginated_recipes
+    ]   
+
+    return JsonResponse({
+        'recipes': recipe_list, 
+        'total_pages': paginator.num_pages,
+        'current_page': paginated_recipes.number,
+    })
