@@ -23,4 +23,5 @@ urlpatterns = [
     path('saved-recipes/add/', add_saved_recipe, name = 'add_saved_recipes'),
     path('saved_recipes/remove/<int:recipe_id>/', remove_saved_recipe, name = 'remove_saved_recipes'),
     path('join-code/', get_join_code, name = 'get_join_code'),
+    path('household-members/', get_household_members, name = 'get-household-members'),
 ]

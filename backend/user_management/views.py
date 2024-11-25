@@ -178,3 +178,26 @@ def remove_saved_recipe(request, recipe_id):
     user.saved_recipes.remove(recipe)
     
     return Response({'message': f'{recipe.name} removed from favorites'}, status=200)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_household_members(request):
+    """
+    Returns all members of the household the requesting user belongs to.
+    """
+    try:
+        user = request.user
+        # Assuming the User model has a relationship to Household via `households`
+        household = user.households.first()
+
+        if not household:
+            return Response({"error": "User is not part of any household"}, status=404)
+
+        # Get all members of the household
+        members = household.members.all()  # Assuming Household has a `members` relationship
+        serialized_members = UserSerializer(members, many=True).data
+
+        return Response(serialized_members, status=200)
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)

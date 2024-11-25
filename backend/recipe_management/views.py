@@ -95,8 +95,8 @@ def get_suggested_recipes(pantry, user, num_recipes=100):
     # Get recipes that use those pantry ingredients
     pantry_recipes = Recipe.objects.filter(ingredients__in=pantry_ingredients).distinct() #TODO: might have to get all recipes right here
 
-    saved_test = Recipe.objects.filter(id = 7343).distinct()
-    print("saved points: ", calculate_recipe_points(saved_test[0], user))
+    # saved_test = Recipe.objects.filter(id = 7343).distinct()
+    # print("saved points: ", calculate_recipe_points(saved_test[0], user))
 
     print("recipe: ", pantry_recipes[0])
     # print("points: ", calculate_recipe_points(pantry_recipes[0], user))
