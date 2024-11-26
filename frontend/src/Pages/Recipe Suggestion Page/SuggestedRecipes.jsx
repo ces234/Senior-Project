@@ -99,8 +99,6 @@ const SuggestedRecipes = ({ query, categories, setQuery, onRefinedSearch, search
 
   return (
     <div className="suggestedRecipesContainer">
-      {/* Render RequestedRecipes only if the user is an admin */}
-      {user && user.status === 'admin' && <RequestedRecipes />}
       
       <div className="SRCHeader">
         <div className="SRCHeaderSearchBar">
@@ -154,6 +152,9 @@ const SuggestedRecipes = ({ query, categories, setQuery, onRefinedSearch, search
           </button>
         </div>
       </div>
+
+      {/* Render RequestedRecipes only if the user is an admin */}
+      {user && user.status === 'admin' && <RequestedRecipes />}
 
       {/* Loading indicator */}
       {isLoading ? (
