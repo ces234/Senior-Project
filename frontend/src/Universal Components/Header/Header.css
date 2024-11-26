@@ -2,6 +2,18 @@
     margin-left: 20px;
 }
 
+.appTitleLogoContainer {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: row;
+}
+
+.logo {
+    width: 250px;
+    height: 200px;
+    margin: -40px -100px -100px -100px;
+}
+
 .headerTitle { 
     font-size: 50px;
     margin: 15px;

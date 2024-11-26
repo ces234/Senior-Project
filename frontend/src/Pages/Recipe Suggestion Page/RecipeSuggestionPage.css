@@ -107,6 +107,7 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 8px; /* Adjust this value to reduce the gap */
     padding: 20px;
+    overflow-x: scroll;
 }
 
 

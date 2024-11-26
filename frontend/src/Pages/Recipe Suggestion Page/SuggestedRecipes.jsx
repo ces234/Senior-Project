@@ -3,6 +3,8 @@ import { useAuth } from "../../AuthContext";
 import RecipeCard from "./RecipeCard";
 import chicken from "../../photos/chicken.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { BarLoader } from "react-spinners";
+import worldIcon from "../../photos/logo/worldIcon.png";
 import RequestedRecipes from "./RequestedRecipes";
 import {
   faAnglesRight,
@@ -10,6 +12,7 @@ import {
   faAnglesLeft,
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
+import "./SuggestedRecipes.css";
 
 const SuggestedRecipes = ({ query, categories, setQuery, onRefinedSearch, searchResults, setSearchResults }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -157,10 +160,22 @@ const SuggestedRecipes = ({ query, categories, setQuery, onRefinedSearch, search
       {user && user.status === 'admin' && <RequestedRecipes />}
 
       {/* Loading indicator */}
-      {isLoading ? (
+      {/* {isLoading ? (
         <div className="loadingIndicator">Loading...</div>
-      ) : (
+      ) : ( */}
+
+        {isLoading ? (
+          <div className="loading">
+            <img src={worldIcon} style={{ width: '450px', height: '400px', marginBottom: '-100px'}} />
+            <BarLoader color="#363F26" width={200} />
+          </div>
+        ) : (
         <div className="SRCSuggested">
+          {/* <div className="loading">
+            <img src={worldIcon} style={{ width: '450px', height: '400px', marginBottom: '-100px' }} />
+            <BarLoader color="#363F26" width={200} />
+          </div> */}
+
           {validSearchResults.length > 0
             ? validSearchResults.map((recipe, index) => (
                 <RecipeCard
