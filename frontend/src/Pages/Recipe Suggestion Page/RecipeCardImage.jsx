@@ -154,7 +154,7 @@ const RecipeCardImage = ({ categories }) => {
             setImage(granola); // Return the image path directly
             foundMatch = true;
         }
-        else if (categories.includes("Cookies")||categories.includes("Oatmeal Cookies")) {
+        else if (categories.includes("Cookies")||categories.includes("Oatmeal Cookies")||categories.includes("Drop Cookies")) {
             setImage(cookies); // Return the image path directly
             foundMatch = true;
         }
