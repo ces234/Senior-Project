@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './SignupPage.css'; 
+import { useNavigate } from 'react-router-dom';
+
 
 
 const SignupPage = () => {
@@ -11,6 +13,9 @@ const SignupPage = () => {
   const [success, setSuccess] = useState(null);
   const [isLoading, setIsLoading] = useState(false); // Loading state
   const [displayJoinCode, setDisplayJoinCode] = useState(false); // To toggle join code field visibility
+
+  const navigate = useNavigate();
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,6 +44,8 @@ const SignupPage = () => {
       if (response.ok) {
         setSuccess('User signed up successfully!');
         setError(null);
+        navigate('/login'); // Navigate to the login page
+
       } else {
         setError(data.error || 'Signup failed.');
         setSuccess(null);
