@@ -1,7 +1,8 @@
+import React, {useState, useEffect} from "react";
 import airFryer from "../../photos/airFryer.jpg";
 import brownies from "../../photos/brownies.webp";
 import buffaloWings from "../../photos/buffaloWings.jpeg";
-import Canning from "../../photos/Canning.webp";
+import canning from "../../photos/Canning.webp";
 import cheeseBalls from "../../photos/cheeseBalls.webp";
 import cheesecake from "../../photos/cheesecake.webp";
 import dumplings from "../../photos/dumplings.webp";
@@ -17,6 +18,7 @@ import danishes from "../../photos/danishes.jpeg";
 import fudge from "../../photos/fudge.jpeg";
 import pancakes from "../../photos/pancakes.webp";
 import muffins from "../../photos/muffins.webp";
+import lettuceWraps from "../../photos/lettuceWraps.jpeg";
 import food from "../../photos/food.jpeg";
 import main from "../../photos/main.jpeg";
 import dinner from "../../photos/dinner.jpeg";
@@ -75,7 +77,7 @@ import shrimp from "../../photos/shrimp.webp";
 import fruitcake from "../../photos/fruitcake.jpeg";
 import bakedBeans from "../../photos/bakedBeans.jpeg";
 import biscuit from "../../photos/biscuit.jpeg";
-import sandwhichFood from "../../photos/sandwhichFood.jpeg";
+import sandwichFood from "../../photos/sandwichFood.jpeg";
 import plannedFood from "../../photos/plannedFood.jpeg";
 import saladFood from "../../photos/saladFood.webp";
 import chickenFood from "../../photos/chickenFood.webp";
@@ -85,250 +87,330 @@ import noodleFood from "../../photos/noodleFood.webp";
 import indianFood from "../../photos/indianFood.jpeg";
 import burgerFood from "../../photos/burgerFood.jpeg";
 
-
-
-
-
-
 const RecipeCardImage = ({ categories }) => {
-    const getImage = () => {
+    const [image, setImage] = useState(null);
+
+    useEffect(() => {            
+        let foundMatch = false;
+
         if (categories.includes("Air Fryer Recipes")) {
-            return airFryer; // Return the image path directly
+            setImage(airFryer); // Return the image path directly
+            foundMatch = true;
         }
-        if (categories.includes("Canning and Preserving")) {
-            return Canning; // Return the image path directly
+        else if (categories.includes("Canning and Preserving")) {
+            setImage(canning); // Return the image path directly
+            foundMatch = true;
         }
-        if(categories.includes("Fruitcake")){
-            return fruitcake;
+        else if(categories.includes("Fruitcake")){
+            setImage(fruitcake)
+            foundMatch = true;
         }
         if (categories.includes("Lettuce Wraps")) {
-            return muffins; // Return the image path directly
-        }
-        if (categories.includes("Cheese Fondue")) {
-            return fondue; // Return the image path directly
-        }
-        if (categories.includes("Cheesecake")) {
-            return cheesecake; // Return the image path directly
-        }
-        if (categories.includes("Cheese Balls")) {
-            return cheeseBalls; // Return the image path directly
-        }
-        if (categories.includes("Dumplings")) {
-            return dumplings; // Return the image path directly
-        }
-        if (categories.includes("Buffalo Chicken Wings")) {
-            return buffaloWings; // Return the image path directly
-        }
-        if (categories.includes("Brownies")) {
-            return brownies; // Return the image path directly
-        }
-        if (categories.includes("Falafel")) {
-            return falafel; // Return the image path directly
-        }
-        if (categories.includes("Pork Ribs")) {
-            return porkRibs; // Return the image path directly
-        }
-        if (categories.includes("Steak")) {
-            return steak; // Return the image path directly
-        }
-        if (categories.includes("Shrimp Recipes")){
-            return shrimp;
-        }
-        if (categories.includes("Granola")) {
-            return granola; // Return the image path directly
-        }
-        if (categories.includes("Cookies")||categories.includes("Oatmeal Cookies")) {
-            return cookies; // Return the image path directly
-        }
-        if (categories.includes("Cupcakes")) {
-            return cupcakes; // Return the image path directly
-        }
-        if (categories.includes("Bagels")) {
-            return bagels; // Return the image path directly
-        }
-        if (categories.includes("Danishes")) {
-            return danishes; // Return the image path directly
-        }
-        if (categories.includes("Fudge")) {
-            return fudge; // Return the image path directly
-        }
-        if (categories.includes("Pancakes")) {
-            return pancakes; // Return the image path directly
-        }
-        if (categories.includes("Muffins")) {
-            return muffins; // Return the image path directly
-        }
-        if (categories.includes("Doughnuts")) {
-            return doughnuts; // Return the image path directly
-        }
-        if (categories.includes("Breads")) {
-            return breads; // Return the image path directly
-        }
-        if (categories.includes("Flatbread")) {
-            return flatbread; // Return the image path directly
-        }
-        if (categories.includes("Homemade Pasta")||categories.includes("Pasta")||categories.includes("Pasta Carbonara")||categories.includes("Pasta Primavera")||categories.includes("Pasta Salad")||categories.includes("Lasagna")||categories.includes("Linguine")) {
-            return pasta; // Return the image path directly
-        }
-        if (categories.includes("Rice")) {
-            return rice; // Return the image path directly
-        }
-        if (categories.includes("Salad Dressings")) {
-            return saladDressing; // Return the image path directly
-        }
-        if (categories.includes("Smoothies")) {
-            return smoothies; // Return the image path directly
-        }
-        if (categories.includes("Oatmeal")) {
-            return oatmeal; // Return the image path directly
-        }
-        if (categories.includes("Casseroles")) {
-            return casseroles; // Return the image path directly
-        }
-        if (categories.includes("Stews")) {
-            return stew; // Return the image path directly
-        }
-        if (categories.includes("Soups")||categories.includes("Chowder")) {
-            return soups; // Return the image path directly
-        }
-        if (categories.includes("Chili Recipes")) {
-            return chili; // Return the image path directly
-        }
-        if (categories.includes("Burritos")) {
-            return burritos; // Return the image path directly
-        }
-        if (categories.includes("Pizza")) {
-            return pizza; // Return the image path directly
-        }
-        if (categories.includes("Calzones")) {
-            return calzones; // Return the image path directly
-        }
-        if (categories.includes("Fries")) {
-            return fries; // Return the image path directly
-        }
-        if (categories.includes("Tacos")) {
-            return tacos; // Return the image path directly
-        }
-        if (categories.includes("Sushi")) {
-            return sushi; // Return the image path directly
-        }
-        if (categories.includes("Stir-Fries")) {
-            return stirFries; // Return the image path directly
-        }
-        if (categories.includes("Indian Recipes")) {
-            return indian; // Return the image path directly
-        }
-        if (categories.includes("Mexican Recipes")||categories.includes("Tacos")||categories.includes("Enchiladas")||categories.includes("Fajitas")||categories.includes("Empanada Recipes")) {
-            return mexican; // Return the image path directly
-        }
-        if (categories.includes("Chinese Recipes")) {
-            return chinese; // Return the image path directly
-        }
-        if (categories.includes("Korean Recipes")) {
-            return korean; // Return the image path directly
-        }
-        if (categories.includes("Mediterranean Diet")) {
-            return mediterranean; // Return the image path directly
-        }
-        if (categories.includes("Hawaiian")) {
-            return hawaiian; // Return the image path directly
-        }
-        if(categories.includes("Apple Pie")||categories.includes("Blueberry Pie")||categories.includes("Cherry Pie")||categories.includes("Chess Pie")||categories.includes("Key Lime Pie")||categories.includes("Mincemeat Pie")||categories.includes("Pecan Pie")||categories.includes("Pies")||categories.includes("Pies")||categories.includes("Pumpkin Pie")||categories.includes("Rhubarb Pie")||categories.includes("Apple Pie")||categories.includes("Shepherd's Pie")){
-            return pie
-        }
-        if (categories.includes("Cake Recipes")) {
-            return cake; // Return the image path directly
-        }
-        if (categories.includes("Biscuit")||categories.includes("Biscotti")) {
-            return biscuit; // Return the image path directly
-        }
-        if (categories.includes("Baked Beans")) {
-            return bakedBeans; // Return the image path directly
-        }
-        if (categories.includes("Healthy Recipes")) {
-            return health; // Return the image path directly
-        }
-        if (categories.includes("Pet Food")) {
-            return petFood; // Return the image path directly
-        }
-        if (categories.includes("Ice Cream")) {
-            return icecream; // Return the image path directly
-        }
-        if (categories.includes("Drinks")) {
-            return drink; // Return the image path directly
-        }
-        if (categories.includes("Snacks")) {
-            return snacks; // Return the image path directly
-        }
-        if (categories.includes("Gumbo")) {
-            return gumbo; // Return the image path directly
-        }
-        if (categories.includes("Jerky")) {
-            return jerky; // Return the image path directly
-        }
-        if (categories.includes("Burgers")) {
-            return burgers; // Return the image path directly
-        }
-        if (categories.includes("Chicken Recipes")) {
-            return chicken; // Return the image path directly
-        }
-        if (categories.includes("Beef Recipes")) {
-            return beef; // Return the image path directly
-        }
-        if (categories.includes("Lamb Recipes")) {
-            return lamb; // Return the image path directly
-        }
-        if (categories.includes("Pork Recipes")) {
-            return pork; // Return the image path directly
-        }
-        if (categories.includes("Turkey")) {
-            return turkey; // Return the image path directly
-        }
-        if (categories.includes("Gravy")) {
-            return gravy; // Return the image path directly
-        }
-        if (categories.includes("Salad")||categories.includes("Broccoli Salad")||categories.includes("Chicken Salad")||categories.includes("Egg Salad")||categories.includes("Green Salads")||categories.includes("Pasta Salad")||categories.includes("Quinoa Salad Recipes")) {
-            return salad; // Return the image path directly
-        }
-        if (categories.includes("Bar Cookies")||categories.includes("Lemon Bars")) {
-            return bars; // Return the image path directly
-        }
-        if (categories.includes("Cobbler")) {
-            return cobbler; // Return the image path directly
-        }
-        if (categories.includes("Pickles")) {
-            return pickles; // Return the image path directly
-        }
-        if (categories.includes("Sandwhich")) {
-            return sandwhich; // Return the image path directly
-        }
-        if (categories.includes("Dip")) {
-            return dip; // Return the image path directly
-        }
-        if (categories.includes("Appetizers")) {
-            return appetizers; // Return the image path directly
-        }
-        if (categories.includes("Breakfast")) {
-            return breakfast; // Return the image path directly
-        }
-        if (categories.includes("Lunch")) {
-            return lunch; // Return the image path directly
-        }
-        if (categories.includes("Desserts")) {
-            return desserts; // Return the image path directly
-        }
-        if (categories.includes("Dinner Recipes")) {
-            return dinner; // Return the image path directly
-        }
-        if (categories.includes("Main Dishes")) {
-            return main; // Return the image path directly
-        }
-        const randomFood=[food, sandwhichFood,plannedFood,saladFood,chickenFood,greenFood,plateFood,noodleFood,indianFood,burgerFood];
-        return randomFood[Math.floor(Math.random()*10)]; // Or return a default image path or null
-    };
+            setImage(lettuceWraps);
+            foundMatch = true;
+        }
+        else if (categories.includes("Cheese Fondue")) {
+            setImage(fondue); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Cheesecake")) {
+            setImage(cheesecake); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Cheese Balls")) {
+            setImage(cheeseBalls); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Dumplings")) {
+            setImage(dumplings); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Buffalo Chicken Wings")) {
+            setImage(buffaloWings); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Brownies")) {
+            setImage(brownies); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Falafel")) {
+            setImage(falafel); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Pork Ribs")) {
+            setImage(porkRibs); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Steak")) {
+            setImage(steak); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Shrimp Recipes")){
+            setImage(shrimp);
+            foundMatch = true;
+
+        }
+        else if (categories.includes("Granola")) {
+            setImage(granola); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Cookies")||categories.includes("Oatmeal Cookies")) {
+            setImage(cookies); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Cupcakes")) {
+            setImage(cupcakes); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Bagels")) {
+            setImage(bagels); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Danishes")) {
+            setImage(danishes); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Fudge")) {
+            setImage(fudge); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Pancakes")) {
+            setImage(pancakes); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Muffins")) {
+            setImage(muffins); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Doughnuts")) {
+            setImage(doughnuts); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Breads")) {
+            setImage(breads); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Flatbread")) {
+            setImage(flatbread); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Homemade Pasta")||categories.includes("Pasta")||categories.includes("Pasta Carbonara")||categories.includes("Pasta Primavera")||categories.includes("Pasta Salad")||categories.includes("Lasagna")||categories.includes("Linguine")) {
+            setImage(pasta); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Rice")) {
+            setImage(rice); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Salad Dressings")) {
+            setImage(saladDressing); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Smoothies")) {
+            setImage(smoothies); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Oatmeal")) {
+            setImage(oatmeal); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Casseroles")) {
+            setImage(casseroles); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Stews")) {
+            setImage(stew); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Soups")||categories.includes("Chowder")) {
+            setImage(soups); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Chili Recipes")) {
+            setImage(chili); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Burritos")) {
+            setImage(burritos); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Pizza") || categories.includes("Pizza Dough and Crusts")) {
+            setImage(pizza); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Calzones")) {
+            setImage(calzones); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Fries")) {
+            setImage(fries); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Tacos")) {
+            setImage(tacos); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Sushi")) {
+            setImage(sushi); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Stir-Fries")) {
+            setImage(stirFries); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Indian Recipes")) {
+            setImage(indian); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Mexican Recipes")||categories.includes("Tacos")||categories.includes("Enchiladas")||categories.includes("Fajitas")||categories.includes("Empanada Recipes")) {
+            setImage(mexican); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Chinese Recipes")) {
+            setImage(chinese); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Korean Recipes")) {
+            setImage(korean); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Mediterranean Diet")) {
+            setImage(mediterranean); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Hawaiian")) {
+            setImage(hawaiian); // Return the image path directly
+            foundMatch = true;
+        }
+        else if(categories.includes("Apple Pie")||categories.includes("Blueberry Pie")||categories.includes("Cherry Pie")||categories.includes("Chess Pie")||categories.includes("Key Lime Pie")||categories.includes("Mincemeat Pie")||categories.includes("Pecan Pie")||categories.includes("Pies")||categories.includes("Pies")||categories.includes("Pumpkin Pie")||categories.includes("Rhubarb Pie")||categories.includes("Apple Pie")||categories.includes("Shepherd's Pie")){
+            setImage(pie);
+            foundMatch = true;
+        }
+        else if (categories.includes("Cake Recipes")) {
+            setImage(cake); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Biscuit")||categories.includes("Biscotti")) {
+            setImage(biscuit); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Baked Beans")) {
+            setImage(bakedBeans); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Healthy Recipes")) {
+            setImage(health); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Pet Food")) {
+            setImage(petFood); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Ice Cream")) {
+            setImage(icecream); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Drinks")) {
+            setImage(drink); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Snacks")) {
+            setImage(snacks); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Gumbo")) {
+            setImage(gumbo); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Jerky")) {
+            setImage(jerky); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Burgers")) {
+            setImage(burgers); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Chicken Recipes")) {
+            setImage(chicken); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Beef Recipes")) {
+            setImage(beef); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Lamb Recipes")) {
+            setImage(lamb); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Pork Recipes")) {
+            setImage(pork); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Turkey")) {
+            setImage(turkey); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Gravy")) {
+            setImage(gravy); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Salad")||categories.includes("Broccoli Salad")||categories.includes("Chicken Salad")||categories.includes("Egg Salad")||categories.includes("Green Salads")||categories.includes("Pasta Salad")||categories.includes("Quinoa Salad Recipes")) {
+            setImage(salad); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Bar Cookies")||categories.includes("Lemon Bars")) {
+            setImage(bars); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Cobbler")) {
+            setImage(cobbler); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Pickles")) {
+            setImage(pickles); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Sandwhich")) {
+            setImage(sandwhich); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Dip")) {
+            setImage(dip); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Appetizers")) {
+            setImage(appetizers); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Breakfast")) {
+            setImage(breakfast); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Lunch")) {
+            setImage(lunch); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Desserts")) {
+            setImage(desserts); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Dinner Recipes")) {
+            setImage(dinner); // Return the image path directly
+            foundMatch = true;
+        }
+        else if (categories.includes("Main Dishes")) {
+            setImage(main); // Return the image path directly
+            foundMatch = true;
+        }
+
+        if (!foundMatch) {
+            const randomFood=[food, sandwichFood,plannedFood,saladFood,chickenFood,greenFood,plateFood,noodleFood,indianFood,burgerFood];
+            setImage(randomFood[Math.floor(Math.random()*10)]); // Or return a default image path
+        }
+    }, [image, categories]);
 
     return (
-        <img src={getImage()} alt="Recipe Image" />
+        <img src={image} alt="Recipe Image" />
     );
 };
 
