@@ -1,7 +1,7 @@
 .mealPlanPageContainer{
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 90%;
 }
 
 .mealPlanPageContent {
@@ -22,7 +22,9 @@
 .calendarContainer{
     width: 85%;
     flex: 1;
-    height: 700px;
+    overflow-x: scroll;
+    padding-top:49px;
+    /* height: 700px; */
 }
 
 .mealGrid {

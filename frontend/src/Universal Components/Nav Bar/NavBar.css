@@ -1,5 +1,5 @@
 .navBar {
-    background-color: #93D4D9;
+    background-color: #48601d;
     height: 100vh;
     border-radius: 20px;
     display: flex;
@@ -18,7 +18,7 @@
 }
 
 .navButton {
-    color: black;
+    color: white;
     font-size: 12px;
     margin-top: 40px;
     margin-bottom: 40px;

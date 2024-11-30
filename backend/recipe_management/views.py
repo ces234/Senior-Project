@@ -95,12 +95,9 @@ def get_suggested_recipes(pantry, user, num_recipes=100):
     # Get recipes that use those pantry ingredients
     pantry_recipes = Recipe.objects.filter(ingredients__in=pantry_ingredients).distinct() #TODO: might have to get all recipes right here
 
-    # saved_test = Recipe.objects.filter(id = 7343).distinct()
-    # print("saved points: ", calculate_recipe_points(saved_test[0], user))
-
-    print("recipe: ", pantry_recipes[0])
-    # print("points: ", calculate_recipe_points(pantry_recipes[0], user))
-
+    if not pantry_recipes.exists():
+        return []  # No recipes found, return an empty list
+    
     pantry_recipes_with_points = [
         (recipe, calculate_recipe_points(recipe, user)) for recipe in pantry_recipes
     ]
@@ -136,7 +133,6 @@ def calculate_recipe_points(recipe, user):
 
     for saved_recipe in saved_recipes:
         if saved_recipe['id'] == recipe.id:
-            print(True)
             points += 100
     
 
