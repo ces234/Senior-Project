@@ -207,22 +207,9 @@ const GroceryListPage = () => {
       <div className="mainContainer">
         <div className="filtersAndListContainer">
           <div className="GLHeader">
-            <div className="GLHeaderSearchBar">
-              <span className="GLHeaderLabel"></span>
-              <input
-                type="text"
-                placeholder="Filter items..."
-                className="filterInput"
-              />
-            </div>
+            
           </div>
-          <div className="filtersContainer">
-            <div className="filterButtons">
-              <button className="filterButton">Produce</button>
-              <button className="filterButton">Fruit</button>
-              <button className="filterButton">Grains</button>
-            </div>
-          </div>
+          
           <div className="groceryListContainer">
             <ul className="groceryList">
               {groceryList && groceryList.ingredients ? (
