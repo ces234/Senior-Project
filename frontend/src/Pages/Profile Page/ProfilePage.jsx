@@ -82,7 +82,6 @@ const ProfilePage = () => {
               <span className="value">{joinCode || "Loading..."}</span>
             </div>
           </div>
-          <button className="resetPasswordButton">Reset Password</button>
         </div>
 
         <hr className="divider" />
