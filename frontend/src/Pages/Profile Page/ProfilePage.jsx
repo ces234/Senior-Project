@@ -102,8 +102,6 @@ const ProfilePage = () => {
                       <span className="secondAdminBadge">👑 {/* Crown Icon */}</span>
                     )}
                   </span>
-                  <span className="memberDetail">Favorite Meal: N/A</span>
-                  <button className="addRecipeButton">Add Recipe +</button>
                 </div>
               </div>
             ))
