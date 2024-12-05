@@ -201,3 +201,28 @@ def get_household_members(request):
         return Response(serialized_members, status=200)
     except Exception as e:
         return Response({"error": str(e)}, status=400)
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def delete_recently_added_recipe(request, recipe_id):
+    """
+    Deletes a recipe from the user's household's recently added list.
+    """
+    try:
+        user = request.user
+        household = user.households.first()
+
+        if not household:
+            return Response({'error': 'No household found for this user.'}, status=404)
+
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+
+        # Assuming `recently_added` is a ManyToManyField or similar relationship
+        if recipe in household.recently_added.all():
+            household.recently_added.remove(recipe)
+            return Response({'message': f'Recipe {recipe.name} removed from recently added.'}, status=200)
+        else:
+            return Response({'error': 'Recipe not found in recently added list.'}, status=404)
+    except Exception as e:
+        return Response({'error': str(e)}, status=400)

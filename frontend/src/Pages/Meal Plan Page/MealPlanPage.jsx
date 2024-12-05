@@ -88,6 +88,28 @@ const MealPlanPage = () => {
 
   }, []);
 
+
+  const handleDeleteRecipeRecentlyAdded = async (recipeId) => {
+    try {
+      const response = await fetch(`http://localhost:8000/user/recently_added/delete/${recipeId}/`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Token ${token}`,
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete recipe with ID ${recipeId}: ${response.statusText}`);
+      }
+
+      // Update the state to remove the recipe
+      setRecipes((prevRecipes) =>
+        prevRecipes.filter((recipe) => recipe.id !== recipeId)
+      );
+    } catch (error) {
+      console.error("Error deleting recipe:", error);
+    }
+  };
   
 
   useEffect(() => {
@@ -328,7 +350,7 @@ const MealPlanPage = () => {
     ) : (
       <p>Loading meal plan...</p>
     )}
-    <RecentlyAddedRecipes recipes={recipes} onDragStart={handleDragStart} />
+    <RecentlyAddedRecipes recipes={recipes} onDragStart={handleDragStart} onDelete = {handleDeleteRecipeRecentlyAdded} />
   </div>
   <button className="updateGroceriesButton" onClick={updateGroceries}>
     Update Grocery List
