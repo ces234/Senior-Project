@@ -10,6 +10,41 @@ from django.db.models import Q
 from rest_framework import status
 from pantry_management.utils import add_pantry_item_to_user, get_user_pantry_items
 from rest_framework.exceptions import NotFound, ValidationError
+from django.shortcuts import get_object_or_404
+
+
+@api_view(['POST'])
+def add_pantry_item2(request):
+    household = request.user.households.first()
+
+    if not household:
+        return Response({"error": "No household found for this user."}, status=status.HTTP_400_BAD_REQUEST)
+
+    pantry = Pantry.objects.filter(household=household).first()
+    if not pantry:
+        return Response({"error": "No pantry found for this household."}, status=status.HTTP_400_BAD_REQUEST)
+
+    ingredient_id = request.data.get('ingredient_id')
+    quantity = request.data.get('quantity')
+    unit = request.data.get('unit')
+
+    if not ingredient_id or not quantity or not unit:
+        return Response({"error": "Missing ingredient data (ingredient_id, quantity, or unit)."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Convert quantity to float and handle invalid values
+    try:
+        quantity = float(quantity)
+    except ValueError:
+        return Response({"error": "Quantity must be a valid number."}, status=status.HTTP_400_BAD_REQUEST)
+
+    ingredient = get_object_or_404(Ingredient, id=ingredient_id)
+
+    # Call the add_ingredient method
+    pantry.add_ingredient(ingredient, quantity, unit)
+
+    return Response({"message": "Ingredient added to pantry successfully."}, status=status.HTTP_201_CREATED)
+
+
 
 @api_view(['POST'])
 def add_pantry_item(request):
