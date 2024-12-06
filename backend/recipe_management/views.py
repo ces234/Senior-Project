@@ -65,7 +65,8 @@ def suggested_recipes_view(request):
     pantry = Pantry.objects.get(household=userHousehold)
 
     page_number = request.GET.get('page', 1)
-    
+
+
     # Fetch suggested recipes based on the pantry
     suggested_recipes = get_suggested_recipes(pantry, user)
 
@@ -93,10 +94,11 @@ def get_suggested_recipes(pantry, user, num_recipes=100):
     pantry_ingredients = pantry.ingredients.all()
 
     # Get recipes that use those pantry ingredients
-    pantry_recipes = Recipe.objects.filter(ingredients__in=pantry_ingredients).distinct() #TODO: might have to get all recipes right here
+    pantry_recipes = Recipe.objects.filter(ingredients__in=pantry_ingredients).distinct()
 
+    # If no items in pantry, return random recipes
     if not pantry_recipes.exists():
-        return []  # No recipes found, return an empty list
+        pantry_recipes = get_random_recipes()
     
     pantry_recipes_with_points = [
         (recipe, calculate_recipe_points(recipe, user)) for recipe in pantry_recipes
