@@ -21,7 +21,8 @@ const RecipeCard = ({
   day,
   requestedBy,
   requestId,
-  onUpdate, 
+  onUpdate,
+  onDeleteRecentlyAdded,
 }) => {
   const [error, setError] = useState(null); // State for error messages
   const [success, setSuccess] = useState(null); // State for success messages
@@ -105,9 +106,20 @@ const RecipeCard = ({
 
   const handleDelete = async (e) => {
     e.preventDefault();
-    e.stopPropagation(); // Prevent the click event from bubbling up to the card
-    if (onDelete) {
-      await onDelete(mealPlanId, recipeId, meal, day); // Call the onDelete function passed from the parent component
+    e.stopPropagation();
+
+    console.log(recipeId)
+
+    try {
+      if (onDelete) {
+        // Call the onDelete prop passed for general deletion
+        await onDelete(mealPlanId, recipeId, meal, day);
+      } else if (onDeleteRecentlyAdded) {
+        // Call the onDeleteRecentlyAdded prop for recently added recipes
+        await onDeleteRecentlyAdded(recipeId);
+      }
+    } catch (err) {
+      console.error("Error deleting recipe:", err);
     }
   };
 

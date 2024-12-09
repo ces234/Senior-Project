@@ -2,20 +2,17 @@ import React, { useState } from 'react';
 import './SignupPage.css'; 
 import { useNavigate } from 'react-router-dom';
 
-
-
 const SignupPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [householdOption, setHouseholdOption] = useState('new'); // Default to starting a new household
-  const [joinCode, setJoinCode] = useState(''); // State to store join code
+  const [householdOption, setHouseholdOption] = useState('new');
+  const [joinCode, setJoinCode] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [isLoading, setIsLoading] = useState(false); // Loading state
-  const [displayJoinCode, setDisplayJoinCode] = useState(false); // To toggle join code field visibility
+  const [isLoading, setIsLoading] = useState(false);
+  const [displayJoinCode, setDisplayJoinCode] = useState(false);
 
   const navigate = useNavigate();
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,8 +41,7 @@ const SignupPage = () => {
       if (response.ok) {
         setSuccess('User signed up successfully!');
         setError(null);
-        navigate('/login'); // Navigate to the login page
-
+        navigate('/login');
       } else {
         setError(data.error || 'Signup failed.');
         setSuccess(null);
@@ -132,6 +128,12 @@ const SignupPage = () => {
               {isLoading ? 'Signing up...' : 'Sign Up'}
             </button>
           </form>
+          {/* Back to Login Button */}
+          <button 
+            className="backToLoginButton" onClick={() => navigate('/login')}
+          >
+            Back to Login
+          </button>
         </div>
       </div>
     </div>

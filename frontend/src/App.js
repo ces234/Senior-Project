@@ -1,6 +1,6 @@
 import "./App.css";
 import React from "react"; 
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"; 
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom"; 
 import RecipeSuggestionPage from "./Pages/Recipe Suggestion Page/RecipeSuggestionPage";
 import NavBar from "./Universal Components/Nav Bar/NavBar";
 import Header from "./Universal Components/Header/Header";
@@ -11,7 +11,7 @@ import RecipePage from "./Pages/Recipe Page/RecipePage";
 import LandingPage from "./Pages/Landing Page/LandingPage";
 import SignupPage from "./Pages/Signup Page/SignupPage";
 import GroceryListPage from "./Pages/Grocery List Page/GroceryListPage";
-import { AuthProvider, useAuth } from "./AuthContext"; // Ensure correct path
+import { AuthProvider, useAuth } from "./AuthContext";
 import MyRecipesPage from "./Pages/MyRecipePage/MyRecipesPage";
 import ProfilePage from "./Pages/Profile Page/ProfilePage";
 
@@ -22,24 +22,31 @@ function App() {
         <Router>
           <Header />
           <div className="pageContent">
-            <NavBar />
+            <ConditionalNavBar /> {/* Conditional rendering of NavBar */}
             <Routes>
-              <Route path = "/" element = {<LandingPage />} /> 
+              <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
-              <Route path = "/signup" element = {<SignupPage />}/>
-              <Route path="/recipes" element={<PrivateRoute component={RecipeSuggestionPage} />} /> {/* Protect RecipeSuggestionPage */}
-              <Route path="/pantry" element={<PrivateRoute component={PantryPage} />} /> {/* Protect PantryPage */}
-              <Route path = "/meal-plan" element = {<PrivateRoute component={MealPlanPage} />} />
-              <Route path = "/recipe/:id" element = {<PrivateRoute component= {RecipePage} />} />
-              <Route path = "/grocery-list" element = {<PrivateRoute component={GroceryListPage} />} />
-              <Route path = "/my-recipes" element = {<PrivateRoute component={MyRecipesPage} />} />
-              <Route path = "/profile" element = {<PrivateRoute component={ProfilePage} />} /> 
+              <Route path="/signup" element={<SignupPage />} />
+              <Route path="/recipes" element={<PrivateRoute component={RecipeSuggestionPage} />} />
+              <Route path="/pantry" element={<PrivateRoute component={PantryPage} />} />
+              <Route path="/meal-plan" element={<PrivateRoute component={MealPlanPage} />} />
+              <Route path="/recipe/:id" element={<PrivateRoute component={RecipePage} />} />
+              <Route path="/grocery-list" element={<PrivateRoute component={GroceryListPage} />} />
+              <Route path="/my-recipes" element={<PrivateRoute component={MyRecipesPage} />} />
+              <Route path="/profile" element={<PrivateRoute component={ProfilePage} />} />
             </Routes>
           </div>
         </Router>
       </div>
     </AuthProvider>
   );
+}
+
+function ConditionalNavBar() {
+  const location = useLocation();
+  const excludedPaths = ["/", "/login", "/signup"]; // Paths where NavBar should not appear
+
+  return !excludedPaths.includes(location.pathname) ? <NavBar /> : null;
 }
 
 function PrivateRoute({ component: Component }) {

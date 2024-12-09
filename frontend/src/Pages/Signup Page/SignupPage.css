@@ -60,7 +60,8 @@
     outline: 2px solid #7a983c;
 }
 
-.signupButton {
+/* Common Button Styles */
+.signupButton, .backToLoginButton {
     background-color: #7a983c;
     color: white;
     border: none;
@@ -69,16 +70,25 @@
     font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    width: 100%; /* Ensure they take up equal width */
+    text-align: center;
 }
 
-.signupButton:hover {
+/* Hover Effect */
+.signupButton:hover, .backToLoginButton:hover {
     background-color: #5e7b2e;
 }
 
+/* Disabled State for Signup Button */
 .signupButton:disabled {
     background-color: #6f8b34;
     cursor: not-allowed;
 }
+
+.signupButton {
+    margin-bottom: 15px; /* Adds space below the signup button */
+}
+
 
 /* Radio group styling */
 .radioGroup {
@@ -107,3 +117,4 @@
     /* Slightly larger radio buttons */
     cursor: pointer;
 }
+

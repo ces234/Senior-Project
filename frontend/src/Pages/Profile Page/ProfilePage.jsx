@@ -82,7 +82,6 @@ const ProfilePage = () => {
               <span className="value">{joinCode || "Loading..."}</span>
             </div>
           </div>
-          <button className="resetPasswordButton">Reset Password</button>
         </div>
 
         <hr className="divider" />
@@ -103,8 +102,6 @@ const ProfilePage = () => {
                       <span className="secondAdminBadge">👑 {/* Crown Icon */}</span>
                     )}
                   </span>
-                  <span className="memberDetail">Favorite Meal: N/A</span>
-                  <button className="addRecipeButton">Add Recipe +</button>
                 </div>
               </div>
             ))

@@ -72,7 +72,7 @@ const LoginPage = () => {
             </button>
           </form>
           <p className="registerPrompt">
-            New here? <a href="/register">Make an account</a>
+            New here? <a href="/signup">Make an account</a>
           </p>
         </div>
       </div>

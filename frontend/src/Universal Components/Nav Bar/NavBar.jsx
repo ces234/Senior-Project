@@ -4,7 +4,9 @@ import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 import {
   faBookOpen,
   faCarrot,
-  faCircleUser,
+  faCircleUser, 
+  faListCheck, 
+  faUtensils
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../../AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -112,21 +114,20 @@ const NavBar = () => {
           onClick={() => navigate("/pantry")}
         />
         <NavButton
-          icon={faCarrot}
+          icon={faListCheck}
           text="Grocery List"
           onClick={() => navigate("/grocery-list")}
         />
         <NavButton
-          icon={faCarrot}
+          icon={faUtensils}
           text="My Recipes"
           onClick={() => navigate("/my-recipes")}
         />
-        <NavButton
-          icon={faCarrot}
-          text="Profile"
-          onClick={() => navigate("/profile")}
-        />
-        <button onClick={handleLogout}>Logout</button>
+      </div>
+      <div className="logoutButtonContainer">
+        <button className="logoutButton" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
       {loading && <div className="loading">Loading...</div>}
       {error && <div className="error">{error}</div>}

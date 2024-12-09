@@ -1,0 +1,66 @@
+/* Main container for the landing page */
+.landingPageContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Ensures the content is vertically centered */
+    width: 100%; /* Full-width for proper centering */
+}
+
+
+/* Retro-styled screen */
+.screen {
+    width: 750px;
+    height: 575px;
+    background-color: #536328;
+    border: 15px solid #3c4b22;
+    box-shadow: 0 0 15px #283313;
+    margin-bottom: 30px;
+    border-radius: 20px;
+    display: flex; /* Center content inside the screen */
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Ensures the image doesn't overflow the container */
+}
+
+/* Image styling */
+.centerImage {
+    max-width: 100%; /* Ensures the image fits horizontally */
+    max-height: 100%; /* Ensures the image fits vertically */
+    object-fit: contain; /* Maintains the aspect ratio of the image */
+    margin-top: -100px; /* Move the image up slightly */
+}
+
+/* Container for the buttons */
+.buttonContainer {
+    display: flex;
+    gap: 30px; /* Space between buttons */
+    justify-content: center;
+    width: 100%; /* Ensures buttons are centered */
+}
+
+/* Styling for the buttons */
+.landingButton {
+    background-color: #455a1e; /* Dark green for button background */
+    color: #f4f4f4; /* White text */
+    border: none;
+    padding: 15px 30px; /* Larger button size */
+    font-size: 20px; /* Slightly bigger font */
+    font-weight: bold;
+    border-radius: 25px; /* More rounded button shape */
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Button hover effect */
+.landingButton:hover {
+    background-color: #3c4b22;
+    box-shadow: 0 3px #1a220d; /* Subtle hover effect */
+}
+
+/* Button active (pressed) effect */
+.landingButton:active {
+    box-shadow: 0 2px #1a220d;
+    transform: translateY(3px); /* Slight button press effect */
+}

@@ -2,7 +2,9 @@ import "./MealPlanPage.css";
 import RecipeCard from "../Recipe Suggestion Page/RecipeCard";
 import chicken from "../../photos/chicken.webp";
 
-const RecentlyAddedRecipes = ({ recipes, onRecipeDrop, onDragStart }) => {
+const RecentlyAddedRecipes = ({ recipes, onRecipeDrop, onDragStart, onDelete}) => {
+
+  
   return (
     <div className="mealPlanRight">
       <h3>Recently Added Recipes</h3>
@@ -18,6 +20,7 @@ const RecentlyAddedRecipes = ({ recipes, onRecipeDrop, onDragStart }) => {
               prepTime={recipe.prep_time}
               draggable
               onDragStart={(e) => onDragStart(e, recipe.id)} // Ensure the correct ID is passed
+              onDeleteRecentlyAdded  = {onDelete}
             />
           ))
         ) : (

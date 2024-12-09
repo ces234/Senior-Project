@@ -96,7 +96,7 @@
 
   .addItemContainer {
     display: flex;
-    background-color: #76CFCE;
+    background-color: #a1b57d;
     width: 90%;
     height: 95%;
     border-radius: 22px;
@@ -156,4 +156,23 @@
 .addItemInputs input::placeholder {
     color: #aaa;
     font-size: 0.9rem;
+}
+
+.dropdown-grocery {
+  position: absolute;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #374d2b;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  width: 100%;
+  top: 300px;
+  color: white;
+}
+
+.dropdown-list-grocery {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
